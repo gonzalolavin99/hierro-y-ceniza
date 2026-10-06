@@ -80,7 +80,7 @@
 | Tipo | Ejemplos |
 |---|---|
 | Humanos comunes | Bandido con cuchillo, soldado con lanza, arquero, desertor con escudo |
-| Humanos élite | Caballero pesado, duelista, ejecutor con hacha enorme, lancero a caballo (muerto el jinete, el caballo huye) |
+| Humanos élite | Caballero pesado, duelista, ejecutor con hacha enorme, lancero con armadura pesada |
 | Jefes (vertical slice) | 🔶 **Mini-jefe:** El Carcelero (gigante con cadena). **Jefe:** Capitana Varga, duelista |
 | Jefes futuros | La Cazadora de la montaña, el ingeniero y su máquina de asedio (pilotada por humanos), el "General traidor" Aren |
 

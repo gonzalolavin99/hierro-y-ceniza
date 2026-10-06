@@ -4,7 +4,7 @@
 
 | # | Pregunta | Propuesta de Claude | Hasta |
 |---|---|---|---|
-| D10 | ¿Teclado/ratón en algún momento? | Más adelante, después de la vertical slice | Libre |
+| D12 | ¿Teclado/ratón en algún momento? | Más adelante, después de la vertical slice | Libre |
 
 ## Decididas
 
