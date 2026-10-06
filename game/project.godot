@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 InputSetup="*res://scripts/systems/input_setup.gd"
 DebugOverlay="*res://scenes/ui/debug_overlay.tscn"
 CombatFX="*res://scripts/systems/combat_fx.gd"
+Sfx="*res://scripts/systems/sfx.gd"
 
 [display]
 

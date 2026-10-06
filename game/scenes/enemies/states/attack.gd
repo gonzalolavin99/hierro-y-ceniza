@@ -99,8 +99,10 @@ func _set_phase(phase: Phase) -> void:
 			_deflected_last = false
 			enemy.weapon.go(swing["from"], swing["windup"] * 0.8)
 			enemy.weapon.glint()
+			Sfx.play(&"glint", enemy.lock_point())
 		Phase.ACTIVE:
 			enemy.weapon.go(swing["to"], swing["active"], Tween.EASE_IN_OUT)
 			enemy.hitbox.activate(HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE))
+			Sfx.play(&"swing", enemy.lock_point())
 		Phase.AFTER:
 			enemy.hitbox.deactivate()

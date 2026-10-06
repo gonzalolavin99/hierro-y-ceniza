@@ -120,6 +120,7 @@ func receive_hit(hit: HitData) -> int:
 	# Fuera de sus ataques, bloquea todo lo que tenga de frente.
 	if state != &"Attack" and state != &"Recoil" and facing_attacker:
 		posture.add(hit.posture_damage)
+		Sfx.play(&"block", contact)
 		CombatFX.sparks(contact, 10, 4.0)
 		CombatFX.hitstop(0.035)
 		weapon.bounce(&"end_right", &"block", 0.05, 0.1)
@@ -132,6 +133,7 @@ func receive_hit(hit: HitData) -> int:
 	# Golpe directo (atacando, retrocediendo o de espaldas).
 	health.take_damage(hit.damage)
 	posture.add(hit.posture_damage * (1.0 if state == &"Recoil" else 0.5))
+	Sfx.play(&"hit", contact)
 	CombatFX.blood(contact)
 	CombatFX.hitstop(0.05)
 	return HitData.Result.HIT
@@ -139,6 +141,7 @@ func receive_hit(hit: HitData) -> int:
 
 func receive_deathblow(_attacker: Node3D) -> void:
 	var at: Vector3 = global_position + Vector3.UP * 1.2
+	Sfx.play(&"deathblow", at)
 	CombatFX.sparks(at, 24, 7.0)
 	CombatFX.blood(at)
 	CombatFX.blood(at)

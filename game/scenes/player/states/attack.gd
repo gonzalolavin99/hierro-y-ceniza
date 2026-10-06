@@ -79,6 +79,7 @@ func _set_phase(phase: Phase) -> void:
 		Phase.ACTIVE:
 			player.weapon.go(data["to"], data["active"], Tween.EASE_IN_OUT)
 			player.hitbox.activate(HitData.create(player, data["damage"], data["posture"]))
+			Sfx.play(&"swing", player.global_position + Vector3.UP * 1.3, -2.0)
 		Phase.RECOVERY:
 			player.hitbox.deactivate()
 			player.weapon.go(&"idle", data["recovery"])

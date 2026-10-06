@@ -10,6 +10,7 @@ func enter(_msg: Dictionary) -> void:
 	enemy.hitbox.deactivate()
 	enemy.weapon.go(&"end_low", 0.25)
 	CombatFX.shake(0.3)
+	Sfx.play(&"posture_break", enemy.lock_point())
 
 
 func exit() -> void:

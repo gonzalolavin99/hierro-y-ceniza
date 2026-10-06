@@ -27,44 +27,71 @@ velocidades y tiempos hasta que digas OK.
 - [x] Fijar objetivo con R3 (stick derecho cambia de objetivo; sin enemigos, recentra la cámara).
 - [x] Un enemigo maniquí con IA simple (se acerca, ataca, telegrafía).
 - [x] Golpe mortal al romper postura.
-- [ ] Primer personaje con animaciones de Mixamo (reemplaza la cápsula). ⏸ Necesita que crees una cuenta Adobe (gratis).
+- [→] Animaciones de Mixamo: movido al Hito 3 (pulido).
 
 **🧪 PRUEBA:** pelear 5 minutos contra el maniquí. ¿Es satisfactorio desviar? ¿Se entiende cuándo atacar?
 
-## Hito 3 — El loop souls (2 semanas)
-- [ ] Vida, curación con vendajes, muerte y reaparición.
-- [ ] Campamento: descansar, recargar curas, reaparecer enemigos.
-- [ ] Experiencia: perderla al morir y recuperarla.
-- [ ] Subir atributos. Guardado/carga de partida.
-- [ ] HUD y menú de pausa.
+## Prioridades (decisión D14)
+1. **Combate y movimiento** pulidos, fluidos, con muchas opciones y nada "cuadrado".
+2. **Historia** de gran calidad.
+3. **Diseño de personajes** al final. El mundo, por ahora, solo como escenario de pruebas.
 
-**🧪 PRUEBA:** jugar un ciclo completo: explorar → morir → recuperar → subir nivel.
+## Hito 3 — Pulido del combate I: sensación (2–3 semanas)
+- [ ] **Sonido**: clang de desvío "que da dopamina" (estilo Sekiro), bloqueo, impacto, tajos al aire, pasos.
+- [ ] Animaciones Mixamo con un maniquí neutro (no es el diseño final de Kael): correr, paso rápido,
+      saltar, tajos, guardia, desvío, golpe recibido, golpe mortal, muerte.
+- [ ] Transiciones suaves entre animaciones (mezcla), giro con inercia, arrancar/frenar natural.
+- [ ] Cámara: suavizado al fijar, encuadre en peleas cercanas.
 
-## Hito 4 — Enemigos de verdad (3–4 semanas)
-- [ ] IA con estados (patrulla, alerta, combate, retirada).
-- [ ] 3 tipos: bandido, soldado con lanza, arquero.
-- [ ] Ataques peligrosos con aviso rojo.
-- [ ] Sigilo básico y ataque sorpresa.
+**🧪 PRUEBA:** ¿se siente "como un juego de verdad" y no como cápsulas?
 
-**🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo?
+## Hito 4 — Pulido del combate II: opciones (3–4 semanas)
+- [ ] **Ataques peligrosos** con aviso rojo: barrido (se salta), estocada (contraataque especial pisando
+      el arma), agarre (hay que alejarse).
+- [ ] Ataque en salto, ataque tras paso rápido, ataque cargado.
+- [ ] Pisar al enemigo tras saltar su barrido (como Sekiro).
+- [ ] 2–3 **técnicas** de combate desbloqueables.
+- [ ] Armas secundarias: ballesta de muñeca, bomba de humo, bomba de pólvora.
+- [ ] Voces y esfuerzos en combate (gritos de ataque, quejidos, frases de enemigos).
 
-## Hito 5 — Primer jefe (2–3 semanas)
-- [ ] Mini-jefe o jefe con 2 fases, barra de vida especial, música.
-- [ ] Arena con niebla de entrada.
+**🧪 PRUEBA:** ¿hay varias formas de ganar una pelea?
+
+## Hito 5 — IA inteligente y enemigos (3–4 semanas)
+- [ ] **Una sola dificultad** (D13): la IA tiene que ser lista, no tramposa.
+- [ ] IA que lee al jugador: castiga curarse a destiempo y el abuso del paso rápido, cambia el ritmo,
+      hace fintas y retrasa golpes si siempre desvías igual, se retira y flanquea en grupo.
+- [ ] 3 tipos: bandido, soldado con lanza, arquero. Patrulla, alerta, sigilo y ataque sorpresa.
+
+**🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?
+
+## Hito 6 — El loop souls (2 semanas)
+- [ ] Curación con vendajes, campamento, reaparición de enemigos al descansar.
+- [ ] Experiencia: perderla al morir y recuperarla. Subir atributos.
+- [ ] Guardado/carga. Menú de pausa.
+- [ ] Muerte con la voz del narrador: "No… no fue así".
+
+**🧪 PRUEBA:** ciclo completo: explorar → morir → recuperar → subir nivel.
+
+## Hito 7 — Historia (2–4 semanas, en paralelo con lo anterior)
+- [ ] Guion completo: actos, personajes, cada jefe y su verdad oculta, pistas, los dos finales.
+- [ ] Textos del narrador (Kael anciano) por zona, por jefe y por muerte.
+- [ ] Descripciones de objetos que cuentan la historia.
+- [ ] Sistema de narración: voz en inglés + subtítulos en español, primera cinemática.
+
+**🧪 PRUEBA:** leer el guion y escuchar la primera narración. ¿Engancha?
+
+## Hito 8 — Primer jefe (2–3 semanas)
+- [ ] Capitana Varga: duelo de 2 fases, varias barras de golpe mortal, música, arena con niebla.
 
 **🧪 PRUEBA:** ¿lo puedes vencer en 5–15 intentos aprendiendo patrones?
 
-## Hito 6 — Vertical slice "El Paso de Hierro" (4–8 semanas)
-- [ ] Nivel completo con arte real (assets CC0), iluminación, niebla.
-- [ ] 2 campamentos, 1 atajo, secretos, objetos.
-- [ ] Armas secundarias: ballesta de muñeca y bombas.
-- [ ] Sonido, música, narrador (voz en inglés + subtítulos ES) y una cinemática.
-- [ ] Menú principal, opciones (gráficos, sangre, subtítulos).
-- [ ] Exportar `.exe` jugable.
+## Hito 9 — Vertical slice "El Paso de Hierro" + diseño de personajes (6–10 semanas)
+- [ ] Diseño final de Kael y enemigos.
+- [ ] Nivel completo con arte real, iluminación, 2 campamentos, 1 atajo, secretos.
+- [ ] Menú principal, opciones (gráficos, sangre, subtítulos). Exportar `.exe`.
 
-**🧪 PRUEBA FINAL:** se lo das a otra persona y lo juega de principio a fin. Si les gusta → seguimos expandiendo.
+**🧪 PRUEBA FINAL:** otra persona lo juega de principio a fin.
 
 ---
 
-**Total estimado hasta la vertical slice:** ~4–6 meses a ritmo de hobby.
-Después: nuevas regiones, armas, jefes, historia — iterando con el mismo método.
+Después: nuevas regiones, jefes y capítulos de la historia, con el mismo método.

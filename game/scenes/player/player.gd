@@ -230,6 +230,7 @@ func receive_hit(hit: HitData) -> int:
 	if guarding and facing_attacker and deflect_timer > 0.0:
 		# ¡Desvío! Sin daño, casi sin postura propia; el atacante la sufre.
 		posture.add(hit.posture_damage * 0.25)
+		Sfx.play(&"deflect", contact)
 		CombatFX.sparks(contact, 30, 9.0)
 		CombatFX.hitstop(0.09)
 		CombatFX.shake(0.25)
@@ -240,6 +241,7 @@ func receive_hit(hit: HitData) -> int:
 	if guarding and facing_attacker:
 		# Bloqueo: sin daño a la vida, pero la postura sube.
 		posture.add(hit.posture_damage)
+		Sfx.play(&"block", contact)
 		CombatFX.sparks(contact, 10, 4.0)
 		CombatFX.hitstop(0.04)
 		CombatFX.shake(0.12)
@@ -248,6 +250,7 @@ func receive_hit(hit: HitData) -> int:
 
 	health.take_damage(hit.damage)
 	posture.add(hit.posture_damage * 0.5)
+	Sfx.play(&"hit", contact)
 	CombatFX.blood(contact)
 	CombatFX.hitstop(0.06)
 	CombatFX.shake(0.4)
@@ -276,6 +279,7 @@ func _on_block_pressed() -> void:
 
 
 func _on_posture_broken() -> void:
+	Sfx.play(&"posture_break", global_position + Vector3.UP * 1.2)
 	if not is_dead():
 		state_machine.transition_to(&"Stagger")
 
