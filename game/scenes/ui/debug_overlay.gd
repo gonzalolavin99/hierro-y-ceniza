@@ -7,6 +7,7 @@ const REFRESH_SECONDS: float = 0.25
 @onready var _label: Label = $Panel/Label
 
 var _timer: float = 0.0
+var _watches: Dictionary[String, String] = {}
 
 
 func _ready() -> void:
@@ -46,6 +47,8 @@ func _refresh() -> void:
 		lines.append("  ⚠ Usando la GPU Intel: forzar NVIDIA (ver docs/01)")
 	lines.append("VRAM: %.0f MB   Draw calls: %d" % [vram_mb, draw_calls])
 	lines.append("Mandos: %s" % _joypads_text())
+	for key in _watches:
+		lines.append("%s: %s" % [key, _watches[key]])
 	lines.append("[F3 / botón Vista: ocultar]")
 	_label.text = "\n".join(lines)
 
@@ -56,6 +59,11 @@ func _refresh() -> void:
 		_label.modulate = Color(1.0, 0.9, 0.4)
 	else:
 		_label.modulate = Color(1.0, 0.45, 0.4)
+
+
+## Muestra un valor en el panel (útil para depurar). Ej: DebugOverlay.watch("Estado", "Dash")
+func watch(key: String, value: Variant) -> void:
+	_watches[key] = str(value)
 
 
 func _joypads_text() -> String:

@@ -1,0 +1,88 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scenes/player/camera_rig.gd" id="2_camera"]
+[ext_resource type="Script" path="res://scripts/components/health.gd" id="3_health"]
+[ext_resource type="Script" path="res://scripts/components/posture.gd" id="4_posture"]
+[ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="5_fsm"]
+[ext_resource type="Script" path="res://scenes/player/states/ground.gd" id="6_ground"]
+[ext_resource type="Script" path="res://scenes/player/states/sprint.gd" id="7_sprint"]
+[ext_resource type="Script" path="res://scenes/player/states/dash.gd" id="8_dash"]
+[ext_resource type="Script" path="res://scenes/player/states/air.gd" id="9_air"]
+[ext_resource type="Script" path="res://scenes/player/states/stagger.gd" id="10_stagger"]
+
+[sub_resource type="CapsuleShape3D" id="body_shape"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="body_material"]
+albedo_color = Color(0.55, 0.15, 0.12, 1)
+
+[sub_resource type="CapsuleMesh" id="body_mesh"]
+material = SubResource("body_material")
+radius = 0.35
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="visor_material"]
+albedo_color = Color(0.12, 0.1, 0.09, 1)
+
+[sub_resource type="BoxMesh" id="visor_mesh"]
+material = SubResource("visor_material")
+size = Vector3(0.45, 0.14, 0.2)
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+floor_snap_length = 0.3
+script = ExtResource("1_player")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("body_shape")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("body_mesh")
+
+[node name="Visor" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.28)
+mesh = SubResource("visor_mesh")
+
+[node name="CameraRig" type="Node3D" parent="."]
+script = ExtResource("2_camera")
+
+[node name="Pitch" type="Node3D" parent="CameraRig"]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraRig/Pitch"]
+spring_length = 4.2
+margin = 0.2
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig/Pitch/SpringArm3D"]
+current = true
+fov = 65.0
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_health")
+
+[node name="Posture" type="Node" parent="."]
+script = ExtResource("4_posture")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("5_fsm")
+initial_state = NodePath("Ground")
+
+[node name="Ground" type="Node" parent="StateMachine"]
+script = ExtResource("6_ground")
+
+[node name="Sprint" type="Node" parent="StateMachine"]
+script = ExtResource("7_sprint")
+
+[node name="Dash" type="Node" parent="StateMachine"]
+script = ExtResource("8_dash")
+
+[node name="Air" type="Node" parent="StateMachine"]
+script = ExtResource("9_air")
+
+[node name="Stagger" type="Node" parent="StateMachine"]
+script = ExtResource("10_stagger")

@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+InputSetup="*res://scripts/systems/input_setup.gd"
 DebugOverlay="*res://scenes/ui/debug_overlay.tscn"
 
 [display]
@@ -29,9 +30,16 @@ window/size/window_height_override=900
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[layer_names]
+
+3d_physics/layer_1="mundo"
+3d_physics/layer_2="jugador"
+3d_physics/layer_3="enemigos"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

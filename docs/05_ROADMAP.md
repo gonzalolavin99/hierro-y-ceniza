@@ -13,10 +13,10 @@ sin tu OK. Los tiempos son estimaciones de calendario trabajando unas horas por 
 **🧪 PRUEBA:** abres el proyecto, pulsas F5, ves una escena vacía con suelo, cielo y FPS ≥ 60.
 
 ## Hito 1 — Moverse bien (1–2 semanas)
-- [ ] Personaje cápsula: caminar, correr, paso rápido, saltar (al estilo Sekiro).
-- [ ] Cámara en tercera persona con mando Xbox.
-- [ ] Barra de postura (sin aguante, como Sekiro).
-- [ ] Escenario de pruebas (rampas, escaleras, plataformas).
+- [x] Personaje cápsula: caminar, correr, paso rápido, saltar (al estilo Sekiro).
+- [x] Cámara en tercera persona con mando Xbox.
+- [x] Barra de postura (sin aguante, como Sekiro).
+- [x] Escenario de pruebas (rampas, escaleras, plataformas).
 
 **🧪 PRUEBA:** ¿el movimiento se siente "pesado pero responsivo" como Souls/Sekiro? Ajustamos
 velocidades y tiempos hasta que digas OK.

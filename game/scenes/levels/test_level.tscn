@@ -1,5 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2_hud"]
+[ext_resource type="Script" path="res://tests/posture_plate.gd" id="3_plate"]
+
 [sub_resource type="ProceduralSkyMaterial" id="sky_material"]
 sky_top_color = Color(0.32, 0.37, 0.44, 1)
 sky_horizon_color = Color(0.66, 0.62, 0.56, 1)
@@ -16,7 +20,7 @@ ambient_light_source = 3
 tonemap_mode = 2
 fog_enabled = true
 fog_light_color = Color(0.6, 0.58, 0.54, 1)
-fog_density = 0.015
+fog_density = 0.012
 
 [sub_resource type="StandardMaterial3D" id="ground_material"]
 albedo_color = Color(0.33, 0.31, 0.27, 1)
@@ -28,20 +32,23 @@ size = Vector2(120, 120)
 [sub_resource type="BoxShape3D" id="ground_shape"]
 size = Vector3(120, 1, 120)
 
-[sub_resource type="StandardMaterial3D" id="stone_material"]
-albedo_color = Color(0.5, 0.48, 0.45, 1)
+[sub_resource type="StandardMaterial3D" id="stone"]
+albedo_color = Color(0.52, 0.5, 0.47, 1)
 
-[sub_resource type="BoxMesh" id="pillar_mesh"]
-material = SubResource("stone_material")
-size = Vector3(1.2, 5, 1.2)
+[sub_resource type="StandardMaterial3D" id="wood"]
+albedo_color = Color(0.45, 0.33, 0.22, 1)
 
-[sub_resource type="StandardMaterial3D" id="player_material"]
-albedo_color = Color(0.55, 0.15, 0.12, 1)
+[sub_resource type="StandardMaterial3D" id="dark"]
+albedo_color = Color(0.25, 0.24, 0.23, 1)
 
-[sub_resource type="CapsuleMesh" id="player_mesh"]
-material = SubResource("player_material")
-radius = 0.35
-height = 1.8
+[sub_resource type="StandardMaterial3D" id="plate_material"]
+albedo_color = Color(0.75, 0.15, 0.1, 1)
+
+[sub_resource type="BoxShape3D" id="plate_shape"]
+size = Vector3(2.5, 1, 2.5)
+
+[sub_resource type="BoxShape3D" id="stair_ramp_shape"]
+size = Vector3(3, 0.2, 5.0170)
 
 [node name="TestLevel" type="Node3D"]
 
@@ -62,35 +69,247 @@ mesh = SubResource("ground_mesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("ground_shape")
 
-[node name="Pillars" type="Node3D" parent="."]
+[node name="Geometry" type="Node3D" parent="."]
 
-[node name="Pillar1" type="MeshInstance3D" parent="Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.5, -4)
-mesh = SubResource("pillar_mesh")
+[node name="StairRamp" type="StaticBody3D" parent="."]
 
-[node name="Pillar2" type="MeshInstance3D" parent="Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.5, -4)
-mesh = SubResource("pillar_mesh")
+[node name="Collision" type="CollisionShape3D" parent="StairRamp"]
+transform = Transform3D(1, 0, 0, 0, 0.847998, -0.529999, 0, 0.529999, 0.847998, 8, 1.1652, -5.053)
+shape = SubResource("stair_ramp_shape")
 
-[node name="Pillar3" type="MeshInstance3D" parent="Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.5, -12)
-mesh = SubResource("pillar_mesh")
+[node name="PosturePlate" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 3)
+collision_mask = 2
+script = ExtResource("3_plate")
 
-[node name="Pillar4" type="MeshInstance3D" parent="Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.5, -12)
-mesh = SubResource("pillar_mesh")
+[node name="Collision" type="CollisionShape3D" parent="PosturePlate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("plate_shape")
 
-[node name="PlayerPlaceholder" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mesh = SubResource("player_mesh")
+[node name="Visual" type="CSGBox3D" parent="PosturePlate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+size = Vector3(2.5, 0.06, 2.5)
+material = SubResource("plate_material")
 
-[node name="Title" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -8)
+[node name="Labels" type="Node3D" parent="."]
+
+[node name="Title" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -21.4)
 text = "HIERRO Y CENIZA
-Hito 0"
-font_size = 96
-outline_size = 16
+Hito 1 · Movimiento"
+font_size = 110
+outline_size = 18
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 4.5, 8)
-fov = 60.0
+[node name="Player" parent="." instance=ExtResource("1_player")]
+
+[node name="HUD" parent="." instance=ExtResource("2_hud")]
+
+[node name="Block05" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -3, 0.25, -5)
+use_collision = true
+size = Vector3(2, 0.5, 2)
+material = SubResource("stone")
+
+[node name="Block12" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -6, 0.6, -5)
+use_collision = true
+size = Vector3(2, 1.2, 2)
+material = SubResource("stone")
+
+[node name="LblBlocks" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -4.5, 2.2, -5)
+billboard = 1
+text = "Bloques 0,5 m y 1,2 m"
+font_size = 48
+outline_size = 12
+
+[node name="RampGentle" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, -12, 1.11206, -5.64012)
+use_collision = true
+size = Vector3(4, 0.4, 7.6019)
+material = SubResource("wood")
+
+[node name="RampGentleTop" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -12, 1.3, -12.1434)
+use_collision = true
+size = Vector3(4, 2.6, 6)
+material = SubResource("stone")
+
+[node name="LblRampGentle" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -12, 2.2, -3)
+billboard = 1
+text = "Rampa 20°"
+font_size = 48
+outline_size = 12
+
+[node name="RampSteep" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 0.642788, -0.766044, 0, 0.766044, 0.642788, -18, 1.37144, -3.41186)
+use_collision = true
+size = Vector3(4, 0.4, 3.9162)
+material = SubResource("wood")
+
+[node name="RampSteepTop" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -18, 1.5, -6.5173)
+use_collision = true
+size = Vector3(4, 3.0, 4)
+material = SubResource("stone")
+
+[node name="LblRampSteep" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -18, 2.6, -1.5)
+billboard = 1
+text = "Rampa 50° (resbala)"
+font_size = 48
+outline_size = 12
+
+[node name="Step1" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.125, -3.2)
+size = Vector3(3, 0.25, 0.4)
+material = SubResource("stone")
+
+[node name="Step2" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.25, -3.6)
+size = Vector3(3, 0.5, 0.4)
+material = SubResource("stone")
+
+[node name="Step3" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.375, -4)
+size = Vector3(3, 0.75, 0.4)
+material = SubResource("stone")
+
+[node name="Step4" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.5, -4.4)
+size = Vector3(3, 1.0, 0.4)
+material = SubResource("stone")
+
+[node name="Step5" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.625, -4.8)
+size = Vector3(3, 1.25, 0.4)
+material = SubResource("stone")
+
+[node name="Step6" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.75, -5.2)
+size = Vector3(3, 1.5, 0.4)
+material = SubResource("stone")
+
+[node name="Step7" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 0.875, -5.6)
+size = Vector3(3, 1.75, 0.4)
+material = SubResource("stone")
+
+[node name="Step8" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1, -6)
+size = Vector3(3, 2.0, 0.4)
+material = SubResource("stone")
+
+[node name="Step9" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.125, -6.4)
+size = Vector3(3, 2.25, 0.4)
+material = SubResource("stone")
+
+[node name="Step10" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.25, -6.8)
+size = Vector3(3, 2.5, 0.4)
+material = SubResource("stone")
+
+[node name="StairTop" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.25, -9)
+use_collision = true
+size = Vector3(3, 2.5, 4)
+material = SubResource("stone")
+
+[node name="LblStairs" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.8, -2.5)
+billboard = 1
+text = "Escaleras"
+font_size = 48
+outline_size = 12
+
+[node name="JumpPlat1" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.25, -14.5)
+use_collision = true
+size = Vector3(3, 2.5, 3)
+material = SubResource("stone")
+
+[node name="LblGap1" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 3.7, -12)
+billboard = 1
+text = "2 m"
+font_size = 48
+outline_size = 12
+
+[node name="JumpPlat2" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.25, -20)
+use_collision = true
+size = Vector3(3, 2.5, 3)
+material = SubResource("stone")
+
+[node name="LblGap2" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 3.7, -17.25)
+billboard = 1
+text = "2.5 m"
+font_size = 48
+outline_size = 12
+
+[node name="JumpPlat3" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.25, -26.5)
+use_collision = true
+size = Vector3(3, 2.5, 4)
+material = SubResource("stone")
+
+[node name="LblGap3" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 3.7, -23)
+billboard = 1
+text = "3 m"
+font_size = 48
+outline_size = 12
+
+[node name="JumpPlat4" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 1.25, -36)
+use_collision = true
+size = Vector3(3, 2.5, 4)
+material = SubResource("stone")
+
+[node name="LblGap4" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 8, 3.7, -31.25)
+billboard = 1
+text = "5.5 m (corriendo)"
+font_size = 48
+outline_size = 12
+
+[node name="TunnelL" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, -1.75, 1.5, -11)
+use_collision = true
+size = Vector3(1, 3, 6)
+material = SubResource("stone")
+
+[node name="TunnelR" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 1.75, 1.5, -11)
+use_collision = true
+size = Vector3(1, 3, 6)
+material = SubResource("stone")
+
+[node name="TunnelRoof" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 0, 3.25, -11)
+use_collision = true
+size = Vector3(4.5, 0.5, 6)
+material = SubResource("dark")
+
+[node name="LblTunnel" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 0, 4.2, -7.8)
+billboard = 1
+text = "Túnel (cámara)"
+font_size = 48
+outline_size = 12
+
+[node name="Wall" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 0, 3, -22)
+use_collision = true
+size = Vector3(12, 6, 1)
+material = SubResource("dark")
+
+[node name="LblPlate" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, -0, 0, 0, 1, 5, 1.6, 3)
+billboard = 1
+text = "Placa de postura (quédate encima)"
+font_size = 48
+outline_size = 12
