@@ -7,3 +7,8 @@ export/
 # Sistema
 Thumbs.db
 desktop.ini
+
+# Mixamo: la licencia no permite redistribuir los archivos (se descargan aparte, ver docs/06)
+game/assets/animations/mixamo/
+game/assets/animations/*.res
+game/assets/animations/*.tres

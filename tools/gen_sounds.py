@@ -86,23 +86,46 @@ def save(name, x, peak_db=-1.0):
 
 # ---------------------------------------------------------------------------------
 
+def scrape(t, length, freqs, amp, slide=0.08):
+    """Chirrido de filo contra filo: ruido con 'tirones' (fricción) pasado por resonancias metálicas."""
+    n = rng.standard_normal(len(t))
+    # Fricción a tirones (stick-slip): pulsos irregulares a ~60 Hz
+    jitter = np.abs(lowpass(rng.standard_normal(len(t)), 90)) * 6
+    envelope = np.clip(t / 0.004, 0, 1) * np.exp(-((t / length) ** 2) * 3)
+    x = band(n, 700, 5000) * (0.4 + jitter) * envelope
+    out = np.zeros_like(t)
+    for i, f in enumerate(freqs):
+        # Las resonancias bajan un poco de tono mientras el filo se desliza
+        for seg_start in range(0, len(t), 2048):
+            seg = slice(seg_start, min(seg_start + 2048, len(t)))
+            fc = f * (1 - slide * min(1.0, seg_start / SR / length))
+            b, a = signal.iirpeak(fc, 18, fs=SR)
+            out[seg] += signal.lfilter(b, a, x[seg]) / (i + 1)
+    return amp * out
+
+
 def deflect(variant):
-    """Desvío: chasquido agudo + timbre metálico brillante que resuena. El sonido 'premio'."""
-    t = t_axis(1.3)
-    f0 = 1650 * (1 + 0.04 * (variant - 1))
-    x = noise_burst(t, 3000, 12000, 0.006, 1.4)                         # chasquido
-    x += 0.55 * ring(t, f0, [1.0, 2.32, 3.95, 5.6, 7.9], [1, 0.7, 0.5, 0.35, 0.2], [0.9, 0.6, 0.38, 0.22, 0.12])
-    x += 0.5 * ring(t, 430 + 20 * variant, [1.0, 1.49], [1, 0.6], [0.22, 0.15])  # cuerpo del choque
-    x += thump(t, 160, 70, 0.06, 0.9)                                   # golpe grave
-    return reverb(x, 0.8, 0.22)
+    """Desvío: choque de espada contra espada que 'rechina' y resuena. El sonido 'premio'."""
+    t = t_axis(1.2)
+    f0 = 880 * (1 + 0.05 * (variant - 2))
+    x = noise_burst(t, 1500, 5000, 0.008, 0.9)                               # contacto
+    x += scrape(t, 0.16 + 0.03 * variant, [f0 * 1.31, f0 * 2.47, f0 * 3.6], 2.2)  # chirrido metálico
+    # Timbre de hoja (proporciones de una barra de acero), sin agudos chillones
+    x += 0.5 * ring(t, f0, [1.0, 2.756, 5.404], [1, 0.45, 0.15], [0.55, 0.3, 0.12], 1.004)
+    x += 0.35 * ring(t, 340 + 15 * variant, [1.0, 1.52], [1, 0.5], [0.2, 0.12])     # cuerpo
+    x += thump(t, 150, 65, 0.07, 1.0)
+    x = lowpass(x, 6500)
+    return reverb(x, 0.8, 0.2)
 
 
 def block(variant):
     """Bloqueo: choque más sordo y corto que el desvío (para que el desvío destaque)."""
     t = t_axis(0.6)
-    x = noise_burst(t, 800, 5000, 0.035, 1.0)
-    x += 0.45 * ring(t, 680 + 40 * variant, [1.0, 2.1, 3.3], [1, 0.5, 0.25], [0.16, 0.1, 0.06])
-    x += thump(t, 140, 60, 0.07, 1.0)
+    x = noise_burst(t, 600, 3500, 0.03, 1.0)
+    x += scrape(t, 0.07, [560 + 30 * variant, 1300], 0.9, 0.04)
+    x += 0.4 * ring(t, 520 + 30 * variant, [1.0, 2.756], [1, 0.3], [0.14, 0.07])
+    x += thump(t, 140, 60, 0.08, 1.1)
+    x = lowpass(x, 5000)
     return reverb(x, 0.5, 0.12)
 
 
@@ -153,7 +176,7 @@ def deathblow(variant):
 def glint(variant):
     """Destello del filo enemigo: 'ting' agudo y breve. Avisa sin tapar el combate."""
     t = t_axis(0.45)
-    x = ring(t, 3400 + 150 * variant, [1.0, 1.53], [1, 0.4], [0.12, 0.06])
+    x = ring(t, 2300 + 120 * variant, [1.0, 1.53], [1, 0.3], [0.1, 0.05])
     attack = np.clip(t / 0.004, 0, 1)
     return reverb(x * attack, 0.4, 0.15)
 

@@ -3,7 +3,8 @@ extends EnemyState
 
 
 func enter(_msg: Dictionary) -> void:
-	enemy.weapon.go(&"block", 0.2)
+	enemy.body.set_blocking(true)
+	enemy.body.stop_action(0.2)
 
 
 func physics_update(delta: float) -> void:

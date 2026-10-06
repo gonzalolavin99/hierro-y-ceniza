@@ -4,12 +4,14 @@ extends PlayerState
 
 
 func enter(_msg: Dictionary) -> void:
-	player.weapon.go(&"block", 0.06)
+	player.body.set_blocking(true)
+	player.body.stop_action(0.1)
 	player.posture.regen_multiplier = player.block_posture_regen
 
 
 func exit() -> void:
 	player.posture.regen_multiplier = 1.0
+	player.body.set_blocking(false)
 
 
 func physics_update(delta: float) -> void:

@@ -86,6 +86,13 @@
 
 **Solo humanos** (D11): sin animales como enemigos ni jefes.
 
+**Profundidad por tipo de enemigo** (D17):
+- **Comunes** (bandidos, soldados): pocos ataques, legibles. Sirven para practicar.
+- **Élite**: 4–6 ataques, alguno peligroso, fintas.
+- **Jefes**: los más completos. Cada uno con un **estilo propio y muy distinto** (duelista veloz, gigante
+  lento y aplastante, lancero de alcance, combatiente sucio con patadas y arena…), un repertorio amplio
+  (8–15 ataques, combos que se ramifican, ataques peligrosos, cambios de fase) y una IA que se adapta.
+
 ## 7. Mundo y estructura
 
 - **Sin mundo abierto** (D11). Zonas conectadas que se **desbloquean poco a poco**, como en

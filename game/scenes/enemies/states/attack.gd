@@ -4,22 +4,23 @@ extends EnemyState
 ## Si el jugador desvía el ÚLTIMO tajo, el enemigo retrocede expuesto (Recoil).
 
 ## Cada tajo: preparación (windup), tajo activo, pausa tras el tajo, posturas del arma.
+## anim/from/impact: animación, segundo en que empieza y segundo del impacto dentro de ella.
 const PATTERNS: Dictionary[StringName, Array] = {
 	&"single": [
-		{"windup": 0.65, "active": 0.14, "after": 0.7, "from": &"windup_high", "to": &"end_low", "lunge": 4.0},
+		{"windup": 0.65, "active": 0.14, "after": 0.7, "anim": &"slash_c", "from": 0.1, "impact": 0.83, "lunge": 4.0},
 	],
 	&"double": [
-		{"windup": 0.55, "active": 0.14, "after": 0.3, "from": &"windup_right", "to": &"end_left", "lunge": 3.5},
-		{"windup": 0.28, "active": 0.14, "after": 0.7, "from": &"windup_left", "to": &"end_right", "lunge": 3.0},
+		{"windup": 0.55, "active": 0.14, "after": 0.3, "anim": &"slash_a", "from": 0.05, "impact": 0.53, "lunge": 3.5},
+		{"windup": 0.28, "active": 0.14, "after": 0.7, "anim": &"slash_b", "from": 0.0, "impact": 0.33, "lunge": 3.0},
 	],
 	&"thrust_combo": [
-		{"windup": 0.5, "active": 0.14, "after": 0.25, "from": &"windup_right", "to": &"end_left", "lunge": 3.0},
-		{"windup": 0.45, "active": 0.12, "after": 0.8, "from": &"windup_high", "to": &"thrust", "lunge": 6.0},
+		{"windup": 0.5, "active": 0.14, "after": 0.25, "anim": &"slash_d", "from": 0.0, "impact": 0.47, "lunge": 3.0},
+		{"windup": 0.45, "active": 0.12, "after": 0.8, "anim": &"slash_c", "from": 0.3, "impact": 0.83, "lunge": 6.0},
 	],
 	# Contraataque tras bloquear varios golpes: más rápido.
 	&"counter": [
-		{"windup": 0.3, "active": 0.12, "after": 0.25, "from": &"windup_right", "to": &"end_left", "lunge": 3.5},
-		{"windup": 0.3, "active": 0.12, "after": 0.7, "from": &"windup_left", "to": &"end_right", "lunge": 3.5},
+		{"windup": 0.3, "active": 0.12, "after": 0.25, "anim": &"slash_a", "from": 0.25, "impact": 0.53, "lunge": 3.5},
+		{"windup": 0.3, "active": 0.12, "after": 0.7, "anim": &"slash_b", "from": 0.05, "impact": 0.33, "lunge": 3.5},
 	],
 }
 
@@ -82,7 +83,7 @@ func on_deflected() -> void:
 	enemy.posture.add(DEFLECT_POSTURE)
 	enemy.hitbox.deactivate()
 	if state_is_active():
-		enemy.weapon.bounce(&"end_right", &"block", 0.06, 0.2)
+		enemy.body.play_action(&"block_impact", 0.0, 1.6, 0.04)
 		_deflected_last = _index == _swings.size() - 1
 
 
@@ -97,11 +98,11 @@ func _set_phase(phase: Phase) -> void:
 	match phase:
 		Phase.WINDUP:
 			_deflected_last = false
-			enemy.weapon.go(swing["from"], swing["windup"] * 0.8)
-			enemy.weapon.glint()
+			enemy.body.set_blocking(false)
+			enemy.body.play_timed(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
+			enemy.body.glint()
 			Sfx.play(&"glint", enemy.lock_point())
 		Phase.ACTIVE:
-			enemy.weapon.go(swing["to"], swing["active"], Tween.EASE_IN_OUT)
 			enemy.hitbox.activate(HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE))
 			Sfx.play(&"swing", enemy.lock_point())
 		Phase.AFTER:

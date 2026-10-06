@@ -2,6 +2,15 @@ extends PlayerState
 ## En el aire: saltando o cayendo. Hay algo de control, pero limitado.
 
 
+func enter(_msg: Dictionary) -> void:
+	player.body.set_blocking(false)
+	player.body.play_action(&"jump", 0.2, 1.0, 0.1)
+
+
+func exit() -> void:
+	player.body.stop_action(0.12)
+
+
 func physics_update(delta: float) -> void:
 	var direction: Vector3 = player.get_move_direction()
 	var horizontal_speed: float = Vector2(player.velocity.x, player.velocity.z).length()

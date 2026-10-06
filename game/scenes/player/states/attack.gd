@@ -3,13 +3,14 @@ extends PlayerState
 ## Pulsar RB durante el tajo o la recuperación encadena el siguiente golpe.
 ## En la recuperación se puede cancelar con guardia (LB) o paso rápido (B), como en Sekiro.
 
+## anim/from/impact: animación, segundo en que empieza y segundo del impacto dentro de ella.
 const COMBO: Array[Dictionary] = [
-	{"windup": 0.11, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0, "lunge": 4.0,
-		"from": &"windup_right", "to": &"end_left"},
-	{"windup": 0.10, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0, "lunge": 3.5,
-		"from": &"windup_left", "to": &"end_right"},
+	{"windup": 0.13, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0, "lunge": 4.0,
+		"anim": &"slash_a", "from": 0.3, "impact": 0.53},
+	{"windup": 0.12, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0, "lunge": 3.5,
+		"anim": &"slash_b", "from": 0.12, "impact": 0.33},
 	{"windup": 0.17, "active": 0.14, "recovery": 0.45, "damage": 18.0, "posture": 16.0, "lunge": 5.0,
-		"from": &"windup_high", "to": &"end_low"},
+		"anim": &"slash_d", "from": 0.2, "impact": 0.47},
 ]
 
 enum Phase { WINDUP, ACTIVE, RECOVERY }
@@ -75,11 +76,11 @@ func _set_phase(phase: Phase) -> void:
 	_timer = 0.0
 	match phase:
 		Phase.WINDUP:
-			player.weapon.go(data["from"], data["windup"])
+			player.body.set_blocking(false)
+			player.body.play_timed(data["anim"], data["from"], data["impact"], data["windup"] + data["active"] * 0.5)
 		Phase.ACTIVE:
-			player.weapon.go(data["to"], data["active"], Tween.EASE_IN_OUT)
 			player.hitbox.activate(HitData.create(player, data["damage"], data["posture"]))
 			Sfx.play(&"swing", player.global_position + Vector3.UP * 1.3, -2.0)
 		Phase.RECOVERY:
 			player.hitbox.deactivate()
-			player.weapon.go(&"idle", data["recovery"])
+			player.body.set_action_speed(1.2)

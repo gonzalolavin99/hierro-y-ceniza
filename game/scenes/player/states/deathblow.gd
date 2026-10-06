@@ -14,7 +14,8 @@ func enter(msg: Dictionary) -> void:
 	_elapsed = 0.0
 	_struck = false
 	player.invulnerable = true
-	player.weapon.go(&"windup_high", STRIKE_AT * 0.8)
+	# El tajo final de la animación coincide con el instante del golpe.
+	player.body.play_timed(&"slash_c", 0.4, 0.83, STRIKE_AT)
 
 
 func exit() -> void:
@@ -40,7 +41,6 @@ func physics_update(delta: float) -> void:
 
 	if not _struck and _elapsed >= STRIKE_AT:
 		_struck = true
-		player.weapon.go(&"end_low", 0.08, Tween.EASE_IN)
 		_target.receive_deathblow(player)
 
 	if _elapsed >= DURATION:

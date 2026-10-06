@@ -3,7 +3,8 @@ extends PlayerState
 
 
 func enter(_msg: Dictionary) -> void:
-	player.weapon.go(&"idle", 0.2)
+	player.body.set_blocking(false)
+	player.body.stop_action(0.18)
 
 
 func physics_update(delta: float) -> void:

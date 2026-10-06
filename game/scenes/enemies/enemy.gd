@@ -19,7 +19,7 @@ signal died
 @export var respawn_delay: float = 5.0
 
 @onready var model: Node3D = $Model
-@onready var weapon: WeaponPose = $Model/WeaponPivot
+@onready var body: Mannequin = $Model/Mannequin
 @onready var hitbox: Hitbox = $Model/Hitbox
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var health: Health = $Health
@@ -52,6 +52,7 @@ func _physics_process(delta: float) -> void:
 	velocity.y -= gravity * delta
 	state_machine.physics_update(delta)
 	move_and_slide()
+	body.update_locomotion(velocity, get_facing(), walk_speed * 1.4)
 
 
 # --- Utilidades para los estados ------------------------------------------------
@@ -123,7 +124,7 @@ func receive_hit(hit: HitData) -> int:
 		Sfx.play(&"block", contact)
 		CombatFX.sparks(contact, 10, 4.0)
 		CombatFX.hitstop(0.035)
-		weapon.bounce(&"end_right", &"block", 0.05, 0.1)
+		body.play_reaction(&"block_impact", 0.25, 0.0, 1.5)
 		blocks_in_a_row += 1
 		if blocks_in_a_row >= blocks_before_counter and not posture.is_broken:
 			blocks_in_a_row = 0
@@ -162,6 +163,7 @@ func respawn() -> void:
 	velocity = Vector3.ZERO
 	reset_physics_interpolation()
 	model.rotation = Vector3.ZERO
+	body.stop_action(0.1)
 	health.heal(health.max_health)
 	posture.reset()
 	blocks_in_a_row = 0

@@ -14,7 +14,7 @@ const VOLUMES: Dictionary[StringName, float] = {
 	&"swing": -8.0,
 	&"posture_break": 2.0,
 	&"deathblow": 3.0,
-	&"glint": -4.0,
+	&"glint": -8.0,
 }
 
 var _streams: Dictionary[StringName, Array] = {}

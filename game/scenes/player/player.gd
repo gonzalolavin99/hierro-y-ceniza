@@ -53,7 +53,7 @@ signal deflected
 @export var hitstun_duration: float = 0.35
 
 @onready var model: Node3D = $Model
-@onready var weapon: WeaponPose = $Model/WeaponPivot
+@onready var body: Mannequin = $Model/Mannequin
 @onready var hitbox: Hitbox = $Model/Hitbox
 @onready var camera_rig: CameraRig = $CameraRig
 @onready var health: Health = $Health
@@ -96,6 +96,7 @@ func _physics_process(delta: float) -> void:
 	_update_lock_on()
 	state_machine.physics_update(delta)
 	move_and_slide()
+	body.update_locomotion(velocity, get_facing(), run_speed)
 
 	DebugOverlay.watch("Estado", state_machine.current.name)
 	DebugOverlay.watch("Velocidad", "%.1f m/s" % Vector2(velocity.x, velocity.z).length())
@@ -234,7 +235,7 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.sparks(contact, 30, 9.0)
 		CombatFX.hitstop(0.09)
 		CombatFX.shake(0.25)
-		weapon.bounce(&"end_right", &"block", 0.05, 0.12)
+		body.play_reaction(&"block_impact", 0.22, 0.05, 1.8)
 		deflected.emit()
 		return HitData.Result.DEFLECTED
 
@@ -246,6 +247,7 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.hitstop(0.04)
 		CombatFX.shake(0.12)
 		velocity += -to_attacker * 2.5
+		body.play_reaction(&"block_impact", 0.3, 0.0, 1.4)
 		return HitData.Result.BLOCKED
 
 	health.take_damage(hit.damage)
@@ -266,6 +268,7 @@ func respawn() -> void:
 	velocity = Vector3.ZERO
 	reset_physics_interpolation()
 	model.rotation = Vector3(0.0, deg_to_rad(start_facing_degrees), 0.0)
+	body.stop_action(0.1)
 	health.heal(health.max_health)
 	posture.reset()
 	lock_target = null

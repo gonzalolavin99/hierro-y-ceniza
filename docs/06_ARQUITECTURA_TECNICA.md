@@ -53,6 +53,18 @@ G:\Game\
 - Git en `G:\Game`. Un commit por cada cambio que apruebes (tu OK = commit).
 - `.gitignore` de Godot (excluir `.godot/`). Assets binarios grandes → Git LFS si hace falta.
 
+## Animaciones (Mixamo)
+
+La licencia de Mixamo no permite publicar los archivos, así que **no están en el repositorio**.
+Para regenerarlas en un equipo nuevo:
+
+1. En mixamo.com: personaje **Y Bot** → pack **Great Sword Pack** → FBX Binary, With Skin, 30 fps.
+2. Descomprimir en `game/assets/animations/mixamo/` con nombres en minúsculas y `_` (ver
+   `tests/build_anim_library.gd`). Se descartan *casting*, *spell cast* y *power up* (guía de contenido).
+3. `Godot --headless --path game --script res://tests/build_anim_library.gd` → crea `mixamo_library.res`.
+
+El cuerpo animado es `scenes/characters/mannequin.tscn` (árbol de animación armado en código).
+
 ## Pruebas automáticas
 
 Simulan el mando y comprueban que todo funciona. Se ejecutan tras cada cambio:

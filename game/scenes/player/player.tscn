@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://scenes/characters/mannequin.tscn" id="90_mannequin"]
 [ext_resource type="Script" path="res://scenes/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://scenes/player/camera_rig.gd" id="2_camera"]
 [ext_resource type="Script" path="res://scripts/components/health.gd" id="3_health"]
@@ -15,7 +16,6 @@
 [ext_resource type="Script" path="res://scenes/player/states/hitstun.gd" id="13_hitstun"]
 [ext_resource type="Script" path="res://scenes/player/states/deathblow.gd" id="14_deathblow"]
 [ext_resource type="Script" path="res://scenes/player/states/dead.gd" id="15_dead"]
-[ext_resource type="Script" path="res://scripts/components/weapon_pose.gd" id="16_weapon"]
 [ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="17_hitbox"]
 [ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="18_hurtbox"]
 
@@ -66,21 +66,8 @@ shape = SubResource("body_shape")
 
 [node name="Model" type="Node3D" parent="."]
 
-[node name="Body" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mesh = SubResource("body_mesh")
-
-[node name="Visor" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.28)
-mesh = SubResource("visor_mesh")
-
-[node name="WeaponPivot" type="Node3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 1.25, -0.22)
-script = ExtResource("16_weapon")
-
-[node name="Blade" type="MeshInstance3D" parent="Model/WeaponPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.58)
-mesh = SubResource("blade_mesh")
+[node name="Mannequin" parent="Model" instance=ExtResource("90_mannequin")]
+body_color = Color(0.55, 0.15, 0.12, 1)
 
 [node name="Hitbox" type="Area3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.05)

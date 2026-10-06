@@ -6,6 +6,8 @@ var _elapsed: float
 
 func enter(_msg: Dictionary) -> void:
 	_elapsed = 0.0
+	player.body.set_blocking(false)
+	player.body.play_action(&"hit", 0.0, 0.9, 0.05)
 
 
 func exit() -> void:
@@ -16,9 +18,6 @@ func physics_update(delta: float) -> void:
 	_elapsed += delta
 	player.move_horizontal(Vector3.ZERO, 0.0, player.ground_acceleration, delta)
 	player.apply_gravity(delta)
-	# Tambaleo visual simple hasta tener animaciones.
-	player.model.rotation.z = sin(_elapsed * 18.0) * 0.12 * (1.0 - _elapsed / player.stagger_duration)
 
 	if _elapsed >= player.stagger_duration:
-		player.model.rotation.z = 0.0
 		machine.transition_to(&"Ground" if player.is_on_floor() else &"Air")

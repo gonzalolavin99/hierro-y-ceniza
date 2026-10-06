@@ -5,7 +5,6 @@
 | # | Pregunta | Propuesta de Claude | Hasta |
 |---|---|---|---|
 | D12 | ¿Teclado/ratón en algún momento? | Más adelante, después de la vertical slice | Libre |
-| D15 | Voces y esfuerzos en combate: ¿grabarlas tú/amigos, voces generadas por IA, o packs gratuitos? | Ver mensaje del 2026-10-06 | Hito 4 |
 
 ## Decididas
 
@@ -24,6 +23,8 @@
 | D11 | **Sin mundo abierto**: zonas conectadas que se desbloquean de a poco. **Solo enemigos humanos** (sin animales) | 2026-10-06 |
 | D13 | **Una sola dificultad**; la IA debe ser inteligente | 2026-10-06 |
 | D14 | Prioridad: 1) combate/movimiento pulido y variado, 2) historia, 3) diseño de personajes. Mundo secundario | 2026-10-06 |
+| D15 | Voces (narrador, gritos, esfuerzos) con **ElevenLabs** | 2026-10-06 |
 | D16 | Repositorio **público** en GitHub | 2026-10-06 |
+| D17 | Enemigos comunes simples; **jefes muy completos**, cada uno con estilo y repertorio propio | 2026-10-06 |
 | — | Motor: Godot 4 | 2026-10-06 |
 | — | Sin magia, demonios, brujería ni ocultismo ([guía](04_GUIA_DE_CONTENIDO.md)) | 2026-10-06 |
