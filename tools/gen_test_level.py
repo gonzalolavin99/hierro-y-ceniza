@@ -81,6 +81,7 @@ header = '''[gd_scene format=3]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2_hud"]
 [ext_resource type="Script" path="res://tests/posture_plate.gd" id="3_plate"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="4_soldier"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_material"]
 sky_top_color = Color(0.32, 0.37, 0.44, 1)
@@ -121,6 +122,9 @@ albedo_color = Color(0.25, 0.24, 0.23, 1)
 
 [sub_resource type="StandardMaterial3D" id="plate_material"]
 albedo_color = Color(0.75, 0.15, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="arena_material"]
+albedo_color = Color(0.26, 0.24, 0.21, 1)
 
 [sub_resource type="BoxShape3D" id="plate_shape"]
 size = Vector3(2.5, 1, 2.5)
@@ -187,6 +191,18 @@ font_size = 110
 outline_size = 18
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+start_facing_degrees = 180.0
+
+[node name="Arena" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 17)
+radius = 7.0
+height = 0.04
+sides = 32
+material = SubResource("arena_material")
+
+[node name="TrainingSoldier" parent="." instance=ExtResource("4_soldier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17)
 
 [node name="HUD" parent="." instance=ExtResource("2_hud")]
 

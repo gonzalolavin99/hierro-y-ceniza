@@ -52,3 +52,14 @@ G:\Game\
 
 - Git en `G:\Game`. Un commit por cada cambio que apruebes (tu OK = commit).
 - `.gitignore` de Godot (excluir `.godot/`). Assets binarios grandes → Git LFS si hace falta.
+
+## Pruebas automáticas
+
+Simulan el mando y comprueban que todo funciona. Se ejecutan tras cada cambio:
+
+```
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/movement_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/combat_test.tscn
+```
+
+El escenario de pruebas se genera con `python tools/gen_test_level.py` (no editarlo a mano).

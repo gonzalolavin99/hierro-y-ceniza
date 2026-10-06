@@ -40,6 +40,9 @@ func physics_update(delta: float) -> void:
 	if t >= JUMP_CANCEL_FROM and player.wants_jump():
 		player.do_jump()
 		machine.transition_to(&"Air")
+	elif t >= JUMP_CANCEL_FROM and player.wants_attack() and player.is_on_floor():
+		if not player.try_deathblow():
+			machine.transition_to(&"Attack")
 	elif t >= 1.0:
 		if not player.is_on_floor():
 			machine.transition_to(&"Air")

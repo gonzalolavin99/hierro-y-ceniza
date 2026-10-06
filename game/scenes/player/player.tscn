@@ -10,6 +10,14 @@
 [ext_resource type="Script" path="res://scenes/player/states/dash.gd" id="8_dash"]
 [ext_resource type="Script" path="res://scenes/player/states/air.gd" id="9_air"]
 [ext_resource type="Script" path="res://scenes/player/states/stagger.gd" id="10_stagger"]
+[ext_resource type="Script" path="res://scenes/player/states/attack.gd" id="11_attack"]
+[ext_resource type="Script" path="res://scenes/player/states/block.gd" id="12_block"]
+[ext_resource type="Script" path="res://scenes/player/states/hitstun.gd" id="13_hitstun"]
+[ext_resource type="Script" path="res://scenes/player/states/deathblow.gd" id="14_deathblow"]
+[ext_resource type="Script" path="res://scenes/player/states/dead.gd" id="15_dead"]
+[ext_resource type="Script" path="res://scripts/components/weapon_pose.gd" id="16_weapon"]
+[ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="17_hitbox"]
+[ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="18_hurtbox"]
 
 [sub_resource type="CapsuleShape3D" id="body_shape"]
 radius = 0.35
@@ -30,8 +38,25 @@ albedo_color = Color(0.12, 0.1, 0.09, 1)
 material = SubResource("visor_material")
 size = Vector3(0.45, 0.14, 0.2)
 
+[sub_resource type="StandardMaterial3D" id="blade_material"]
+albedo_color = Color(0.82, 0.82, 0.85, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="blade_mesh"]
+material = SubResource("blade_material")
+size = Vector3(0.04, 0.08, 1.0)
+
+[sub_resource type="BoxShape3D" id="hit_shape"]
+size = Vector3(1.9, 1.4, 2.0)
+
+[sub_resource type="CapsuleShape3D" id="hurt_shape"]
+radius = 0.42
+height = 1.85
+
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
+collision_mask = 5
 floor_snap_length = 0.3
 script = ExtResource("1_player")
 
@@ -48,6 +73,32 @@ mesh = SubResource("body_mesh")
 [node name="Visor" type="MeshInstance3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.28)
 mesh = SubResource("visor_mesh")
+
+[node name="WeaponPivot" type="Node3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 1.25, -0.22)
+script = ExtResource("16_weapon")
+
+[node name="Blade" type="MeshInstance3D" parent="Model/WeaponPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.58)
+mesh = SubResource("blade_mesh")
+
+[node name="Hitbox" type="Area3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.05)
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("17_hitbox")
+
+[node name="Shape" type="CollisionShape3D" parent="Model/Hitbox"]
+shape = SubResource("hit_shape")
+
+[node name="Hurtbox" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("18_hurtbox")
+
+[node name="Shape" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+shape = SubResource("hurt_shape")
 
 [node name="CameraRig" type="Node3D" parent="."]
 script = ExtResource("2_camera")
@@ -86,3 +137,18 @@ script = ExtResource("9_air")
 
 [node name="Stagger" type="Node" parent="StateMachine"]
 script = ExtResource("10_stagger")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("11_attack")
+
+[node name="Block" type="Node" parent="StateMachine"]
+script = ExtResource("12_block")
+
+[node name="Hitstun" type="Node" parent="StateMachine"]
+script = ExtResource("13_hitstun")
+
+[node name="Deathblow" type="Node" parent="StateMachine"]
+script = ExtResource("14_deathblow")
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("15_dead")

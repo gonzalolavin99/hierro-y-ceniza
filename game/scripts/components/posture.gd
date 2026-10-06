@@ -13,6 +13,8 @@ signal broken
 @export var regen_delay: float = 1.0
 
 var current: float = 0.0
+## Multiplica la recuperación (p. ej. más rápida con la guardia alta, más lenta con poca vida).
+var regen_multiplier: float = 1.0
 var is_broken: bool = false
 var _since_hit: float = 0.0
 
@@ -21,7 +23,7 @@ func _physics_process(delta: float) -> void:
 	_since_hit += delta
 	if is_broken or current <= 0.0 or _since_hit < regen_delay:
 		return
-	current = maxf(current - regen_rate * delta, 0.0)
+	current = maxf(current - regen_rate * regen_multiplier * delta, 0.0)
 	changed.emit(current, max_posture)
 
 

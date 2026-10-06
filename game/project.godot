@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 InputSetup="*res://scripts/systems/input_setup.gd"
 DebugOverlay="*res://scenes/ui/debug_overlay.tscn"
+CombatFX="*res://scripts/systems/combat_fx.gd"
 
 [display]
 
@@ -35,6 +36,8 @@ window/stretch/aspect="expand"
 3d_physics/layer_1="mundo"
 3d_physics/layer_2="jugador"
 3d_physics/layer_3="enemigos"
+3d_physics/layer_4="hurtbox_jugador"
+3d_physics/layer_5="hurtbox_enemigos"
 
 [physics]
 

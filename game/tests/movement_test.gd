@@ -10,6 +10,13 @@ func _ready() -> void:
 	var level: Node = load("res://scenes/levels/test_level.tscn").instantiate()
 	add_child(level)
 	_player = get_tree().get_first_node_in_group("player") as Player
+	# Sin enemigos y mirando hacia -Z, para medir solo el movimiento.
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		enemy.queue_free()
+	_player.global_position = Vector3.ZERO
+	_player.model.rotation.y = 0.0
+	_player.camera_rig.rotation.y = 0.0
+	_player.reset_physics_interpolation()
 	await _run()
 	print("RESULTADO: %s" % ("TODO OK" if _failures == 0 else "%d FALLOS" % _failures))
 	get_tree().quit(_failures)

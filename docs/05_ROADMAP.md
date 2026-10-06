@@ -22,12 +22,12 @@ sin tu OK. Los tiempos son estimaciones de calendario trabajando unas horas por 
 velocidades y tiempos hasta que digas OK.
 
 ## Hito 2 — Combate básico (2–3 semanas)
-- [ ] Ataque ligero/pesado con combos, hitboxes.
-- [ ] Bloqueo, **desvío**, barra de postura (jugador y enemigo).
-- [ ] Fijar objetivo (lock-on).
-- [ ] Un enemigo maniquí con IA simple (se acerca, ataca, telegrafía).
-- [ ] Golpe mortal al romper postura.
-- [ ] Primer personaje con animaciones de Mixamo (reemplaza la cápsula).
+- [x] Combo de ataque (RB, 3 golpes) con zonas de golpe.
+- [x] Bloqueo, **desvío**, barra de postura (jugador y enemigo).
+- [x] Fijar objetivo con R3 (stick derecho cambia de objetivo; sin enemigos, recentra la cámara).
+- [x] Un enemigo maniquí con IA simple (se acerca, ataca, telegrafía).
+- [x] Golpe mortal al romper postura.
+- [ ] Primer personaje con animaciones de Mixamo (reemplaza la cápsula). ⏸ Necesita que crees una cuenta Adobe (gratis).
 
 **🧪 PRUEBA:** pelear 5 minutos contra el maniquí. ¿Es satisfactorio desviar? ¿Se entiende cuándo atacar?
 

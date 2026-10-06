@@ -1,0 +1,146 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://scripts/components/weapon_pose.gd" id="2_weapon"]
+[ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="3_hitbox"]
+[ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" path="res://scripts/components/health.gd" id="5_health"]
+[ext_resource type="Script" path="res://scripts/components/posture.gd" id="6_posture"]
+[ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="7_fsm"]
+[ext_resource type="Script" path="res://scenes/enemies/states/idle.gd" id="8_idle"]
+[ext_resource type="Script" path="res://scenes/enemies/states/chase.gd" id="9_chase"]
+[ext_resource type="Script" path="res://scenes/enemies/states/attack.gd" id="10_attack"]
+[ext_resource type="Script" path="res://scenes/enemies/states/recoil.gd" id="11_recoil"]
+[ext_resource type="Script" path="res://scenes/enemies/states/broken.gd" id="12_broken"]
+[ext_resource type="Script" path="res://scenes/enemies/states/dead.gd" id="13_dead"]
+
+[sub_resource type="CapsuleShape3D" id="body_shape"]
+radius = 0.4
+height = 1.85
+
+[sub_resource type="CapsuleShape3D" id="hurt_shape"]
+radius = 0.5
+height = 1.9
+
+[sub_resource type="StandardMaterial3D" id="body_material"]
+albedo_color = Color(0.38, 0.4, 0.42, 1)
+
+[sub_resource type="CapsuleMesh" id="body_mesh"]
+material = SubResource("body_material")
+radius = 0.4
+height = 1.85
+
+[sub_resource type="StandardMaterial3D" id="helmet_material"]
+albedo_color = Color(0.2, 0.2, 0.22, 1)
+metallic = 0.6
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="visor_mesh"]
+material = SubResource("helmet_material")
+size = Vector3(0.5, 0.16, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="blade_material"]
+albedo_color = Color(0.78, 0.78, 0.8, 1)
+metallic = 0.9
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="blade_mesh"]
+material = SubResource("blade_material")
+size = Vector3(0.05, 0.1, 1.05)
+
+[sub_resource type="StandardMaterial3D" id="glint_material"]
+shading_mode = 0
+albedo_color = Color(1, 1, 0.92, 1)
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="glint_mesh"]
+material = SubResource("glint_material")
+size = Vector2(0.35, 0.35)
+
+[sub_resource type="BoxShape3D" id="hit_shape"]
+size = Vector3(1.7, 1.4, 1.9)
+
+[node name="TrainingSoldier" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_enemy")
+display_name = "Soldado de práctica"
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+shape = SubResource("body_shape")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+mesh = SubResource("body_mesh")
+
+[node name="Visor" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.3)
+mesh = SubResource("visor_mesh")
+
+[node name="WeaponPivot" type="Node3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 1.25, -0.25)
+script = ExtResource("2_weapon")
+glint_path = NodePath("Blade/Glint")
+
+[node name="Blade" type="MeshInstance3D" parent="Model/WeaponPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+mesh = SubResource("blade_mesh")
+
+[node name="Glint" type="MeshInstance3D" parent="Model/WeaponPivot/Blade"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+mesh = SubResource("glint_mesh")
+
+[node name="Hitbox" type="Area3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.0)
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("3_hitbox")
+
+[node name="Shape" type="CollisionShape3D" parent="Model/Hitbox"]
+shape = SubResource("hit_shape")
+
+[node name="Hurtbox" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("4_hurtbox")
+
+[node name="Shape" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("hurt_shape")
+
+[node name="LockPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("5_health")
+max_health = 120.0
+
+[node name="Posture" type="Node" parent="."]
+script = ExtResource("6_posture")
+regen_rate = 12.0
+regen_delay = 1.5
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("7_fsm")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("8_idle")
+
+[node name="Chase" type="Node" parent="StateMachine"]
+script = ExtResource("9_chase")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("10_attack")
+
+[node name="Recoil" type="Node" parent="StateMachine"]
+script = ExtResource("11_recoil")
+
+[node name="Broken" type="Node" parent="StateMachine"]
+script = ExtResource("12_broken")
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("13_dead")
