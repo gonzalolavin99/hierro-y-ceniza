@@ -1,0 +1,9 @@
+# Godot
+.godot/
+*.import.tmp
+export/
+*.translation
+
+# Sistema
+Thumbs.db
+desktop.ini
