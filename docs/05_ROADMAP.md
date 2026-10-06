@@ -6,7 +6,7 @@ sin tu OK. Los tiempos son estimaciones de calendario trabajando unas horas por 
 ---
 
 ## Hito 0 — Preparación (1 sesión)
-- [ ] Instalar Godot 4 en `G:\Herramientas\Godot\` y forzar GPU NVIDIA.
+- [x] Instalar Godot 4.7.2 en `G:\Herramientas\Godot\` (usa la NVIDIA automáticamente).
 - [x] Git (ya estaba instalado) y repositorio creado.
 - [x] Proyecto Godot base (carpetas, configuración, panel de FPS/GPU/mandos).
 
@@ -42,7 +42,7 @@ velocidades y tiempos hasta que digas OK.
 
 ## Hito 4 — Enemigos de verdad (3–4 semanas)
 - [ ] IA con estados (patrulla, alerta, combate, retirada).
-- [ ] 3 tipos: bandido, soldado con lanza, lobo.
+- [ ] 3 tipos: bandido, soldado con lanza, arquero.
 - [ ] Ataques peligrosos con aviso rojo.
 - [ ] Sigilo básico y ataque sorpresa.
 

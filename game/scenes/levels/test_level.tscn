@@ -1,0 +1,96 @@
+[gd_scene format=3]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_material"]
+sky_top_color = Color(0.32, 0.37, 0.44, 1)
+sky_horizon_color = Color(0.66, 0.62, 0.56, 1)
+ground_bottom_color = Color(0.16, 0.15, 0.14, 1)
+ground_horizon_color = Color(0.66, 0.62, 0.56, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_material")
+
+[sub_resource type="Environment" id="environment"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+tonemap_mode = 2
+fog_enabled = true
+fog_light_color = Color(0.6, 0.58, 0.54, 1)
+fog_density = 0.015
+
+[sub_resource type="StandardMaterial3D" id="ground_material"]
+albedo_color = Color(0.33, 0.31, 0.27, 1)
+
+[sub_resource type="PlaneMesh" id="ground_mesh"]
+material = SubResource("ground_material")
+size = Vector2(120, 120)
+
+[sub_resource type="BoxShape3D" id="ground_shape"]
+size = Vector3(120, 1, 120)
+
+[sub_resource type="StandardMaterial3D" id="stone_material"]
+albedo_color = Color(0.5, 0.48, 0.45, 1)
+
+[sub_resource type="BoxMesh" id="pillar_mesh"]
+material = SubResource("stone_material")
+size = Vector3(1.2, 5, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="player_material"]
+albedo_color = Color(0.55, 0.15, 0.12, 1)
+
+[sub_resource type="CapsuleMesh" id="player_mesh"]
+material = SubResource("player_material")
+radius = 0.35
+height = 1.8
+
+[node name="TestLevel" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("environment")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, -0.433013, 0.75, 0, 10, 0)
+light_color = Color(1, 0.93, 0.82, 1)
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("ground_mesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("ground_shape")
+
+[node name="Pillars" type="Node3D" parent="."]
+
+[node name="Pillar1" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.5, -4)
+mesh = SubResource("pillar_mesh")
+
+[node name="Pillar2" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.5, -4)
+mesh = SubResource("pillar_mesh")
+
+[node name="Pillar3" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.5, -12)
+mesh = SubResource("pillar_mesh")
+
+[node name="Pillar4" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.5, -12)
+mesh = SubResource("pillar_mesh")
+
+[node name="PlayerPlaceholder" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("player_mesh")
+
+[node name="Title" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -8)
+text = "HIERRO Y CENIZA
+Hito 0"
+font_size = 96
+outline_size = 16
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 4.5, 8)
+fov = 60.0

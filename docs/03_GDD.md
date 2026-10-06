@@ -1,6 +1,6 @@
 # 03 · Documento de Diseño del Juego (GDD)
 
-> Estado: **v0.2** — decisiones D1–D8 aplicadas. Lo marcado con 🔶 sigue pendiente de tu OK.
+> Estado: **v0.3** — decisiones D1–D11 aplicadas. Lo marcado con 🔶 sigue pendiente de tu OK.
 
 ## 1. Concepto
 
@@ -25,7 +25,7 @@
 |---|---|
 | **Sekiro** (base principal) | Movimiento ágil (paso rápido en vez de rodar, salto, agacharse), **postura**, **desvío**, golpe mortal, ataques peligrosos con aviso, sigilo y ataque sorpresa, sangre mínima |
 | **Dark Souls** | Campamentos, pérdida y recuperación de experiencia, atajos que conectan el mapa, enemigos que reaparecen al descansar |
-| **Elden Ring** | Zonas más abiertas con caminos opcionales, jefes opcionales |
+| **Elden Ring** | Jefes opcionales y algún camino secundario. **No** mundo abierto |
 
 **Sin gancho** (decisión D6). La verticalidad sale del salto, las escaladas y las cornisas.
 
@@ -80,15 +80,18 @@
 | Tipo | Ejemplos |
 |---|---|
 | Humanos comunes | Bandido con cuchillo, soldado con lanza, arquero, desertor con escudo |
-| Humanos élite | Caballero pesado, duelista, ejecutor con hacha enorme |
-| Bestias | Lobos (en manada), jabalí, oso, perros de guerra |
+| Humanos élite | Caballero pesado, duelista, ejecutor con hacha enorme, lancero a caballo (muerto el jinete, el caballo huye) |
 | Jefes (vertical slice) | 🔶 **Mini-jefe:** El Carcelero (gigante con cadena). **Jefe:** Capitana Varga, duelista |
-| Jefes futuros | Oso blanco de la montaña, máquina de asedio, el "General traidor" |
+| Jefes futuros | La Cazadora de la montaña, el ingeniero y su máquina de asedio (pilotada por humanos), el "General traidor" Aren |
+
+**Solo humanos** (D11): sin animales como enemigos ni jefes.
 
 ## 7. Mundo y estructura
 
-- Zonas conectadas por atajos (como Dark Souls 1) dentro de cada región, y regiones más
-  abiertas (como Elden Ring) unidas entre sí.
+- **Sin mundo abierto** (D11). Zonas conectadas que se **desbloquean poco a poco**, como en
+  Dark Souls 1 y Sekiro: puertas que se abren desde el otro lado, llaves, jefes que custodian
+  pasos, atajos (ascensores, escaleras que se bajan, portones). Al final todo el mapa queda
+  entrelazado y se vuelve a pasar por lugares conocidos con otros ojos.
 - **Primera región (vertical slice): "El Paso de Hierro"** 🔶. Aldea en ruinas, bosque y la
   puerta de una fortaleza. Entre 15 y 25 minutos, 2 campamentos, 1 atajo, 1 mini-jefe, 1 jefe.
 
@@ -121,7 +124,7 @@
   envenenan pozos y queman aldeas. Kael debe eliminar a sus líderes uno por uno.
 - **Cada jefe** es un líder "rebelde". Al jugar se ve que defendían algo: la Capitana Varga
   protegía una aldea en cuarentena, el Carcelero custodiaba a enfermos para que la peste no se
-  extendiera, el oso blanco era la "bestia" que espantaba a los saqueadores de un paso de montaña...
+  extendiera, la Cazadora vigilaba un paso de montaña para que no subieran saqueadores...
 - **El giro**: los rebeldes contenían la peste. El Regente la usaba para vaciar tierras y
   quedarse con el reino. Cada líder que Kael mató abrió una puerta a la enfermedad y al saqueo.
   El "General traidor" del final es el último que la contenía. El verdadero villano de la
@@ -129,18 +132,16 @@
 - **Las muertes del jugador** encajan: el anciano corrige el relato porque *recuerda mal… o no
   quiere recordar*.
 
-### ¿Quién es el narrador? (D9, eliges tú)
-- **A)** El propio **Kael, ya viejo**, que se lo cuenta a un niño. Al final dice: *"Yo fui ese
-  guerrero"*. Es una confesión y un arrepentimiento.
-- **B)** El **hijo del General Aren**, que sobrevivió. Cuenta la leyenda "oficial" a propósito,
-  hasta revelar quién es.
-- **C)** Un **cronista del Regente** que escribió la versión heroica y al final no puede
-  sostener la mentira.
-
-Mi favorita es la **A**: le da sentido a cada *"No… no fue así"*, porque es alguien que no
-quiere aceptar lo que hizo.
+### El narrador: **Kael, ya viejo** (D9, decidido)
+Kael anciano se lo cuenta a un niño junto a una fogata y habla de sí mismo en tercera persona
+(*"el guerrero…"*). Cada *"No… no fue así"* al morir es alguien que no quiere aceptar lo que
+hizo. Al final confiesa: *"Yo fui ese guerrero"*.
 
 ### Final (ideas)
-- Final principal: el jugador vence al General, y el anciano termina la historia en silencio.
-- Final alternativo opcional: si el jugador perdonó a ciertos enemigos durante el viaje
-  (decisiones al estilo de los NPCs de Souls), puede negarse a dar el último golpe.
+- **Final principal (el "satisfactorio")**: vences al General Aren en un gran duelo. Victoria
+  épica… y entonces Kael anciano confiesa. El jugador "ganó", pero el reino quedó destruido.
+- **Final opcional (el "bueno", menos satisfactorio)** (D10): requiere haber perdonado o
+  escuchado a ciertos enemigos durante el viaje (al estilo de las misiones de NPCs de Souls).
+  Ante Aren, Kael baja la espada: **no hay pelea final**. Se entrega y es juzgado. Sin
+  fanfarria, sin jefe, sin trofeo épico: un final silencioso y humilde. El reino tiene una
+  oportunidad, pero el jugador renuncia a la gran victoria.

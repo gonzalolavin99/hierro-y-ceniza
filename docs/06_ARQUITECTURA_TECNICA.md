@@ -28,7 +28,7 @@ G:\Game\
    los enemigos usan los mismos.
 2. **Máquinas de estados** — cada personaje es una FSM (Idle, Move, Attack, Dodge, Block, Stagger,
    Dead…). Las transiciones se deciden por estado, nunca con un `if` gigante.
-3. **Datos separados del código** — el daño de una espada o la vida de un lobo viven en Resources
+3. **Datos separados del código** — el daño de una espada o la vida de un bandido viven en Resources
    (`.tres`), para poder ajustar balance sin tocar scripts.
 4. **Señales (signals)** para comunicar sistemas (ej. `health.died` → HUD, sonido, experiencia).
 5. **Autoloads** mínimos: `GameState` (progreso), `SaveSystem`, `Events` (bus de eventos), `Settings`.

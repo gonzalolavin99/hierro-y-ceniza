@@ -4,7 +4,6 @@
 
 | # | Pregunta | Propuesta de Claude | Hasta |
 |---|---|---|---|
-| D9 | ¿Quién es el narrador en el giro final? | Ver opciones en [03_GDD §10](03_GDD.md) | Antes del Hito 6 |
 | D10 | ¿Teclado/ratón en algún momento? | Más adelante, después de la vertical slice | Libre |
 
 ## Decididas
@@ -19,5 +18,8 @@
 | D6 | **Sin gancho** (en ninguna parte del juego por ahora) | 2026-10-06 |
 | D7 | **Solo mando** por ahora (Xbox) | 2026-10-06 |
 | D8 | **Voces en inglés + subtítulos en español** | 2026-10-06 |
+| D9 | Narrador: **Kael anciano**, que confiesa al final | 2026-10-06 |
+| D10 | Final opcional "bueno" pero menos satisfactorio: Kael se rinde, sin pelea final | 2026-10-06 |
+| D11 | **Sin mundo abierto**: zonas conectadas que se desbloquean de a poco. **Solo enemigos humanos** (sin animales) | 2026-10-06 |
 | — | Motor: Godot 4 | 2026-10-06 |
 | — | Sin magia, demonios, brujería ni ocultismo ([guía](04_GUIA_DE_CONTENIDO.md)) | 2026-10-06 |

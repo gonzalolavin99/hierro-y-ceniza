@@ -1,7 +1,7 @@
 # 04 · Guía de contenido
 
 El juego es **un souls-like sin elementos sobrenaturales ocultos**. El mundo es duro, oscuro y
-desafiante por razones humanas y naturales: guerra, ambición, hambre, enfermedad, bestias.
+desafiante por razones humanas y naturales: guerra, ambición, hambre, enfermedad. **Todos los enemigos son humanos.**
 
 Esta guía se aplica a **todo**: mecánicas, nombres, textos, modelos 3D, iconos, música.
 
@@ -28,7 +28,7 @@ Esta guía se aplica a **todo**: mecánicas, nombres, textos, modelos 3D, iconos
 | Cenizas de guerra / Artes | **Técnicas de combate**: movimientos aprendidos de maestros (estocada, barrido, guardia rota) |
 | Invocar espíritus | Sin invocaciones. Como mucho, un aliado humano en un jefe concreto por historia |
 | Resurrección (Sekiro) | **relato narrado** (D1): al morir, el narrador dice "No… no fue así" |
-| Jefes demoníacos | Generales, campeones, duelistas, bestias enormes, máquinas de asedio, gigantes humanos |
+| Jefes demoníacos | Generales, campeones, duelistas, máquinas de asedio pilotadas, guerreros enormes |
 
 ## Tono y violencia
 
