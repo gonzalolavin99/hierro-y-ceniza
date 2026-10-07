@@ -30,6 +30,8 @@ signal died
 
 var target: Player
 var blocks_in_a_row: int = 0
+## Velocidad que "pide" la animación actual (su paso real).
+var root_motion_velocity: Vector3 = Vector3.ZERO
 var _spawn: Transform3D
 var _base_posture_regen: float
 
@@ -50,6 +52,7 @@ func _physics_process(delta: float) -> void:
 	# Con poca vida, la postura se recupera más lento (como en Sekiro).
 	posture.regen_multiplier = 0.25 + 0.75 * health.ratio()
 	velocity.y -= gravity * delta
+	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
 	move_and_slide()
 	body.update_locomotion(velocity, get_facing(), walk_speed * 1.4)
@@ -87,6 +90,23 @@ func move_horizontal(direction: Vector3, speed: float, delta: float, acceleratio
 	var horizontal := Vector3(velocity.x, 0.0, velocity.z).move_toward(direction * speed, acceleration * delta)
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z
+
+
+## Aplica el avance real de la animación, frenando antes de atravesar al jugador
+## y estirándolo si está lejos para que el ataque llegue.
+func apply_root_motion(stop_distance: float = 1.3) -> void:
+	var motion := root_motion_velocity
+	if target:
+		var dir := direction_to_target()
+		var forward: float = motion.dot(dir)
+		var dist: float = distance_to_target()
+		if forward > 0.0:
+			if dist <= stop_distance:
+				motion -= dir * forward
+			elif dist > 2.6:
+				motion += dir * forward * 0.4
+	velocity.x = motion.x
+	velocity.z = motion.z
 
 
 func lock_point() -> Vector3:

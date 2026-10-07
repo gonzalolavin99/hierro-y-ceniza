@@ -2,7 +2,7 @@ extends SceneTree
 ## Mide en cada animación de ataque el instante de máxima velocidad de la mano derecha (impacto).
 ## Calcula la cadena de huesos a mano (cinemática directa) desde las pistas de la animación.
 
-const ANIMS := ["attack", "slash", "slash_2", "slash_3", "slash_4", "slash_5", "high_spin_attack", "jump_attack", "slide_attack", "kick", "kick_2"]
+const ANIMS := ["x_great_slash", "x_one_hand_combo", "x_sword_fight", "x_two_hand_combo"]
 const CHAIN := ["mixamorig_Hips", "mixamorig_Spine", "mixamorig_Spine1", "mixamorig_Spine2", "mixamorig_RightShoulder", "mixamorig_RightArm", "mixamorig_RightForeArm", "mixamorig_RightHand"]
 
 var sk: Skeleton3D

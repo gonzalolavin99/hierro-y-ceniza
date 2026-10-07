@@ -68,6 +68,16 @@ func _run() -> void:
 	_check("Salta ~1,5 m (%.2f)" % (peak - floor_y), absf(peak - floor_y - _player.jump_height) < 0.2)
 	_check("Aterriza", _player.is_on_floor() and _state() == &"Ground")
 
+	# El combo avanza con el paso real de la animación (root motion)
+	await _wait(0.5)
+	var before: Vector3 = _player.global_position
+	for i in 3:
+		await _tap("attack")
+		await _wait(0.3)
+	await _wait(0.6)
+	var moved: float = Vector2(_player.global_position.x - before.x, _player.global_position.z - before.z).length()
+	_check("El combo avanza con la animación (%.2f m)" % moved, moved > 0.3 and moved < 4.0)
+
 	# Placa de postura → aturdimiento
 	_player.global_position = Vector3(5, 0.1, 3)
 	_player.reset_physics_interpolation()

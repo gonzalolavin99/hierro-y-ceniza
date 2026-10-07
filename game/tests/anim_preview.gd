@@ -2,7 +2,7 @@ extends Node3D
 ## Herramienta: genera una tira de 8 capturas por animación para revisarlas.
 ## Ejecutar (con ventana): Godot --path game res://tests/anim_preview.tscn -- <carpeta_salida> [anim1,anim2,...]
 
-const FRAMES: int = 8
+var FRAMES: int = 8
 const SIZE: int = 260
 
 func _ready() -> void:
@@ -10,6 +10,8 @@ func _ready() -> void:
 	var out_dir: String = args[0] if args.size() > 0 else "user://anim_preview"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	var only: PackedStringArray = args[1].split(",") if args.size() > 1 else PackedStringArray()
+	if args.size() > 2:
+		FRAMES = int(args[2])
 
 	var env := WorldEnvironment.new()
 	env.environment = Environment.new()

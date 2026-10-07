@@ -4,13 +4,14 @@ extends PlayerState
 ## En la recuperación se puede cancelar con guardia (LB) o paso rápido (B), como en Sekiro.
 
 ## anim/from/impact: animación, segundo en que empieza y segundo del impacto dentro de ella.
+## Los tres golpes son tramos seguidos de un mismo combo de Mixamo, así se encadenan con naturalidad.
 const COMBO: Array[Dictionary] = [
-	{"windup": 0.13, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0, "lunge": 4.0,
-		"anim": &"slash_a", "from": 0.3, "impact": 0.53},
-	{"windup": 0.12, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0, "lunge": 3.5,
-		"anim": &"slash_b", "from": 0.12, "impact": 0.33},
-	{"windup": 0.17, "active": 0.14, "recovery": 0.45, "damage": 18.0, "posture": 16.0, "lunge": 5.0,
-		"anim": &"slash_d", "from": 0.2, "impact": 0.47},
+	{"windup": 0.13, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0,
+		"anim": &"combo_one_hand", "from": 0.72, "impact": 1.00},
+	{"windup": 0.12, "active": 0.12, "recovery": 0.30, "damage": 12.0, "posture": 10.0,
+		"anim": &"combo_one_hand", "from": 1.68, "impact": 1.95},
+	{"windup": 0.17, "active": 0.14, "recovery": 0.45, "damage": 18.0, "posture": 16.0,
+		"anim": &"combo_one_hand", "from": 2.62, "impact": 2.98},
 ]
 
 enum Phase { WINDUP, ACTIVE, RECOVERY }
@@ -40,10 +41,11 @@ func physics_update(delta: float) -> void:
 	_timer += delta
 	player.apply_gravity(delta)
 
-	# Pequeño avance durante el golpe (no si ya estamos pegados al enemigo).
-	var close: bool = player.lock_target != null and player.global_position.distance_to(player.lock_target.global_position) < 1.5
-	var lunge: float = 0.0 if close or _phase == Phase.RECOVERY else data["lunge"]
-	player.move_horizontal(_direction * lunge, lunge, 80.0, delta)
+	# El cuerpo avanza lo que la animación avanza (sin patinar ni atravesar al enemigo).
+	player.apply_root_motion(player.lock_target)
+	# Durante la preparación sigue un poco al objetivo fijado.
+	if _phase == Phase.WINDUP and player.lock_target:
+		player.face_direction(player.direction_to_lock_target(), delta * 0.6)
 
 	if _phase != Phase.WINDUP and player.wants_attack():
 		# Si hay un enemigo expuesto, el golpe mortal tiene prioridad sobre el combo.

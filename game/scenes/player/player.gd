@@ -61,6 +61,8 @@ signal deflected
 @onready var state_machine: StateMachine = $StateMachine
 
 var invulnerable: bool = false
+## Velocidad que "pide" la animación actual (su paso real), recalculada cada frame.
+var root_motion_velocity: Vector3 = Vector3.ZERO
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
 var attack_buffer_timer: float = 0.0
@@ -94,6 +96,7 @@ func _physics_process(delta: float) -> void:
 		_on_block_pressed()
 
 	_update_lock_on()
+	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
 	move_and_slide()
 	body.update_locomotion(velocity, get_facing(), run_speed)
@@ -138,6 +141,25 @@ func face_direction(direction: Vector3, delta: float) -> void:
 		return
 	var target_yaw: float = atan2(-direction.x, -direction.z)
 	model.rotation.y = lerp_angle(model.rotation.y, target_yaw, 1.0 - exp(-turn_speed * delta))
+
+
+## Aplica el avance real de la animación, frenando antes de atravesar al objetivo
+## (y estirándolo un poco si está lejos, para que el golpe llegue: "magnetismo" de ataque).
+func apply_root_motion(target: Node3D, stop_distance: float = 1.25) -> void:
+	var motion := root_motion_velocity
+	if target:
+		var to := target.global_position - global_position
+		to.y = 0.0
+		var dist: float = to.length()
+		var dir: Vector3 = to / maxf(dist, 0.001)
+		var forward: float = motion.dot(dir)
+		if forward > 0.0:
+			if dist <= stop_distance:
+				motion -= dir * forward
+			elif dist > 2.5:
+				motion += dir * forward * 0.35
+	velocity.x = motion.x
+	velocity.z = motion.z
 
 
 ## Gira al instante hacia una dirección.

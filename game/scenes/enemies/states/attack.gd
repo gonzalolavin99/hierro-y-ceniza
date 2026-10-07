@@ -7,20 +7,21 @@ extends EnemyState
 ## anim/from/impact: animación, segundo en que empieza y segundo del impacto dentro de ella.
 const PATTERNS: Dictionary[StringName, Array] = {
 	&"single": [
-		{"windup": 0.65, "active": 0.14, "after": 0.7, "anim": &"slash_c", "from": 0.1, "impact": 0.83, "lunge": 4.0},
+		{"windup": 0.65, "active": 0.14, "after": 0.7, "anim": &"slash_c", "from": 0.1, "impact": 0.83},
 	],
+	# Combo a dos manos: el 2º tajo sigue de forma natural al 1º (mismo clip de Mixamo).
 	&"double": [
-		{"windup": 0.55, "active": 0.14, "after": 0.3, "anim": &"slash_a", "from": 0.05, "impact": 0.53, "lunge": 3.5},
-		{"windup": 0.28, "active": 0.14, "after": 0.7, "anim": &"slash_b", "from": 0.0, "impact": 0.33, "lunge": 3.0},
+		{"windup": 0.55, "active": 0.14, "after": 0.3, "anim": &"combo_two_hand", "from": 0.15, "impact": 0.63},
+		{"windup": 0.28, "active": 0.14, "after": 0.7, "anim": &"combo_two_hand", "from": 0.95, "impact": 1.33},
 	],
 	&"thrust_combo": [
-		{"windup": 0.5, "active": 0.14, "after": 0.25, "anim": &"slash_d", "from": 0.0, "impact": 0.47, "lunge": 3.0},
-		{"windup": 0.45, "active": 0.12, "after": 0.8, "anim": &"slash_c", "from": 0.3, "impact": 0.83, "lunge": 6.0},
+		{"windup": 0.5, "active": 0.14, "after": 0.25, "anim": &"slash_d", "from": 0.0, "impact": 0.47},
+		{"windup": 0.45, "active": 0.12, "after": 0.8, "anim": &"combo_two_hand", "from": 1.8, "impact": 2.25},
 	],
 	# Contraataque tras bloquear varios golpes: más rápido.
 	&"counter": [
-		{"windup": 0.3, "active": 0.12, "after": 0.25, "anim": &"slash_a", "from": 0.25, "impact": 0.53, "lunge": 3.5},
-		{"windup": 0.3, "active": 0.12, "after": 0.7, "anim": &"slash_b", "from": 0.05, "impact": 0.33, "lunge": 3.5},
+		{"windup": 0.3, "active": 0.12, "after": 0.25, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},
+		{"windup": 0.3, "active": 0.12, "after": 0.7, "anim": &"combo_one_hand", "from": 1.7, "impact": 1.95},
 	],
 }
 
@@ -56,17 +57,15 @@ func physics_update(delta: float) -> void:
 		Phase.WINDUP:
 			# Sigue al jugador mientras se prepara; se lanza al final de la preparación.
 			enemy.face_target(delta, 1.5)
-			var lunging: bool = _timer > swing["windup"] * 0.6 and enemy.distance_to_target() > 1.6
-			enemy.move_horizontal(enemy.get_facing() * (swing["lunge"] if lunging else 0.0), swing["lunge"], delta, 60.0)
+			enemy.apply_root_motion()
 			if _timer >= swing["windup"]:
 				_set_phase(Phase.ACTIVE)
 		Phase.ACTIVE:
-			var lunging: bool = enemy.distance_to_target() > 1.4
-			enemy.move_horizontal(enemy.get_facing() * (swing["lunge"] if lunging else 0.0), swing["lunge"], delta, 60.0)
+			enemy.apply_root_motion()
 			if _timer >= swing["active"]:
 				_set_phase(Phase.AFTER)
 		Phase.AFTER:
-			enemy.move_horizontal(Vector3.ZERO, 0.0, delta)
+			enemy.apply_root_motion()
 			var last: bool = _index == _swings.size() - 1
 			if last and _deflected_last:
 				machine.transition_to(&"Recoil")

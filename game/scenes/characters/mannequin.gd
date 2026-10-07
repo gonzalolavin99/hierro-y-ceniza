@@ -40,6 +40,8 @@ var _mix: float = 0.0  # 0 = slot A, 1 = slot B
 var _mix_target: float = 0.0
 var _slot_b: bool = false
 var _action_name: StringName = &""
+## Desplazamiento acumulado de las animaciones (en el mundo) pendiente de aplicar.
+var _root_motion: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -140,6 +142,13 @@ func update_locomotion(velocity: Vector3, facing: Vector3, reference_speed: floa
 	set_locomotion(local, minf(time_scale, 2.4))
 
 
+## Devuelve (y vacía) cuánto avanzó la animación desde la última llamada, en el mundo y en horizontal.
+func consume_root_motion() -> Vector3:
+	var motion := Vector3(_root_motion.x, 0.0, _root_motion.z)
+	_root_motion = Vector3.ZERO
+	return motion
+
+
 func current_action() -> StringName:
 	return _action_name
 
@@ -198,15 +207,26 @@ func _build_tree() -> void:
 	bt.connect_node(&"act_blend", 1, &"act_mix")
 	bt.connect_node(&"output", 0, &"act_blend")
 
+	var root_motion_node := Node3D.new()
+	root_motion_node.name = "RootMotion"
+	_bot.add_child(root_motion_node)
+
 	_tree = AnimationTree.new()
 	_tree.name = "AnimationTree"
 	_bot.add_child(_tree)
 	_tree.anim_player = NodePath("../AnimationPlayer")
+	_tree.root_motion_track = NodePath("RootMotion")
+	_tree.mixer_applied.connect(_on_mixer_applied)
 	_tree.tree_root = bt
 	_tree.active = true
 	_tree.set("parameters/loco_speed/scale", 1.0)
 	_tree.set("parameters/scale_a/scale", 1.0)
 	_tree.set("parameters/scale_b/scale", 1.0)
+
+
+func _on_mixer_applied() -> void:
+	# Pasar el avance de la animación del espacio del maniquí al mundo.
+	_root_motion += _bot.global_basis * _tree.get_root_motion_position()
 
 
 func _anim(anim_name: StringName) -> AnimationNodeAnimation:

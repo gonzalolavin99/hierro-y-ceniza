@@ -1,7 +1,9 @@
 extends SceneTree
 ## Construye res://assets/animations/mixamo_library.res a partir de los FBX de Mixamo.
 ## - Renombra las animaciones con nombres claros.
-## - Quita el desplazamiento horizontal de la cadera (el movimiento lo controla el código).
+## - Quita el desplazamiento horizontal de la cadera. En las animaciones que no son bucle, ese
+##   desplazamiento se guarda en una pista aparte "RootMotion" para que el código mueva al
+##   personaje exactamente lo que la animación avanza (sin patinar).
 ## - Marca en bucle las de locomoción.
 ## Ejecutar: Godot --headless --path game --script res://tests/build_anim_library.gd
 
@@ -40,6 +42,9 @@ const MAP := {
 	"shove": ["kick_2", false],
 	"draw": ["draw_a_2", false],
 	"turn_180": ["180_turn", false],
+	"combo_one_hand": ["x_one_hand_combo", false],
+	"combo_two_hand": ["x_two_hand_combo", false],
+	"sparring": ["x_sword_fight", false],
 }
 
 func _init() -> void:
@@ -52,9 +57,16 @@ func _init() -> void:
 		var hips := anim.find_track(NodePath("Skeleton3D:mixamorig_Hips"), Animation.TYPE_POSITION_3D)
 		if hips >= 0 and anim.track_get_key_count(hips) > 0:
 			var first: Vector3 = anim.track_get_key_value(hips, 0)
+			var root := -1
+			if not MAP[key][1]:
+				root = anim.add_track(Animation.TYPE_POSITION_3D)
+				anim.track_set_path(root, NodePath("RootMotion"))
 			for k in anim.track_get_key_count(hips):
 				var v: Vector3 = anim.track_get_key_value(hips, k)
+				var t: float = anim.track_get_key_time(hips, k)
 				anim.track_set_key_value(hips, k, Vector3(first.x, v.y, first.z))
+				if root >= 0:
+					anim.position_track_insert_key(root, t, Vector3(v.x - first.x, 0.0, v.z - first.z))
 		anim.loop_mode = Animation.LOOP_LINEAR if MAP[key][1] else Animation.LOOP_NONE
 		lib.add_animation(key, anim)
 	var err := ResourceSaver.save(lib, "res://assets/animations/mixamo_library.res")
