@@ -32,6 +32,8 @@ var target: Player
 var blocks_in_a_row: int = 0
 ## Velocidad que "pide" la animación actual (su paso real).
 var root_motion_velocity: Vector3 = Vector3.ZERO
+## Empujón que se suma al movimiento y se desvanece (choques, golpes).
+var push: Vector3 = Vector3.ZERO
 var _spawn: Transform3D
 var _base_posture_regen: float
 
@@ -54,6 +56,8 @@ func _physics_process(delta: float) -> void:
 	velocity.y -= gravity * delta
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
+	velocity += push
+	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	move_and_slide()
 	body.update_locomotion(velocity, get_facing(), walk_speed * 1.4)
 
@@ -139,12 +143,26 @@ func receive_hit(hit: HitData) -> int:
 	var facing_attacker: bool = get_facing().dot(to_attacker) > 0.0
 
 	# Fuera de sus ataques, bloquea todo lo que tenga de frente.
+	# La patada rompe la guardia: queda expuesto sin bloquear.
+	if hit.guard_break and state != &"Attack" and state != &"Recoil" and facing_attacker:
+		posture.add(hit.posture_damage)
+		Sfx.play(&"block", contact, -4.0)
+		CombatFX.hitstop(0.05)
+		CombatFX.shake(0.2)
+		push = -to_attacker * 3.0
+		blocks_in_a_row = 0
+		if not posture.is_broken:
+			state_machine.transition_to(&"Recoil")
+		return HitData.Result.HIT
+
 	if state != &"Attack" and state != &"Recoil" and facing_attacker:
 		posture.add(hit.posture_damage)
 		Sfx.play(&"block", contact)
 		CombatFX.sparks(contact, 10, 4.0)
 		CombatFX.hitstop(0.035)
 		body.play_reaction(&"block_impact", 0.25, 0.0, 1.5)
+		body.flinch(to_attacker, 0.35)
+		push = -to_attacker * 1.2
 		blocks_in_a_row += 1
 		if blocks_in_a_row >= blocks_before_counter and not posture.is_broken:
 			blocks_in_a_row = 0
@@ -157,6 +175,7 @@ func receive_hit(hit: HitData) -> int:
 	Sfx.play(&"hit", contact)
 	CombatFX.blood(contact)
 	CombatFX.hitstop(0.05)
+	body.flinch(to_attacker, 0.8)
 	return HitData.Result.HIT
 
 

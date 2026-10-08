@@ -84,6 +84,7 @@ func on_deflected() -> void:
 	enemy.hitbox.deactivate()
 	if state_is_active():
 		enemy.body.play_action(&"block_impact", 0.0, 1.6, 0.04)
+		enemy.push = -enemy.get_facing() * 2.2  # Choque de espadas: retrocede
 		_deflected_last = _index == _swings.size() - 1
 
 

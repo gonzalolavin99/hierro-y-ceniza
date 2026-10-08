@@ -9,6 +9,8 @@ var posture_damage: float = 10.0
 ## Postura que recibe el ATACANTE si su golpe es desviado.
 var deflect_posture_damage: float = 20.0
 var attacker: Node3D
+## Rompe la guardia (patada): si el rival está bloqueando, queda expuesto.
+var guard_break: bool = false
 
 
 static func create(p_attacker: Node3D, p_damage: float, p_posture: float, p_deflect_posture: float = 20.0) -> HitData:

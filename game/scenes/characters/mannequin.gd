@@ -46,6 +46,10 @@ var _shape_elapsed: float = 0.0
 var _shape_seconds: float = 0.0
 var _shape_base: float = 1.0
 var _trail: SwordTrail
+## Posición (en segundos de la animación) de la acción en curso.
+var _action_time: float = 0.0
+var _action_speed: float = 1.0
+var _flinch_tween: Tween
 ## Desplazamiento acumulado de las animaciones (en el mundo) pendiente de aplicar.
 var _root_motion: Vector3 = Vector3.ZERO
 
@@ -77,6 +81,7 @@ func _process(delta: float) -> void:
 	_tree.set("parameters/act_mix/blend_amount", _mix)
 	_tree.set("parameters/act_blend/blend_amount", _action)
 	_update_shape(delta)
+	_action_time += _action_speed * delta
 
 
 # --- API -------------------------------------------------------------------------
@@ -104,6 +109,8 @@ func play_action(anim: StringName, from: float = 0.0, speed: float = 1.0, fade: 
 	(_tree.tree_root.get_node("anim_" + slot) as AnimationNodeAnimation).animation = &"m/" + anim
 	_tree.set("parameters/seek_%s/seek_request" % slot, from)
 	_tree.set("parameters/scale_%s/scale" % slot, speed)
+	_action_time = from
+	_action_speed = speed
 	_mix_target = 1.0 if _slot_b else 0.0
 	if _action < 0.01:
 		_mix = _mix_target
@@ -144,10 +151,12 @@ func _update_shape(delta: float) -> void:
 		if after > 0.2:
 			_shape_active = false
 	_tree.set("parameters/scale_%s/scale" % ("b" if _slot_b else "a"), speed)
+	_action_speed = speed
 
 
 func set_action_speed(speed: float) -> void:
 	_shape_active = false
+	_action_speed = speed
 	if _tree:
 		_tree.set("parameters/scale_%s/scale" % ("b" if _slot_b else "a"), speed)
 
@@ -195,6 +204,23 @@ func consume_root_motion() -> Vector3:
 	var motion := Vector3(_root_motion.x, 0.0, _root_motion.z)
 	_root_motion = Vector3.ZERO
 	return motion
+
+
+## En qué segundo de su animación va la acción en curso.
+func action_time() -> float:
+	return _action_time
+
+
+## Inclinación breve al recibir un golpe, alejándose de donde vino (reacción según dirección).
+func flinch(from_direction: Vector3, strength: float = 1.0) -> void:
+	var local := global_basis.inverse() * from_direction
+	# El maniquí mira hacia -Z de su padre: golpe de frente = inclinarse hacia atrás.
+	var tilt := Vector3(-local.z * 0.22, 0.0, local.x * 0.22) * strength
+	if _flinch_tween:
+		_flinch_tween.kill()
+	_flinch_tween = create_tween()
+	_flinch_tween.tween_property(self, "rotation", tilt, 0.05).set_ease(Tween.EASE_OUT)
+	_flinch_tween.tween_property(self, "rotation", Vector3.ZERO, 0.35).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 
 func current_action() -> StringName:

@@ -22,7 +22,11 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Air")
 	elif player.wants_attack():
 		if not player.try_deathblow():
-			machine.transition_to(&"Attack")
+			machine.transition_to(&"Attack", {"move": &"light_1"})
+	elif Input.is_action_just_pressed("heavy_attack"):
+		machine.transition_to(&"Attack", {"move": &"heavy"})
+	elif Input.is_action_just_pressed("kick"):
+		machine.transition_to(&"Attack", {"move": &"kick"})
 	elif Input.is_action_pressed("block"):
 		machine.transition_to(&"Block")
 	elif Input.is_action_just_pressed("dodge") and player.dash_cooldown_timer <= 0.0:

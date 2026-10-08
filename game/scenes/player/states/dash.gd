@@ -15,14 +15,29 @@ func enter(_msg: Dictionary) -> void:
 	var input_dir: Vector3 = player.get_move_direction()
 	if input_dir.length_squared() > 0.04:
 		_direction = input_dir.normalized()
-		player.model.rotation.y = atan2(-_direction.x, -_direction.z)
+		if player.lock_target == null:
+			player.snap_facing(_direction)  # Sin objetivo: el paso va hacia delante
 	else:
-		_direction = -player.get_facing()
+		_direction = -player.get_facing()  # Sin dirección: paso atrás
 	player.invulnerable = true
+	# Animación según hacia dónde va el paso respecto a hacia dónde mira el personaje.
+	var facing: Vector3 = player.get_facing()
+	var right: Vector3 = facing.cross(Vector3.UP)
+	var fwd: float = _direction.dot(facing)
+	var side: float = _direction.dot(right)
+	var anim: StringName = &"dodge_fwd"
+	if absf(side) > absf(fwd):
+		anim = &"dodge_right" if side > 0.0 else &"dodge_left"
+	elif fwd < 0.0:
+		anim = &"dodge_back"
+	player.body.set_blocking(false)
+	# Se usa el tramo en que la animación se desplaza (0,15 → 0,85 s), comprimido en lo que dura el paso.
+	player.body.play_timed(anim, 0.15, 0.85, player.dash_duration)
 
 
 func exit() -> void:
 	player.invulnerable = false
+	player.body.stop_action(0.15)
 	player.dash_cooldown_timer = player.dash_cooldown
 
 
@@ -42,7 +57,7 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Air")
 	elif t >= JUMP_CANCEL_FROM and player.wants_attack() and player.is_on_floor():
 		if not player.try_deathblow():
-			machine.transition_to(&"Attack")
+			machine.transition_to(&"Attack", {"move": &"dodge_attack"})
 	elif t >= 1.0:
 		if not player.is_on_floor():
 			machine.transition_to(&"Air")

@@ -66,6 +66,8 @@ signal deflected
 var invulnerable: bool = false
 ## Velocidad que "pide" la animación actual (su paso real), recalculada cada frame.
 var root_motion_velocity: Vector3 = Vector3.ZERO
+## Empujón que se suma al movimiento y se desvanece (choques, golpes).
+var push: Vector3 = Vector3.ZERO
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
 var attack_buffer_timer: float = 0.0
@@ -102,6 +104,8 @@ func _physics_process(delta: float) -> void:
 	_update_lock_on()
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
+	velocity += push
+	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	move_and_slide()
 	body.update_locomotion(velocity, get_facing(), run_speed)
 
@@ -262,6 +266,7 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.hitstop(0.09)
 		CombatFX.shake(0.25)
 		body.play_reaction(&"block_impact", 0.22, 0.05, 1.8)
+		push = -to_attacker * 1.6  # Choque de espadas: los dos retroceden
 		_spam_count = 0
 		deflected.emit()
 		return HitData.Result.DEFLECTED
@@ -273,8 +278,9 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.sparks(contact, 10, 4.0)
 		CombatFX.hitstop(0.04)
 		CombatFX.shake(0.12)
-		velocity += -to_attacker * 2.5
+		push = -to_attacker * 2.5
 		body.play_reaction(&"block_impact", 0.3, 0.0, 1.4)
+		body.flinch(to_attacker, 0.4)
 		return HitData.Result.BLOCKED
 
 	health.take_damage(hit.damage)
@@ -282,6 +288,7 @@ func receive_hit(hit: HitData) -> int:
 	Sfx.play(&"hit", contact)
 	CombatFX.blood(contact)
 	CombatFX.hitstop(0.06)
+	body.flinch(to_attacker, 1.0)
 	CombatFX.shake(0.4)
 	if health.current <= 0.0:
 		state_machine.transition_to(&"Dead")

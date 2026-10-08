@@ -45,6 +45,10 @@ const MAP := {
 	"combo_one_hand": ["x_one_hand_combo", false],
 	"combo_two_hand": ["x_two_hand_combo", false],
 	"sparring": ["x_sword_fight", false],
+	"dodge_fwd": ["dodge_forward", false],
+	"dodge_back": ["dodge_backward", false],
+	"dodge_left": ["dodge_left", false],
+	"dodge_right": ["dodge_right", false],
 }
 
 ## Retoques del taller (AnimPolish) por animación. Postura más baja y firme (kenjutsu/Sekiro)

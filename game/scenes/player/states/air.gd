@@ -22,7 +22,9 @@ func physics_update(delta: float) -> void:
 	player.apply_gravity(delta)
 
 	# Salto "coyote": recién salido de una cornisa todavía se puede saltar.
-	if player.wants_jump():
+	if player.wants_attack() and not player.is_on_floor():
+		machine.transition_to(&"Attack", {"move": &"air_attack"})
+	elif player.wants_jump():
 		player.do_jump()
 	elif player.is_on_floor() and player.velocity.y <= 0.0:
 		if Input.is_action_pressed("dodge") and direction.length_squared() > 0.04:

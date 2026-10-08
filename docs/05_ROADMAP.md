@@ -40,7 +40,7 @@ velocidades y tiempos hasta que digas OK.
 - [x] **Sonido**: clang de desvío "que da dopamina" (estilo Sekiro), bloqueo, impacto, tajos al aire, pasos.
 - [x] Animaciones Mixamo con un maniquí neutro (no es el diseño final de Kael): correr, paso rápido,
       saltar, tajos, guardia, desvío, golpe recibido, golpe mortal, muerte.
-- [~] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela). Falta: esquivas, reacciones por dirección, pies en rampas.
+- [~] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela). Hecho también: esquivas direccionales, reacciones según dirección, choque que empuja a ambos. Falta: pies en rampas.
 - [ ] Cámara: suavizado al fijar, encuadre en peleas cercanas.
 
 **🧪 PRUEBA:** ¿se siente "como un juego de verdad" y no como cápsulas?
@@ -48,9 +48,9 @@ velocidades y tiempos hasta que digas OK.
 ## Hito 4 — Pulido del combate II: opciones (3–4 semanas)
 - [ ] **Ataques peligrosos** con aviso rojo: barrido (se salta), estocada (contraataque especial pisando
       el arma), agarre (hay que alejarse).
-- [ ] Ataque en salto, ataque tras paso rápido, ataque cargado.
+- [x] Ataque en salto, ataque tras paso rápido, golpe pesado, ataque a la carrera, patada que rompe guardia.
 - [ ] Pisar al enemigo tras saltar su barrido (como Sekiro).
-- [ ] 2–3 **técnicas** de combate desbloqueables.
+- [~] **Técnicas** de combate: Torbellino hecha (LB+RB). Faltan 1–2 más y que se desbloqueen.
 - [ ] Armas secundarias: ballesta de muñeca, bomba de humo, bomba de pólvora.
 - [ ] Voces y esfuerzos en combate (gritos de ataque, quejidos, frases de enemigos).
 

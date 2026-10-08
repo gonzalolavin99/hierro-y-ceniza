@@ -21,12 +21,14 @@ func _ready() -> void:
 	_button("dodge", JOY_BUTTON_B, KEY_SHIFT)        # Tocar = paso rápido · Mantener = correr
 	_button("heal", JOY_BUTTON_X, KEY_R)
 	_button("interact", JOY_BUTTON_Y, KEY_E)
+	_button("kick", JOY_BUTTON_Y, KEY_F)                  # Patada: rompe la guardia (Y en combate)
 	_button("attack", JOY_BUTTON_RIGHT_SHOULDER, KEY_J)
 	_button("block", JOY_BUTTON_LEFT_SHOULDER, KEY_K)   # Mantener = bloquear · Tocar a tiempo = desviar
 	_button("lock_on", JOY_BUTTON_RIGHT_STICK, KEY_TAB) # Sin objetivo: recentra la cámara
 	_button("crouch", JOY_BUTTON_LEFT_STICK, KEY_C)
 	_button("pause", JOY_BUTTON_START, KEY_ESCAPE)
-	_axis("item", JOY_AXIS_TRIGGER_RIGHT, 1.0, KEY_Q)
+	_axis("heavy_attack", JOY_AXIS_TRIGGER_RIGHT, 1.0, KEY_L)  # Golpe pesado
+	_axis("item", JOY_AXIS_TRIGGER_LEFT, 1.0, KEY_Q)           # Armas secundarias (futuro)
 
 
 func _ensure(action: StringName) -> void:

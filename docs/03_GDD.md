@@ -41,16 +41,21 @@
 ### Controles (mando Xbox)
 | Acción | Botón | Notas |
 |---|---|---|
-| Ataque | RB | Combo de 3–4 golpes |
-| Bloquear / **Desviar** | LB | Mantener = bloqueo. Pulsar justo antes del golpe = **desvío** (unos 150 ms), sin daño y la postura sube al **enemigo** |
-| Paso rápido | B | Movimiento corto con invulnerabilidad breve. Mantener = correr |
-| Salto | A | Saltar un barrido (aviso rojo) permite pisar al enemigo |
-| Fijar objetivo | R3 | |
-| Curarse | X | Te deja vulnerable |
-| Objeto / arma secundaria | RT | Ballesta de muñeca, bombas de humo y pólvora, cuchillos |
-| Técnica | RB + LB | Movimiento especial aprendido |
-| Agacharse / sigilo | L3 | |
-| Interactuar | Y | |
+| Combo ligero | RB ×3 | Tres tajos a una mano encadenados |
+| Golpe pesado | RT | Tajo descendente lento, mucho daño de postura |
+| Bloquear / **Desviar** | LB | Mantener = guardia. Pulsar justo antes del golpe = **desvío** (0,2 s; se achica si se pulsa seguido) |
+| **Técnica** "Torbellino" | LB + RB | Giro con dos tajos |
+| Patada | Y | Rompe la guardia del rival y lo deja expuesto |
+| Paso rápido | B | Esquiva corta con animación según la dirección. Mantener = correr |
+| Ataque a la carrera | B mantenido + RB | Estocada aprovechando el impulso |
+| Contraataque tras esquiva | RB al final del paso | |
+| Salto / ataque en salto | A / A + RB | |
+| Fijar objetivo | R3 | Stick derecho a un lado = cambiar de objetivo |
+| Curarse | X | (Hito 6) |
+| Armas secundarias | LT | (Hito 4) |
+| Agacharse / sigilo | L3 | (Hito 5) |
+
+El repertorio está en `game/scenes/player/moves.gd` (datos): añadir un movimiento es añadir una línea.
 
 ### Enemigos
 - Vida + **postura**. Romper la postura (o dejar la vida a 0) abre el **golpe mortal**.

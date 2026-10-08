@@ -23,9 +23,12 @@ func physics_update(delta: float) -> void:
 		player.face_direction(direction, delta * 0.5)
 	player.apply_gravity(delta)
 
+	# LB + RB: técnica de combate (como las de Sekiro).
 	if player.wants_attack():
 		if not player.try_deathblow():
-			machine.transition_to(&"Attack")
+			machine.transition_to(&"Attack", {"move": &"art_whirlwind"})
+	elif Input.is_action_just_pressed("kick"):
+		machine.transition_to(&"Attack", {"move": &"kick"})
 	elif player.wants_jump():
 		player.do_jump()
 		machine.transition_to(&"Air")

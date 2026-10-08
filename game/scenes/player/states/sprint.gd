@@ -8,7 +8,10 @@ func physics_update(delta: float) -> void:
 	player.face_direction(direction, delta)
 	player.apply_gravity(delta)
 
-	if player.wants_jump():
+	if player.wants_attack():
+		if not player.try_deathblow():
+			machine.transition_to(&"Attack", {"move": &"run_attack"})
+	elif player.wants_jump():
 		player.do_jump()
 		machine.transition_to(&"Air")
 	elif not Input.is_action_pressed("dodge") or direction.length_squared() < 0.01:
