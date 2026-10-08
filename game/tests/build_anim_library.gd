@@ -47,13 +47,37 @@ const MAP := {
 	"sparring": ["x_sword_fight", false],
 }
 
+## Retoques del taller (AnimPolish) por animación. Postura más baja y firme (kenjutsu/Sekiro)
+## y tajos que nacen de la cadera. Los impactos son los medidos con tests/measure_swings.gd.
+const POLISH := {
+	"idle": {"hips_drop": 0.05},
+	"idle_alert": {"hips_drop": 0.05},
+	"block_hold": {"hips_drop": 0.05},
+	"walk_fwd": {"hips_drop": 0.04}, "walk_back": {"hips_drop": 0.04},
+	"walk_left": {"hips_drop": 0.04}, "walk_right": {"hips_drop": 0.04},
+	"run_fwd": {"hips_drop": 0.03}, "run_back": {"hips_drop": 0.03},
+	"run_left": {"hips_drop": 0.03}, "run_right": {"hips_drop": 0.03},
+	"combo_one_hand": {"hips_drop": 0.04, "cut_emphasis": {"impacts": [1.00, 1.95, 2.98], "hips": 12.0, "spine": 10.0}},
+	"combo_two_hand": {"hips_drop": 0.04, "cut_emphasis": {"impacts": [0.63, 1.33, 2.25], "hips": 10.0, "spine": 8.0}},
+	"slash_a": {"cut_emphasis": {"impacts": [0.53], "hips": 10.0, "spine": 8.0}},
+	"slash_b": {"cut_emphasis": {"impacts": [0.33], "hips": 10.0, "spine": 8.0}},
+	"slash_c": {"cut_emphasis": {"impacts": [0.83], "hips": 12.0, "spine": 10.0}},
+	"slash_d": {"cut_emphasis": {"impacts": [0.47], "hips": 10.0, "spine": 8.0}},
+}
+
+
 func _init() -> void:
 	var lib := AnimationLibrary.new()
+	var bot: Node = (load("res://assets/animations/mixamo/y_bot.fbx") as PackedScene).instantiate()
+	var polisher := AnimPolish.new(bot.get_node("Skeleton3D"))
 	for key in MAP:
 		var file: String = MAP[key][0]
 		var s: Node = (load("res://assets/animations/mixamo/%s.fbx" % file) as PackedScene).instantiate()
 		var anim: Animation = (s.get_node("AnimationPlayer") as AnimationPlayer).get_animation("mixamo_com").duplicate(true)
 		s.free()
+		if POLISH.has(key):
+			var report := polisher.polish(anim, POLISH[key].duplicate(true))
+			print("  retocada %-16s pies_error=%.4f m" % [key, report["pies_error_max"]])
 		var hips := anim.find_track(NodePath("Skeleton3D:mixamorig_Hips"), Animation.TYPE_POSITION_3D)
 		if hips >= 0 and anim.track_get_key_count(hips) > 0:
 			var first: Vector3 = anim.track_get_key_value(hips, 0)
@@ -69,6 +93,7 @@ func _init() -> void:
 					anim.position_track_insert_key(root, t, Vector3(v.x - first.x, 0.0, v.z - first.z))
 		anim.loop_mode = Animation.LOOP_LINEAR if MAP[key][1] else Animation.LOOP_NONE
 		lib.add_animation(key, anim)
+	bot.free()
 	var err := ResourceSaver.save(lib, "res://assets/animations/mixamo_library.res")
 	print("Biblioteca guardada: %d animaciones (error=%d)" % [lib.get_animation_list().size(), err])
 	quit()

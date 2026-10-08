@@ -34,6 +34,7 @@ func enter(msg: Dictionary) -> void:
 
 func exit() -> void:
 	player.hitbox.deactivate()
+	player.body.set_trail(false)
 
 
 func physics_update(delta: float) -> void:
@@ -79,10 +80,11 @@ func _set_phase(phase: Phase) -> void:
 	match phase:
 		Phase.WINDUP:
 			player.body.set_blocking(false)
-			player.body.play_timed(data["anim"], data["from"], data["impact"], data["windup"] + data["active"] * 0.5)
+			player.body.play_shaped(data["anim"], data["from"], data["impact"], data["windup"] + data["active"] * 0.5)
 		Phase.ACTIVE:
 			player.hitbox.activate(HitData.create(player, data["damage"], data["posture"]))
+			player.body.set_trail(true)
 			Sfx.play(&"swing", player.global_position + Vector3.UP * 1.3, -2.0)
 		Phase.RECOVERY:
 			player.hitbox.deactivate()
-			player.body.set_action_speed(1.2)
+			player.body.set_trail(false)

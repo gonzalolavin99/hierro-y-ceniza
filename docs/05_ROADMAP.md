@@ -37,10 +37,10 @@ velocidades y tiempos hasta que digas OK.
 3. **Diseño de personajes** al final. El mundo, por ahora, solo como escenario de pruebas.
 
 ## Hito 3 — Pulido del combate I: sensación (2–3 semanas)
-- [ ] **Sonido**: clang de desvío "que da dopamina" (estilo Sekiro), bloqueo, impacto, tajos al aire, pasos.
-- [ ] Animaciones Mixamo con un maniquí neutro (no es el diseño final de Kael): correr, paso rápido,
+- [x] **Sonido**: clang de desvío "que da dopamina" (estilo Sekiro), bloqueo, impacto, tajos al aire, pasos.
+- [x] Animaciones Mixamo con un maniquí neutro (no es el diseño final de Kael): correr, paso rápido,
       saltar, tajos, guardia, desvío, golpe recibido, golpe mortal, muerte.
-- [ ] Transiciones suaves entre animaciones (mezcla), giro con inercia, arrancar/frenar natural.
+- [~] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela). Falta: esquivas, reacciones por dirección, pies en rampas.
 - [ ] Cámara: suavizado al fijar, encuadre en peleas cercanas.
 
 **🧪 PRUEBA:** ¿se siente "como un juego de verdad" y no como cápsulas?

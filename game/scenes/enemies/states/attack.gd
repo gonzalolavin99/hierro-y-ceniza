@@ -47,6 +47,7 @@ func enter(msg: Dictionary) -> void:
 
 func exit() -> void:
 	enemy.hitbox.deactivate()
+	enemy.body.set_trail(false)
 
 
 func physics_update(delta: float) -> void:
@@ -98,11 +99,13 @@ func _set_phase(phase: Phase) -> void:
 		Phase.WINDUP:
 			_deflected_last = false
 			enemy.body.set_blocking(false)
-			enemy.body.play_timed(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
+			enemy.body.play_shaped(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
 			enemy.body.glint()
 			Sfx.play(&"glint", enemy.lock_point())
 		Phase.ACTIVE:
 			enemy.hitbox.activate(HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE))
+			enemy.body.set_trail(true)
 			Sfx.play(&"swing", enemy.lock_point())
 		Phase.AFTER:
 			enemy.hitbox.deactivate()
+			enemy.body.set_trail(false)

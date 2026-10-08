@@ -38,10 +38,13 @@ signal deflected
 
 @export_group("Guardia y desvío")
 ## Ventana de desvío (segundos tras pulsar LB).
-@export var deflect_window: float = 0.18
+@export var deflect_window: float = 0.2
 ## Ventana reducida si se pulsa LB repetidamente (castiga el "spam", como Sekiro).
-@export var deflect_window_spam: float = 0.08
-@export var spam_threshold: float = 0.35
+@export var deflect_window_spam: float = 0.117
+## Cada pulsación seguida resta esto a la ventana (castigo acumulativo, como Sekiro).
+@export var spam_penalty_step: float = 0.03
+## Segundos sin pulsar LB para que se borre el castigo.
+@export var spam_reset_time: float = 0.5
 ## La postura se recupera más rápido con la guardia alta.
 @export var block_posture_regen: float = 2.5
 
@@ -73,6 +76,7 @@ var lock_target: Enemy
 var engaged_enemy: Enemy
 
 var _last_block_press: float = -10.0
+var _spam_count: int = 0
 var _spawn_position: Vector3
 var _stick_flicked: bool = false
 
@@ -258,6 +262,7 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.hitstop(0.09)
 		CombatFX.shake(0.25)
 		body.play_reaction(&"block_impact", 0.22, 0.05, 1.8)
+		_spam_count = 0
 		deflected.emit()
 		return HitData.Result.DEFLECTED
 
@@ -297,9 +302,12 @@ func respawn() -> void:
 	camera_rig.recenter()
 
 
+## Ventana de desvío al estilo Sekiro: 0,2 s, que se achica (hasta ~7 fotogramas) si se pulsa
+## la guardia repetidamente. El castigo se borra tras medio segundo sin pulsar o al desviar con éxito.
 func _on_block_pressed() -> void:
 	var now: float = Time.get_ticks_msec() / 1000.0
-	deflect_timer = deflect_window_spam if now - _last_block_press < spam_threshold else deflect_window
+	_spam_count = _spam_count + 1 if now - _last_block_press < spam_reset_time else 0
+	deflect_timer = maxf(deflect_window - spam_penalty_step * _spam_count, deflect_window_spam)
 	_last_block_press = now
 
 

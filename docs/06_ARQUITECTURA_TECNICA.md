@@ -65,6 +65,21 @@ Para regenerarlas en un equipo nuevo:
 
 El cuerpo animado es `scenes/characters/mannequin.tscn` (árbol de animación armado en código).
 
+### Taller de animación (`tests/anim_polish.gd`)
+Retoca las animaciones de Mixamo sobre sus datos, al construir la biblioteca
+(`tests/build_anim_library.gd`, tabla `POLISH`):
+- **hips_drop**: baja la cadera (postura más firme, estilo kenjutsu/Sekiro).
+- **cut_emphasis**: en cada impacto la cadera y el pecho giran más hacia el tajo, con un contragiro
+  previo (anticipación). El tajo "nace de la cadera".
+- Las piernas se recalculan con **IK de dos huesos**: los pies quedan exactamente donde estaban.
+- Verificación: `tests/polish_check.gd` (números) y `tests/polish_preview.tscn` (capturas antes/después).
+
+Además, en el juego: **paso real** (root motion) en ataques, **ritmo de esgrima** en cada tajo
+(`Mannequin.play_shaped`: preparación lenta → impacto seco → peso) y **estela del filo**.
+
+Nota: Blender (`G:\Herramientas\Blender`) cambia la orientación interna de los huesos al exportar FBX,
+por eso los retoques se hacen dentro de Godot. Blender queda para modelado.
+
 ## Pruebas automáticas
 
 Simulan el mando y comprueban que todo funciona. Se ejecutan tras cada cambio:

@@ -40,6 +40,12 @@ var _mix: float = 0.0  # 0 = slot A, 1 = slot B
 var _mix_target: float = 0.0
 var _slot_b: bool = false
 var _action_name: StringName = &""
+## Ritmo del ataque en curso (ver play_shaped).
+var _shape_active: bool = false
+var _shape_elapsed: float = 0.0
+var _shape_seconds: float = 0.0
+var _shape_base: float = 1.0
+var _trail: SwordTrail
 ## Desplazamiento acumulado de las animaciones (en el mundo) pendiente de aplicar.
 var _root_motion: Vector3 = Vector3.ZERO
 
@@ -47,6 +53,10 @@ var _root_motion: Vector3 = Vector3.ZERO
 func _ready() -> void:
 	_paint()
 	_glint.visible = false
+	_trail = SwordTrail.new()
+	_trail.base_node = $YBot/Skeleton3D/RightHand/Sword/Guard
+	_trail.tip_node = _glint
+	add_child(_trail)
 	var player := _bot.get_node("AnimationPlayer") as AnimationPlayer
 	if not ResourceLoader.exists(LIBRARY_PATH):
 		push_warning("Falta %s: ejecuta tests/build_anim_library.gd" % LIBRARY_PATH)
@@ -66,6 +76,7 @@ func _process(delta: float) -> void:
 	_tree.set("parameters/block_blend/blend_amount", _block)
 	_tree.set("parameters/act_mix/blend_amount", _mix)
 	_tree.set("parameters/act_blend/blend_amount", _action)
+	_update_shape(delta)
 
 
 # --- API -------------------------------------------------------------------------
@@ -87,6 +98,7 @@ func set_blocking(enabled: bool) -> void:
 func play_action(anim: StringName, from: float = 0.0, speed: float = 1.0, fade: float = 0.08) -> void:
 	if _tree == null:
 		return
+	_shape_active = false
 	_slot_b = not _slot_b if _action > 0.01 else false
 	var slot: String = "b" if _slot_b else "a"
 	(_tree.tree_root.get_node("anim_" + slot) as AnimationNodeAnimation).animation = &"m/" + anim
@@ -106,13 +118,49 @@ func play_timed(anim: StringName, from: float, impact: float, seconds: float, fa
 	play_action(anim, from, clampf((impact - from) / maxf(seconds, 0.01), 0.4, 3.0), fade)
 
 
+## Como play_timed pero con ritmo de esgrima: la preparación arranca lenta y acelera hasta un
+## impacto seco (llega exactamente en `seconds`); después, un instante de "peso" antes de recuperar.
+## La velocidad sigue v(u) = base·(0,35 + 1,3·u), cuya integral en [0,1] es 1: el impacto no se mueve.
+func play_shaped(anim: StringName, from: float, impact: float, seconds: float, fade: float = 0.05) -> void:
+	_shape_base = clampf((impact - from) / maxf(seconds, 0.01), 0.3, 3.0)
+	play_action(anim, from, _shape_base * 0.35, fade)
+	_shape_active = true
+	_shape_elapsed = 0.0
+	_shape_seconds = seconds
+
+
+func _update_shape(delta: float) -> void:
+	if not _shape_active:
+		return
+	_shape_elapsed += delta
+	var u: float = _shape_elapsed / _shape_seconds
+	var speed: float
+	if u < 1.0:
+		speed = _shape_base * (0.35 + 1.3 * u)
+	else:
+		# Tras el impacto: el filo "pesa" y frena, luego vuelve a velocidad normal.
+		var after: float = _shape_elapsed - _shape_seconds
+		speed = lerpf(_shape_base * 0.45, 1.0, clampf(after / 0.2, 0.0, 1.0))
+		if after > 0.2:
+			_shape_active = false
+	_tree.set("parameters/scale_%s/scale" % ("b" if _slot_b else "a"), speed)
+
+
 func set_action_speed(speed: float) -> void:
+	_shape_active = false
 	if _tree:
 		_tree.set("parameters/scale_%s/scale" % ("b" if _slot_b else "a"), speed)
 
 
 ## Vuelve a la locomoción mezclando durante `fade` segundos.
+## Estela del filo (solo durante el tajo).
+func set_trail(enabled: bool) -> void:
+	if _trail:
+		_trail.emitting = enabled
+
+
 func stop_action(fade: float = 0.2) -> void:
+	set_trail(false)
 	_action_target = 0.0
 	_action_fade = fade
 	_action_name = &""

@@ -15,7 +15,8 @@ func enter(msg: Dictionary) -> void:
 	_struck = false
 	player.invulnerable = true
 	# El tajo final de la animación coincide con el instante del golpe.
-	player.body.play_timed(&"slash_c", 0.4, 0.83, STRIKE_AT)
+	player.body.play_shaped(&"slash_c", 0.4, 0.83, STRIKE_AT)
+	player.body.set_trail(true)
 
 
 func exit() -> void:
