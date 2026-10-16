@@ -54,6 +54,12 @@ func _run() -> void:
 
 	# 4. Atacar: el soldado bloquea (sube su postura) o recibe daño
 	await _wait(0.4)
+	# Normaliza el alcance tras los empujes de los desvíos para que esta parte mida el ataque.
+	var toward_enemy: Vector3 = (_enemy.global_position - _player.global_position).normalized()
+	_enemy.global_position = _player.global_position + toward_enemy * 1.65
+	_enemy.reset_physics_interpolation()
+	_player.snap_facing(toward_enemy)
+	_player.velocity = Vector3.ZERO
 	var posture_before: float = _enemy.posture.current
 	var health_before: float = _enemy.health.current
 	for i in 3:

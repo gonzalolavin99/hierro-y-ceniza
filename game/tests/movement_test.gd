@@ -26,6 +26,18 @@ func _run() -> void:
 	await _wait(0.5)
 	_check("Empieza en el suelo", _player.is_on_floor() and _state() == &"Ground")
 
+	# Regresión: el perfil de velocidad del paso debe detenerse al cumplir su duración.
+	if _player.has_method("dash_speed_at"):
+		_check("Paso rápido parte con impulso", absf(float(_player.call("dash_speed_at", 0.0)) - 25.714) < 0.02)
+		_check("Paso rápido reduce velocidad a mitad", absf(float(_player.call("dash_speed_at", 0.14)) - 12.857) < 0.02)
+		_check("Paso rápido llega a cero al final", absf(float(_player.call("dash_speed_at", 0.28))) < 0.02)
+		_check("Fotograma tardío no invierte el paso", absf(float(_player.call("dash_speed_at", 0.31))) < 0.02)
+	else:
+		_check("Paso rápido parte con impulso", false)
+		_check("Paso rápido reduce velocidad a mitad", false)
+		_check("Paso rápido llega a cero al final", false)
+		_check("Fotograma tardío no invierte el paso", false)
+
 	# Caminar hacia delante 1 s
 	var start: Vector3 = _player.global_position
 	Input.action_press("move_forward")
@@ -33,6 +45,9 @@ func _run() -> void:
 	var speed: float = Vector2(_player.velocity.x, _player.velocity.z).length()
 	_check("Corre a ~5,5 m/s (%.2f)" % speed, absf(speed - _player.run_speed) < 0.3)
 	_check("Avanza hacia -Z (%.2f m)" % (start.z - _player.global_position.z), start.z - _player.global_position.z > 4.0)
+	# El modelo de Mixamo mira hacia +Z de su nodo: debe coincidir con hacia dónde avanza el personaje.
+	var body_forward: Vector3 = _player.body.get_node("YBot").global_basis.z.normalized()
+	_check("El cuerpo mira hacia donde avanza (%.2f)" % body_forward.dot(_player.get_facing()), body_forward.dot(_player.get_facing()) > 0.9)
 	Input.action_release("move_forward")
 	await _wait(0.4)
 
@@ -43,9 +58,21 @@ func _run() -> void:
 	_check("Invulnerable al inicio", _player.invulnerable)
 	await _wait(0.45)
 	var dist: float = start.distance_to(_player.global_position)
-	_check("Paso atrás de ~3,6 m (%.2f)" % dist, absf(dist - _player.dash_distance) < 0.5)
+	_check("Paso atrás de ~3,6 m (%.2f)" % dist, absf(dist - _player.dash_distance) < 0.1)
 	_check("Paso hacia atrás (+Z)", _player.global_position.z > start.z)
 	_check("Ya no es invulnerable", not _player.invulnerable)
+	_check("Termina la esquiva en Ground", _state() == &"Ground")
+
+	# Una pulsación breve de guardia cerca del final no debería perderse.
+	await _tap("dodge")
+	await _wait(_player.dash_duration * 0.78)
+	Input.action_press("block")
+	await get_tree().physics_frame
+	Input.action_release("block")
+	await _wait(0.1)
+	_check("La guardia breve queda guardada al salir de la esquiva", _state() == &"Block")
+	await _wait(0.15)
+	_check("La guardia breve se suelta sola", _state() == &"Ground")
 
 	# Paso + mantener = correr
 	Input.action_press("move_left")
@@ -97,6 +124,25 @@ func _run() -> void:
 	await _wait(2.0)
 	Input.action_release("move_forward")
 	_check("Sube las escaleras (altura %.2f)" % _player.global_position.y, _player.global_position.y > 2.3)
+
+	# Rampa de 20 grados: el cuerpo visual debería acompañar la inclinación del suelo.
+	_player.global_position = Vector3(-12.0, 0.9, -4.0)
+	_player.reset_physics_interpolation()
+	await _wait(0.4)
+	Input.action_press("move_forward")
+	await _wait(1.0)
+	Input.action_release("move_forward")
+	var visual_up: Vector3 = _player.body.get_node("YBot").global_basis.y.normalized()
+	var slope_alignment: float = visual_up.dot(_player.get_floor_normal())
+	_check("Sube la rampa de 20 grados (altura %.2f)" % _player.global_position.y, _player.global_position.y > 1.4)
+	_check("El cuerpo visual acompaña la rampa (%.3f)" % slope_alignment, _player.is_on_floor() and slope_alignment > 0.99)
+	var ramp_forward: Vector3 = _player.body.get_node("YBot").global_basis.z.normalized()
+	_check("En la rampa sigue mirando hacia delante (%.2f)" % ramp_forward.dot(_player.get_facing()), ramp_forward.dot(_player.get_facing()) > 0.85)
+	var skeleton: Skeleton3D = _player.body.get_node("YBot/Skeleton3D") as Skeleton3D
+	var foot_modifier: Node = skeleton.get_node_or_null("FootGrounding")
+	_check("El apoyo individual de pies está activo", foot_modifier is SkeletonModifier3D and bool(foot_modifier.get("active")))
+	await _wait(0.1)
+	_check("El apoyo encuentra el suelo de la rampa", foot_modifier != null and int(foot_modifier.get("grounded_legs_last_frame")) > 0)
 
 
 func _state() -> StringName:

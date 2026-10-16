@@ -56,9 +56,11 @@ func _physics_process(delta: float) -> void:
 	velocity.y -= gravity * delta
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
+	# El empujón se suma solo durante este movimiento: no se acumula en la velocidad.
 	velocity += push
-	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	move_and_slide()
+	velocity -= push
+	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	body.update_locomotion(velocity, get_facing(), walk_speed * 1.4)
 
 

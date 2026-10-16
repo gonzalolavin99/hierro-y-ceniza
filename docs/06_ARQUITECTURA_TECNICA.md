@@ -74,6 +74,11 @@ Retoca las animaciones de Mixamo sobre sus datos, al construir la biblioteca
 - Las piernas se recalculan con **IK de dos huesos**: los pies quedan exactamente donde estaban.
 - Verificación: `tests/polish_check.gd` (números) y `tests/polish_preview.tscn` (capturas antes/después).
 
+
+### Apoyo de pies en rampas
+`scenes/characters/foot_grounding.gd` implementa `FootGroundingModifier`, un `SkeletonModifier3D` que se procesa después de la mezcla de animación. Consulta el piso bajo cada tobillo y corrige solo los que están cerca; el cálculo IK de dos huesos conserva la flexión de la rodilla. No cambia la cápsula física. Hace dos rayos al suelo por personaje activo.
+
+Prueba automatizada en `tests/movement_test.gd`: confirma que el modificador está activo y detecta la rampa de 20°. Ejecutar también `movement_test.tscn` y `combat_test.tscn` después de cambios del maniquí.
 Además, en el juego: **paso real** (root motion) en ataques, **ritmo de esgrima** en cada tajo
 (`Mannequin.play_shaped`: preparación lenta → impacto seco → peso) y **estela del filo**.
 
@@ -82,7 +87,8 @@ por eso los retoques se hacen dentro de Godot. Blender queda para modelado.
 
 ## Pruebas automáticas
 
-Simulan el mando y comprueban que todo funciona. Se ejecutan tras cada cambio:
+Simulan el mando y comprueban que todo funciona. En los ajustes nuevos, primero se escribe una prueba que detecta el fallo o fija el comportamiento esperado; luego se implementa el cambio y se vuelven a ejecutar las pruebas relacionadas. La prueba automática mide reglas y números; la sensación de control y la lectura visual también requieren la prueba manual del jugador.
+
 
 ```
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/movement_test.tscn

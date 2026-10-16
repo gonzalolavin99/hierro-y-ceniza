@@ -34,5 +34,5 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Air")
 	elif Input.is_action_just_pressed("dodge"):
 		machine.transition_to(&"Dash")
-	elif not Input.is_action_pressed("block"):
+	elif not player.wants_block():
 		machine.transition_to(&"Ground")

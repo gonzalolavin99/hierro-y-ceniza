@@ -42,11 +42,12 @@ func exit() -> void:
 
 
 func physics_update(delta: float) -> void:
+	var previous_elapsed: float = _elapsed
 	_elapsed += delta
-	var t: float = _elapsed / player.dash_duration
-
+	var t: float = clampf(_elapsed / maxf(player.dash_duration, 0.01), 0.0, 1.0)
 	# Rápido al principio, frena al final (el promedio da exactamente dash_distance).
-	var speed: float = player.dash_distance / player.dash_duration * 2.0 * (1.0 - t)
+	# El cálculo vive en Player para poder comprobar su curva con una prueba automática.
+	var speed: float = player.dash_speed_for_interval(previous_elapsed, _elapsed, delta)
 	player.velocity.x = _direction.x * speed
 	player.velocity.z = _direction.z * speed
 	player.apply_gravity(delta)

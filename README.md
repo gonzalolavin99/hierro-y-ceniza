@@ -13,7 +13,7 @@ contado por la voz de un anciano que quizá no sea tan inocente como parece.
 | 0 · Preparación | ✅ |
 | 1 · Movimiento (paso rápido, correr, salto, cámara) | ✅ |
 | 2 · Combate básico (combo, guardia, desvío, golpe mortal) | ✅ |
-| 3 · Pulido del combate: sonido y animaciones | 🔨 |
+| 3 · Pulido del combate: sonido, animaciones Mixamo retocadas, repertorio de 9 movimientos, esquivas, apoyo de pies | 🔨 |
 
 Plan completo en [docs/05_ROADMAP.md](docs/05_ROADMAP.md).
 

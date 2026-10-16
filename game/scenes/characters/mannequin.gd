@@ -23,12 +23,15 @@ const UPPER_BODY: Array[String] = [
 @export var joints_color: Color = Color(0.15, 0.13, 0.12)
 ## Qué tan rápido entran/salen las mezclas (por segundo).
 @export var block_blend_speed: float = 12.0
+@export var ground_alignment_speed: float = 12.0
 
 @onready var _bot: Node3D = $YBot
 @onready var _skeleton: Skeleton3D = $YBot/Skeleton3D
 @onready var _glint: Node3D = $YBot/Skeleton3D/RightHand/Sword/Glint
 
 var _tree: AnimationTree
+## Orientación base del modelo de Mixamo (girado 180°), guardada al iniciar.
+var _bot_facing: Basis
 var _loco_pos: Vector2 = Vector2.ZERO
 var _loco_target: Vector2 = Vector2.ZERO
 var _block: float = 0.0
@@ -55,6 +58,7 @@ var _root_motion: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
+	_bot_facing = _bot.basis
 	_paint()
 	_glint.visible = false
 	_trail = SwordTrail.new()
@@ -186,6 +190,22 @@ func play_reaction(anim: StringName, duration: float, from: float = 0.0, speed: 
 	play_action(anim, from, speed, 0.04)
 	get_tree().create_timer(duration, false).timeout.connect(stop_action_if.bind(anim, 0.15))
 
+
+## Inclina solo el cuerpo visual para acompañar el suelo sin girar la cápsula de colisión.
+func align_to_ground(floor_normal: Vector3, grounded: bool, delta: float) -> void:
+	var normal_world: Vector3 = floor_normal.normalized() if grounded else Vector3.UP
+	var normal_local: Vector3 = (global_basis.inverse() * normal_world).normalized()
+	var forward: Vector3 = Vector3(0.0, 0.0, -1.0)
+	forward -= normal_local * forward.dot(normal_local)
+	if forward.length_squared() < 0.0001:
+		forward = Vector3(0.0, 0.0, -1.0)
+	forward = forward.normalized()
+	var right: Vector3 = forward.cross(normal_local).normalized()
+	var target_basis: Basis = Basis(right, normal_local, -forward).orthonormalized()
+	# El modelo de Mixamo mira hacia +Z: hay que conservar su giro de 180° sobre la inclinación.
+	target_basis = target_basis * _bot_facing
+	var weight: float = 1.0 - exp(-ground_alignment_speed * delta)
+	_bot.basis = _bot.basis.slerp(target_basis, weight)
 
 ## Ajusta la locomoción según la velocidad real del personaje.
 ## `facing`: hacia dónde mira; `reference_speed`: velocidad que corresponde a "correr" (1.0).

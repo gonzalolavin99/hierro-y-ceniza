@@ -29,6 +29,10 @@
 4. Lo que yo no puedo hacer: crear cuentas (Adobe/Mixamo), y ver el juego en movimiento —
    para eso me describes lo que pasa o me pasas capturas/clips.
 
+## Pruebas automáticas (TDD)
+
+Cada mejora medible empieza con una prueba automática que reproduce el problema o fija el comportamiento esperado. Primero verificamos que falle; después hacemos el cambio y repetimos las pruebas relacionadas. Estas pruebas complementan tu revisión con F5: los números y las reglas se pueden automatizar, pero la sensación de movimiento y animación la validas tú. Los casos y resultados se anotan en `docs/08_MEJORAS_FLUIDEZ_Y_ANIMACION.md`.
+
 ## Reglas del proyecto
 
 - No avanzamos de hito sin tu OK.

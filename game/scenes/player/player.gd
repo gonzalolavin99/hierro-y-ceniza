@@ -70,6 +70,7 @@ var root_motion_velocity: Vector3 = Vector3.ZERO
 var push: Vector3 = Vector3.ZERO
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
+var block_buffer_timer: float = 0.0
 var attack_buffer_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var deflect_timer: float = 0.0
@@ -95,6 +96,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	coyote_timer = coyote_time if is_on_floor() else maxf(coyote_timer - delta, 0.0)
 	jump_buffer_timer = input_buffer_time if Input.is_action_just_pressed("jump") else maxf(jump_buffer_timer - delta, 0.0)
+	block_buffer_timer = input_buffer_time if Input.is_action_just_pressed("block") else maxf(block_buffer_timer - delta, 0.0)
 	attack_buffer_timer = input_buffer_time if Input.is_action_just_pressed("attack") else maxf(attack_buffer_timer - delta, 0.0)
 	dash_cooldown_timer = maxf(dash_cooldown_timer - delta, 0.0)
 	deflect_timer = maxf(deflect_timer - delta, 0.0)
@@ -104,9 +106,12 @@ func _physics_process(delta: float) -> void:
 	_update_lock_on()
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
+	# El empujón se suma solo durante este movimiento: no se acumula en la velocidad.
 	velocity += push
-	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	move_and_slide()
+	velocity -= push
+	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
+	body.align_to_ground(get_floor_normal(), is_on_floor(), delta)
 	body.update_locomotion(velocity, get_facing(), run_speed)
 
 	DebugOverlay.watch("Estado", state_machine.current.name)
@@ -131,6 +136,22 @@ func get_facing() -> Vector3:
 func apply_gravity(delta: float) -> void:
 	var multiplier: float = fall_gravity_multiplier if velocity.y < 0.0 else 1.0
 	velocity.y -= gravity * multiplier * delta
+
+
+## Velocidad del paso rápido en un instante; se limita a cero fuera de su duración.
+func dash_speed_at(elapsed: float) -> float:
+	var duration: float = maxf(dash_duration, 0.01)
+	var progress: float = clampf(elapsed / duration, 0.0, 1.0)
+	return dash_distance / duration * 2.0 * (1.0 - progress)
+
+
+## Velocidad media de este fotograma para conservar la distancia exacta del paso.
+func dash_speed_for_interval(previous_elapsed: float, elapsed: float, delta: float) -> float:
+	var duration: float = maxf(dash_duration, 0.01)
+	var start: float = clampf(previous_elapsed / duration, 0.0, 1.0)
+	var finish: float = clampf(elapsed / duration, 0.0, 1.0)
+	var distance: float = dash_distance * (2.0 * (finish - start) - (finish * finish - start * start))
+	return distance / maxf(delta, 0.0001)
 
 
 ## Acelera la velocidad horizontal hacia `direction * speed`.
@@ -210,6 +231,10 @@ func do_jump() -> void:
 
 func wants_attack() -> bool:
 	return attack_buffer_timer > 0.0
+
+
+func wants_block() -> bool:
+	return Input.is_action_pressed("block") or block_buffer_timer > 0.0
 
 
 func consume_attack() -> void:

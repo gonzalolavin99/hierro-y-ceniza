@@ -3,6 +3,8 @@
 Cada hito termina con una **PRUEBA** que haces tú y un **OK** (o lista de cambios). No avanzamos
 sin tu OK. Los tiempos son estimaciones de calendario trabajando unas horas por semana.
 
+Las pruebas manuales se complementan con pruebas automáticas en `game/tests/`. Para cada ajuste medible se registra primero una prueba que reproduce el fallo; tras el cambio se vuelven a ejecutar las pruebas relacionadas. Los comandos y resultados se guardan en la documentación del paso. La prueba automática no reemplaza tu OK visual y de control.
+
 ---
 
 ## Hito 0 — Preparación (1 sesión)
@@ -40,7 +42,7 @@ velocidades y tiempos hasta que digas OK.
 - [x] **Sonido**: clang de desvío "que da dopamina" (estilo Sekiro), bloqueo, impacto, tajos al aire, pasos.
 - [x] Animaciones Mixamo con un maniquí neutro (no es el diseño final de Kael): correr, paso rápido,
       saltar, tajos, guardia, desvío, golpe recibido, golpe mortal, muerte.
-- [~] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela). Hecho también: esquivas direccionales, reacciones según dirección, choque que empuja a ambos. Falta: pies en rampas.
+- [~] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela, esquivas direccionales, reacciones según dirección, choque que empuja a ambos, inclinación corporal y apoyo individual de pies en rampas). Falta revisión manual del jugador.
 - [ ] Cámara: suavizado al fijar, encuadre en peleas cercanas.
 
 **🧪 PRUEBA:** ¿se siente "como un juego de verdad" y no como cápsulas?

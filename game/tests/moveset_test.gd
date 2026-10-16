@@ -11,7 +11,8 @@ func _ready() -> void:
 	add_child(load("res://scenes/levels/test_level.tscn").instantiate())
 	_player = get_tree().get_first_node_in_group("player")
 	_enemy = get_tree().get_first_node_in_group("enemies")
-	_enemy.set_physics_process(false)  # Quieto, en guardia: solo recibe
+	# En guardia y sin atacar: solo recibe (se mueve, para poder medir los empujones).
+	_enemy.aggro_range = 0.0
 	await _wait(0.3)
 	for move in PlayerMoves.MOVES:
 		await _try(move)
@@ -41,6 +42,8 @@ func _try(move: StringName) -> void:
 	_check("%-14s termina (%s)" % [move, _player.state_machine.current.name], _player.state_machine.current.name in [&"Ground", &"Air"])
 	if move == &"kick":
 		_check("la patada rompe la guardia", _enemy.state_name() == &"Recoil" or _enemy.state_name() == &"Idle" and _enemy.posture.current > posture0)
+		var pushed: float = Vector2(_enemy.global_position.x, _enemy.global_position.z - 17.0).length()
+		_check("la patada empuja poco (%.2f m)" % pushed, pushed < 3.0)
 
 
 func _wait(s: float) -> void:

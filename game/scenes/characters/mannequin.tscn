@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/characters/mannequin.gd" id="1_mannequin"]
 [ext_resource type="PackedScene" path="res://assets/animations/mixamo/y_bot.fbx" id="2_ybot"]
+[ext_resource type="Script" path="res://scenes/characters/foot_grounding.gd" id="3_foot_grounding"]
 
 [sub_resource type="StandardMaterial3D" id="blade_material"]
 albedo_color = Color(0.8, 0.8, 0.83, 1)
@@ -50,6 +51,9 @@ script = ExtResource("1_mannequin")
 
 [node name="YBot" parent="." instance=ExtResource("2_ybot")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="FootGrounding" type="SkeletonModifier3D" parent="YBot/Skeleton3D"]
+script = ExtResource("3_foot_grounding")
 
 [node name="RightHand" type="BoneAttachment3D" parent="YBot/Skeleton3D"]
 bone_name = "mixamorig_RightHand"

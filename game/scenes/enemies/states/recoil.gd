@@ -8,7 +8,7 @@ var _elapsed: float
 
 func enter(_msg: Dictionary) -> void:
 	_elapsed = 0.0
-	enemy.velocity -= enemy.get_facing() * 3.0
+	enemy.push -= enemy.get_facing() * 2.0
 	enemy.body.set_blocking(false)
 	enemy.body.play_action(&"hit", 0.0, 1.3, 0.05)
 

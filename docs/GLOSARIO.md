@@ -19,6 +19,9 @@
 | **FSM (máquina de estados)** | Forma de organizar comportamiento: el personaje está en UN estado (atacando, esquivando…) y pasa a otro según reglas. |
 | **IA** | En juegos, el comportamiento de los enemigos (no tiene que ver con IA generativa). |
 | **Vertical slice** | Una porción pequeña del juego hecha con calidad final, para probar que la idea funciona. |
+| **TDD** | Forma de trabajo: primero se escribe una prueba que falla; luego se cambia el juego hasta que la prueba pase. |
+| **IK de dos huesos** | Cálculo que mueve dos segmentos unidos, como muslo y pierna, para colocar el tobillo conservando la flexión de la rodilla. |
+| **Modificador de esqueleto** | Nodo de Godot que ajusta la pose de los huesos después de la animación. |
 | **Prototipo** | Versión fea (cubos) para probar si algo es divertido. |
 | **Git / commit** | Sistema de historial; cada commit es un punto al que se puede volver. |
 | **CC0** | Licencia "dominio público": puedes usar el asset para lo que quieras, incluso vender. |
