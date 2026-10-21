@@ -125,6 +125,11 @@ func _physics_process(delta: float) -> void:
 func get_move_direction() -> Vector3:
 	var input: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var yaw: float = camera_rig.get_yaw()
+	# Con objetivo fijado, "adelante" es hacia el enemigo (la cámara mira un poco en diagonal desde un lado).
+	if lock_target:
+		var to: Vector3 = direction_to_lock_target()
+		if to.length_squared() > 0.0:
+			yaw = atan2(-to.x, -to.z)
 	return Vector3(input.x, 0.0, input.y).rotated(Vector3.UP, yaw)
 
 

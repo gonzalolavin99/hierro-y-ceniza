@@ -15,7 +15,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 0 · Preparación | ✅ OK del jugador |
 | 1 · Movimiento | ✅ OK del jugador |
 | 2 · Combate básico | ✅ OK del jugador |
-| 3 · Pulido del combate I (sensación) | 🔨 Casi listo. El jugador dijo "estamos súper bien". Falta: **cámara** (suavizado al fijar, encuadre en peleas cercanas) y su OK final |
+| 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | 🔨 Empezado: repertorio de 9 movimientos hecho. Faltan ataques peligrosos, pisotón, más técnicas, armas secundarias, voces |
 | 5–9 | Pendientes (IA lista, loop souls, historia, primer jefe, vertical slice) |
 
@@ -88,7 +88,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

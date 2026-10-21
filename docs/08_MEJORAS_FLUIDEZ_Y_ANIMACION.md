@@ -118,4 +118,21 @@ Para cada ajuste medible, primero añadimos una prueba que falla por el comporta
 | 6. Patada lanzaba lejos | Corregido | Empujón medido: 0,93 m |
 | 7. Pies flotando en rampa | Corregido; falta prueba del jugador | Tobillo a 10,7 cm, pie levantado respetado |
 | 8. Transiciones de locomoción | Pendiente | |
+| 10. Cámara al fijar objetivo | ✅ OK del jugador | `camera_test`: giro inicial ≤ 150 °/s (antes 577), sin latigazos (máx ~300 °/s); a 2,5 m, a 1,4 m y rodeando, ambos en pantalla y el jugador no tapa al enemigo (antes lo tapaba) |
 | 9. Ataques y reacciones | Pendiente | |
+
+### Cámara al fijar objetivo (paso 10)
+
+- **Transición suave:** al fijar, la cámara arranca despacio y acelera (curva en S de 0,4 s); al soltar, vuelve
+  poco a poco a su sitio, sin saltos.
+- **Vista por encima del hombro:** con objetivo fijado, el centro de la cámara se aparta 1,2 m a la derecha del
+  jugador y se adelanta un poco hacia el enemigo. El enemigo queda en el centro de la pantalla y el jugador a la
+  izquierda, así no lo tapa.
+- **Peleas cercanas:** a menos de 3 m la cámara se aleja 0,3 m y mira algo más desde arriba.
+- **Rodear al enemigo:** la cámara acompaña el giro que ya está ocurriendo (anticipación) y solo suaviza el resto,
+  para no quedarse atrás.
+- **Paredes:** si el desplazamiento lateral chocaría con una pared, se acorta (la cámara no la atraviesa).
+- **Movimiento con objetivo fijado:** "adelante" es ahora la línea jugador→enemigo, no la cámara (que mira en
+  diagonal). Sin esto, al rodear el jugador se iba metiendo en espiral hacia el enemigo.
+- Ajustes en `camera_rig.gd`: `lock_blend_time`, `lock_side_offset`, `lock_focus_bias`, `close_range`,
+  `close_extra_length`, `close_extra_pitch_degrees`.

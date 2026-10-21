@@ -42,8 +42,10 @@ velocidades y tiempos hasta que digas OK.
 - [x] **Sonido**: clang de desvío "que da dopamina" (estilo Sekiro), bloqueo, impacto, tajos al aire, pasos.
 - [x] Animaciones Mixamo con un maniquí neutro (no es el diseño final de Kael): correr, paso rápido,
       saltar, tajos, guardia, desvío, golpe recibido, golpe mortal, muerte.
-- [~] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela, esquivas direccionales, reacciones según dirección, choque que empuja a ambos, inclinación corporal y apoyo individual de pies en rampas). Falta revisión manual del jugador.
-- [ ] Cámara: suavizado al fijar, encuadre en peleas cercanas.
+- [x] Transiciones suaves (hecho: mezclas, paso real, ritmo de esgrima, postura baja, giro de cadera, estela, esquivas direccionales, reacciones según dirección, choque que empuja a ambos, inclinación corporal y apoyo individual de pies en rampas).
+- [x] Cámara: suavizado al fijar, encuadre en peleas cercanas (vista por encima del hombro).
+
+✅ **Hito 3 cerrado con OK del jugador (2026-10-20).**
 
 **🧪 PRUEBA:** ¿se siente "como un juego de verdad" y no como cápsulas?
 

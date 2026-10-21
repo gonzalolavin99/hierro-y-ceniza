@@ -93,6 +93,11 @@ Simulan el mando y comprueban que todo funciona. En los ajustes nuevos, primero 
 ```
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/movement_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/combat_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/moveset_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/camera_test.tscn
 ```
+
+`camera_test` acepta una carpeta (con ventana, sin `--headless`) para guardar capturas del encuadre:
+`... --path game res://tests/camera_test.tscn -- <carpeta>`.
 
 El escenario de pruebas se genera con `python tools/gen_test_level.py` (no editarlo a mano).
