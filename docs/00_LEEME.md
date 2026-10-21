@@ -12,6 +12,7 @@
 | [06_ARQUITECTURA_TECNICA](06_ARQUITECTURA_TECNICA.md) | Estructura del código y convenciones |
 | [07_DECISIONES_PENDIENTES](07_DECISIONES_PENDIENTES.md) | Lo que necesito que decidas |
 | [08_MEJORAS_FLUIDEZ_Y_ANIMACION](08_MEJORAS_FLUIDEZ_Y_ANIMACION.md) | Pulido paso a paso: qué se cambió, cómo se midió y qué probar |
+| [09_ESTADO_Y_TRASPASO](09_ESTADO_Y_TRASPASO.md) | **Empezar aquí en una sesión nueva**: estado, mapa del código, comandos, lecciones |
 | [GLOSARIO](GLOSARIO.md) | Términos de desarrollo explicados |
 
 ## Cómo trabajamos
