@@ -2,6 +2,7 @@ class_name EnemyAttackState
 extends EnemyState
 ## Ataque del enemigo: una secuencia de tajos. Antes de cada uno brilla el filo (aviso).
 ## Si el jugador desvía el ÚLTIMO tajo, el enemigo retrocede expuesto (Recoil).
+## Los tajos con "danger" son ataques peligrosos: aviso ROJO y no se pueden bloquear ni desviar.
 
 ## Cada tajo: preparación (windup), tajo activo, pausa tras el tajo, posturas del arma.
 ## anim/from/impact: animación, segundo en que empieza y segundo del impacto dentro de ella.
@@ -18,6 +19,24 @@ const PATTERNS: Dictionary[StringName, Array] = {
 		{"windup": 0.5, "active": 0.14, "after": 0.25, "anim": &"slash_d", "from": 0.0, "impact": 0.47},
 		{"windup": 0.45, "active": 0.12, "after": 0.8, "anim": &"combo_two_hand", "from": 1.8, "impact": 2.25},
 	],
+	# --- Ataques peligrosos (aviso rojo). Preparación más larga para que dé tiempo a reaccionar. ---
+	# Barrido bajo: hay que saltarlo.
+	&"sweep": [
+		{"windup": 0.75, "active": 0.2, "after": 0.8, "anim": &"sweep_low", "from": 0.0, "impact": 0.45, "danger": HitData.Kind.SWEEP},
+	],
+	# Estocada: pisar la hoja (paso rápido hacia él) o esquivar a un lado.
+	&"thrust": [
+		{"windup": 0.8, "active": 0.16, "after": 0.8, "anim": &"slash_d", "from": 0.0, "impact": 0.47, "danger": HitData.Kind.THRUST},
+	],
+	# Agarre: hay que esquivar o saltar; ni la guardia ni el desvío sirven.
+	&"grab": [
+		{"windup": 0.75, "active": 0.2, "after": 0.9, "anim": &"shove", "from": 0.1, "impact": 0.62, "danger": HitData.Kind.GRAB},
+	],
+	# Tajo normal que encadena una estocada (obliga a cambiar de la guardia al paso).
+	&"slash_thrust": [
+		{"windup": 0.55, "active": 0.14, "after": 0.25, "anim": &"slash_c", "from": 0.1, "impact": 0.83},
+		{"windup": 0.7, "active": 0.16, "after": 0.8, "anim": &"slash_d", "from": 0.0, "impact": 0.47, "danger": HitData.Kind.THRUST},
+	],
 	# Contraataque tras bloquear varios golpes: más rápido.
 	&"counter": [
 		{"windup": 0.3, "active": 0.12, "after": 0.25, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},
@@ -29,6 +48,10 @@ const DAMAGE: float = 20.0
 const POSTURE_DAMAGE: float = 22.0
 ## Postura que sufre este enemigo cuando le desvían un tajo.
 const DEFLECT_POSTURE: float = 24.0
+## Daño de los ataques peligrosos (más que un tajo normal: castigan no leer el aviso).
+const DANGER_DAMAGE: Dictionary = {HitData.Kind.SWEEP: 28.0, HitData.Kind.THRUST: 30.0, HitData.Kind.GRAB: 38.0}
+## Postura que sufre al pisarle la estocada.
+const COUNTER_POSTURE: float = 45.0
 
 enum Phase { WINDUP, ACTIVE, AFTER }
 
@@ -78,6 +101,20 @@ func physics_update(delta: float) -> void:
 					_set_phase(Phase.WINDUP)
 
 
+## Lo llama Enemy cuando el jugador pisa la hoja de la estocada: mucha postura y queda expuesto.
+func on_countered() -> void:
+	enemy.hitbox.deactivate()
+	enemy.body.set_trail(false)
+	enemy.posture.add(COUNTER_POSTURE)
+	if state_is_active() and not enemy.posture.is_broken:
+		machine.transition_to(&"Recoil", {"long": true})
+
+
+## ¿Está haciendo ahora un barrido? (para que el pisotón lo interrumpa)
+func is_sweeping() -> bool:
+	return state_is_active() and _swings[_index].get("danger", HitData.Kind.NORMAL) == HitData.Kind.SWEEP
+
+
 ## Lo llama Enemy cuando el jugador desvía este tajo.
 func on_deflected() -> void:
 	enemy.posture.add(DEFLECT_POSTURE)
@@ -101,10 +138,20 @@ func _set_phase(phase: Phase) -> void:
 			_deflected_last = false
 			enemy.body.set_blocking(false)
 			enemy.body.play_shaped(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
-			enemy.body.glint()
-			Sfx.play(&"glint", enemy.lock_point())
+			var kind: HitData.Kind = swing.get("danger", HitData.Kind.NORMAL)
+			if kind == HitData.Kind.NORMAL:
+				enemy.body.glint()
+				Sfx.play(&"glint", enemy.lock_point())
+			else:
+				enemy.body.danger_flash()
+				Sfx.play(&"danger", enemy.lock_point())
+				enemy.danger_warned.emit(kind)
 		Phase.ACTIVE:
-			enemy.hitbox.activate(HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE))
+			var hit := HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE)
+			hit.kind = swing.get("danger", HitData.Kind.NORMAL)
+			if hit.is_perilous():
+				hit.damage = DANGER_DAMAGE[hit.kind]
+			enemy.hitbox.activate(hit)
 			enemy.body.set_trail(true)
 			Sfx.play(&"swing", enemy.lock_point())
 		Phase.AFTER:

@@ -20,6 +20,11 @@ func enter(_msg: Dictionary) -> void:
 	else:
 		_direction = -player.get_facing()  # Sin dirección: paso atrás
 	player.invulnerable = true
+	player.dash_direction = _direction
+	# Un paso hacia el enemigo puede pisar la hoja de su estocada.
+	var to_enemy: Vector3 = player.direction_to_lock_target() if player.lock_target else player.get_facing()
+	if input_dir.length_squared() > 0.04 and _direction.dot(to_enemy) > 0.5:
+		player.counter_timer = player.counter_window
 	# Animación según hacia dónde va el paso respecto a hacia dónde mira el personaje.
 	var facing: Vector3 = player.get_facing()
 	var right: Vector3 = facing.cross(Vector3.UP)

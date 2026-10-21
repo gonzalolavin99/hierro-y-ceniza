@@ -4,6 +4,8 @@ extends CharacterBody3D
 ## es presionar su postura con ataques y desvíos hasta romperla, y entonces dar el golpe mortal.
 
 signal died
+## Empieza la preparación de un ataque peligroso (aviso rojo). kind: HitData.Kind.
+signal danger_warned(kind: int)
 
 @export var display_name: String = "Soldado"
 @export var walk_speed: float = 3.0
@@ -27,6 +29,9 @@ signal died
 @onready var state_machine: StateMachine = $StateMachine
 @onready var _lock_point: Marker3D = $LockPoint
 @onready var _body_collision: CollisionShape3D = $Collision
+
+## Postura que sufre al recibir un pisotón.
+const STOMP_POSTURE: float = 30.0
 
 var target: Player
 var blocks_in_a_row: int = 0
@@ -211,10 +216,32 @@ func respawn() -> void:
 	set_vulnerable(true)
 
 
+## Pisotón: el jugador salta sobre él y se impulsa en su cabeza/hombros. Daña la postura;
+## si estaba haciendo un barrido, lo interrumpe.
+func receive_stomp(attacker: Node3D) -> void:
+	if is_dead() or state_name() == &"Broken":
+		return
+	var at: Vector3 = global_position + Vector3.UP * 1.7
+	Sfx.play(&"block", at, -2.0)
+	CombatFX.hitstop(0.06)
+	CombatFX.shake(0.25)
+	var to_attacker: Vector3 = attacker.global_position - global_position
+	to_attacker.y = 0.0
+	body.flinch(to_attacker.normalized(), 1.0)
+	var attack := state_machine.current as EnemyAttackState
+	var interrupted: bool = attack != null and attack.is_sweeping()
+	posture.add(STOMP_POSTURE)
+	blocks_in_a_row = 0
+	if interrupted and not posture.is_broken:
+		state_machine.transition_to(&"Recoil")
+
+
 func _on_hit_landed(result: int, _hurtbox: Hurtbox) -> void:
 	var attack := state_machine.current as EnemyAttackState
 	if result == HitData.Result.DEFLECTED and attack:
 		attack.on_deflected()
+	elif result == HitData.Result.COUNTERED and attack:
+		attack.on_countered()
 
 
 func _on_posture_broken() -> void:

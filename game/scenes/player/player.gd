@@ -36,6 +36,14 @@ signal deflected
 @export var dash_invulnerable_time: float = 0.2
 @export var dash_cooldown: float = 0.15
 
+@export_group("Respuestas a ataques peligrosos")
+## Pisar la hoja: segundos desde el inicio de un paso HACIA el enemigo en que una estocada queda contrarrestada.
+@export var counter_window: float = 0.3
+## Pisotón: distancia horizontal máxima al enemigo para impulsarse sobre él en el aire.
+@export var stomp_range: float = 2.2
+## Pisotón: altura mínima de los pies sobre el suelo del enemigo.
+@export var stomp_min_height: float = 0.3
+
 @export_group("Guardia y desvío")
 ## Ventana de desvío (segundos tras pulsar LB).
 @export var deflect_window: float = 0.2
@@ -75,6 +83,12 @@ var attack_buffer_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var deflect_timer: float = 0.0
 var lock_target: Enemy
+## Tiempo restante para pisar la hoja (lo activa un paso rápido hacia delante).
+var counter_timer: float = 0.0
+## Dirección del último paso rápido.
+var dash_direction: Vector3 = Vector3.ZERO
+## Solo un pisotón por salto (se recupera al tocar el suelo).
+var can_stomp: bool = true
 ## Último enemigo con el que hubo contacto (para mostrar sus barras).
 var engaged_enemy: Enemy
 
@@ -100,6 +114,9 @@ func _physics_process(delta: float) -> void:
 	attack_buffer_timer = input_buffer_time if Input.is_action_just_pressed("attack") else maxf(attack_buffer_timer - delta, 0.0)
 	dash_cooldown_timer = maxf(dash_cooldown_timer - delta, 0.0)
 	deflect_timer = maxf(deflect_timer - delta, 0.0)
+	counter_timer = maxf(counter_timer - delta, 0.0)
+	if is_on_floor():
+		can_stomp = true
 	if Input.is_action_just_pressed("block"):
 		_on_block_pressed()
 
@@ -248,6 +265,33 @@ func consume_attack() -> void:
 
 # --- Combate ----------------------------------------------------------------
 
+## Pisotón (como Sekiro): en el aire, saltar otra vez sobre un enemigo cercano lo pisa,
+## le daña la postura y te impulsa hacia arriba. Devuelve true si lo hizo.
+func try_stomp() -> bool:
+	if not can_stomp or is_on_floor():
+		return false
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var enemy := node as Enemy
+		if enemy == null or enemy.is_dead():
+			continue
+		var to: Vector3 = enemy.global_position - global_position
+		var height: float = -to.y
+		to.y = 0.0
+		if to.length() <= stomp_range and height >= stomp_min_height:
+			can_stomp = false
+			jump_buffer_timer = 0.0
+			velocity.y = jump_velocity() * 0.85
+			# Se impulsa un poco hacia atrás, alejándose del enemigo.
+			var away: Vector3 = -to.normalized() if to.length() > 0.01 else -get_facing()
+			velocity.x = away.x * 2.5
+			velocity.z = away.z * 2.5
+			body.play_action(&"jump", 0.15, 1.3, 0.05)
+			enemy.receive_stomp(self)
+			engaged_enemy = enemy
+			return true
+	return false
+
+
 ## Si hay un enemigo expuesto cerca, inicia el golpe mortal. Devuelve true si lo hizo.
 func try_deathblow() -> bool:
 	var best: Enemy = null
@@ -275,7 +319,7 @@ func is_dead() -> bool:
 
 ## Lo llama el Hurtbox cuando un arma enemiga nos alcanza.
 func receive_hit(hit: HitData) -> int:
-	if is_dead() or invulnerable:
+	if is_dead():
 		return HitData.Result.IGNORED
 	var attacker_enemy := hit.attacker as Enemy
 	if attacker_enemy:
@@ -285,8 +329,21 @@ func receive_hit(hit: HitData) -> int:
 	to_attacker.y = 0.0
 	to_attacker = to_attacker.normalized()
 	var contact: Vector3 = global_position + Vector3.UP * 1.3 + to_attacker * 0.55
+
+	# Pisar la hoja: paso rápido HACIA el enemigo justo cuando llega su estocada.
+	if hit.kind == HitData.Kind.THRUST and counter_timer > 0.0 and dash_direction.dot(to_attacker) > 0.5:
+		counter_timer = 0.0
+		_on_thrust_countered(to_attacker)
+		return HitData.Result.COUNTERED
+	if invulnerable:
+		return HitData.Result.IGNORED
+	# El barrido y el agarre se evitan saltando.
+	if (hit.kind == HitData.Kind.SWEEP or hit.kind == HitData.Kind.GRAB) and not is_on_floor():
+		return HitData.Result.IGNORED
+
 	var facing_attacker: bool = get_facing().dot(to_attacker) > 0.2
-	var guarding: bool = state_machine.current.name == &"Block"
+	# Los ataques peligrosos (aviso rojo) no se pueden bloquear ni desviar.
+	var guarding: bool = state_machine.current.name == &"Block" and not hit.is_perilous()
 
 	if guarding and facing_attacker and deflect_timer > 0.0:
 		# ¡Desvío! Sin daño, casi sin postura propia; el atacante la sufre.
@@ -325,6 +382,17 @@ func receive_hit(hit: HitData) -> int:
 	elif state_machine.current.name != &"Stagger":
 		state_machine.transition_to(&"Hitstun", {"from": to_attacker})
 	return HitData.Result.HIT
+
+
+func _on_thrust_countered(to_attacker: Vector3) -> void:
+	var contact: Vector3 = global_position + to_attacker * 0.8 + Vector3.UP * 0.2
+	Sfx.play(&"counter", contact)
+	Sfx.play(&"deflect", contact, -6.0)
+	CombatFX.sparks(contact, 24, 6.0)
+	CombatFX.hitstop(0.12)
+	CombatFX.shake(0.35)
+	snap_facing(to_attacker)
+	state_machine.transition_to(&"Counter")
 
 
 func respawn() -> void:

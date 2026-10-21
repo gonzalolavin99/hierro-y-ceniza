@@ -181,6 +181,28 @@ def glint(variant):
     return reverb(x * attack, 0.4, 0.15)
 
 
+def danger(variant):
+    """Aviso de ataque peligroso: golpe grave + tono bajo que vibra. Muy distinto del 'ting' blanco."""
+    t = t_axis(1.0)
+    f = 82.0
+    tone = sum(a * np.sin(2 * np.pi * f * k * t + 0.3 * k) for k, a in [(1, 1.0), (2, 0.55), (3, 0.35), (5, 0.15)])
+    tremolo = 0.75 + 0.25 * np.sin(2 * np.pi * 11.0 * t)
+    swell = np.clip(t / 0.03, 0, 1) * env_exp(t, 0.35)
+    x = 0.7 * tone * tremolo * swell
+    x += thump(t, 120, 45, 0.12, 1.4)
+    x += 0.3 * ring(t, 620, [1.0, 1.41, 2.3], [1, 0.5, 0.25], [0.25, 0.15, 0.08], 1.008)
+    return reverb(x, 0.8, 0.22)
+
+
+def counter(variant):
+    """Pisar la hoja: pisotón seco sobre metal (hoja contra el suelo) + choque corto."""
+    t = t_axis(0.9)
+    x = thump(t, 140, 50, 0.08, 1.6)
+    x += noise_burst(t, 300, 2500, 0.04, 0.9)
+    x += 0.5 * ring(t, 880 + 40 * variant, [1.0, 1.37, 2.11, 2.9], [1, 0.7, 0.4, 0.2], [0.35, 0.25, 0.15, 0.08], 1.004)
+    return reverb(x, 0.7, 0.2)
+
+
 SOUNDS = {
     "deflect": (deflect, 3),
     "block": (block, 3),
@@ -189,6 +211,9 @@ SOUNDS = {
     "posture_break": (posture_break, 1),
     "deathblow": (deathblow, 2),
     "glint": (glint, 2),
+    # Nuevos al final: así los anteriores salen idénticos (mismo orden del generador aleatorio).
+    "danger": (danger, 1),
+    "counter": (counter, 2),
 }
 
 if __name__ == "__main__":

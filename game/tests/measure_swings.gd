@@ -10,7 +10,9 @@ var sk: Skeleton3D
 func _init() -> void:
 	var bot: Node3D = (load("res://assets/animations/mixamo/y_bot.fbx") as PackedScene).instantiate()
 	sk = bot.get_node("Skeleton3D")
-	for n in ANIMS:
+	# Se pueden pasar otros archivos: --script res://tests/measure_swings.gd -- slash_5 kick_2
+	var names: Array = OS.get_cmdline_user_args() if not OS.get_cmdline_user_args().is_empty() else ANIMS
+	for n in names:
 		var s: Node = (load("res://assets/animations/mixamo/%s.fbx" % n) as PackedScene).instantiate()
 		var anim: Animation = (s.get_node("AnimationPlayer") as AnimationPlayer).get_animation("mixamo_com")
 		var dt := 1.0 / 60.0

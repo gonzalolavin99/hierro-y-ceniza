@@ -118,7 +118,8 @@ Para cada ajuste medible, primero añadimos una prueba que falla por el comporta
 | 6. Patada lanzaba lejos | Corregido | Empujón medido: 0,93 m |
 | 7. Pies flotando en rampa | Corregido; falta prueba del jugador | Tobillo a 10,7 cm, pie levantado respetado |
 | 8. Transiciones de locomoción | Pendiente | |
-| 10. Cámara al fijar objetivo | ✅ OK del jugador | `camera_test`: giro inicial ≤ 150 °/s (antes 577), sin latigazos (máx ~300 °/s); a 2,5 m, a 1,4 m y rodeando, ambos en pantalla y el jugador no tapa al enemigo (antes lo tapaba) |
+| 10. Cámara al fijar objetivo | ✅ OK del jugador |
+| 11. Ataques peligrosos y pisotón | ✅ OK del jugador | `danger_test`: 19 comprobaciones (aviso solo en peligrosos, no se bloquean, cada respuesta funciona y las equivocadas no) | `camera_test`: giro inicial ≤ 150 °/s (antes 577), sin latigazos (máx ~300 °/s); a 2,5 m, a 1,4 m y rodeando, ambos en pantalla y el jugador no tapa al enemigo (antes lo tapaba) |
 | 9. Ataques y reacciones | Pendiente | |
 
 ### Cámara al fijar objetivo (paso 10)
@@ -136,3 +137,18 @@ Para cada ajuste medible, primero añadimos una prueba que falla por el comporta
   diagonal). Sin esto, al rodear el jugador se iba metiendo en espiral hacia el enemigo.
 - Ajustes en `camera_rig.gd`: `lock_blend_time`, `lock_side_offset`, `lock_focus_bias`, `close_range`,
   `close_extra_length`, `close_extra_pitch_degrees`.
+
+### Ataques peligrosos (paso 11, Hito 4)
+
+- **Aviso rojo** (distinto del destello blanco normal): destello rojo más grande en el filo, un "!" rojo sobre la
+  cabeza y un sonido grave que vibra (`danger`, sintetizado). La señal `Enemy.danger_warned` avisa del tipo.
+- **No se pueden bloquear ni desviar.** Hacen más daño que un tajo: barrido 28, estocada 30, agarre 38.
+  Preparación algo más larga (0,7–0,8 s) para que dé tiempo a reaccionar.
+- **Barrido** (`sweep_low`): se evita saltando. En el aire, volver a saltar junto al enemigo = **pisotón**:
+  30 de postura, te impulsa hacia arriba y, si estaba barriendo, lo interrumpe. Un pisotón por salto.
+- **Estocada** (`slash_d`, provisional): paso rápido **hacia** el enemigo en los 0,3 s antes del impacto =
+  **pisar la hoja**: 45 de postura y queda expuesto 1,2 s (sonido `counter`). Esquivar a un lado también la evita,
+  pero sin premio. También aparece al final del combo `slash_thrust`.
+- **Agarre** (`shove`, provisional): se evita esquivando o saltando. Solo lo usa a menos de 1,9 m.
+- El soldado elige un ataque peligroso en ~1 de cada 3 ataques.
+- Pendiente: animaciones propias de estocada, agarre (con lanzamiento) y de pisar la hoja (ahora usa la patada).

@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://scenes/player/states/hitstun.gd" id="13_hitstun"]
 [ext_resource type="Script" path="res://scenes/player/states/deathblow.gd" id="14_deathblow"]
 [ext_resource type="Script" path="res://scenes/player/states/dead.gd" id="15_dead"]
+[ext_resource type="Script" path="res://scenes/player/states/counter.gd" id="16_counter"]
 [ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="17_hitbox"]
 [ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="18_hurtbox"]
 
@@ -139,3 +140,6 @@ script = ExtResource("14_deathblow")
 
 [node name="Dead" type="Node" parent="StateMachine"]
 script = ExtResource("15_dead")
+
+[node name="Counter" type="Node" parent="StateMachine"]
+script = ExtResource("16_counter")

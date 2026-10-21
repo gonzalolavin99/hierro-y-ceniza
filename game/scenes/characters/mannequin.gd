@@ -53,6 +53,9 @@ var _trail: SwordTrail
 var _action_time: float = 0.0
 var _action_speed: float = 1.0
 var _flinch_tween: Tween
+var _danger_material: StandardMaterial3D
+var _danger_mark: Label3D
+var _danger_tween: Tween
 ## Desplazamiento acumulado de las animaciones (en el mundo) pendiente de aplicar.
 var _root_motion: Vector3 = Vector3.ZERO
 
@@ -61,6 +64,7 @@ func _ready() -> void:
 	_bot_facing = _bot.basis
 	_paint()
 	_glint.visible = false
+	_build_danger_flash()
 	_trail = SwordTrail.new()
 	_trail.base_node = $YBot/Skeleton3D/RightHand/Sword/Guard
 	_trail.tip_node = _glint
@@ -255,6 +259,49 @@ func glint() -> void:
 	t.tween_property(_glint, "scale", Vector3.ONE * 1.5, 0.08)
 	t.tween_property(_glint, "scale", Vector3.ONE * 0.1, 0.16)
 	t.tween_callback(func() -> void: _glint.visible = false)
+
+
+## Aviso de ataque peligroso: destello ROJO en el filo y un "!" rojo sobre la cabeza.
+## Más largo y llamativo que el destello blanco normal, para que se lea al instante.
+func danger_flash() -> void:
+	_glint.material_override = _danger_material
+	_glint.visible = true
+	_glint.scale = Vector3.ONE * 0.3
+	_danger_mark.visible = true
+	_danger_mark.modulate.a = 1.0
+	_danger_mark.scale = Vector3.ONE * 0.6
+	if _danger_tween:
+		_danger_tween.kill()
+	_danger_tween = create_tween()
+	_danger_tween.tween_property(_glint, "scale", Vector3.ONE * 2.4, 0.1)
+	_danger_tween.parallel().tween_property(_danger_mark, "scale", Vector3.ONE * 1.15, 0.12)
+	_danger_tween.tween_property(_glint, "scale", Vector3.ONE * 0.1, 0.3)
+	_danger_tween.parallel().tween_property(_danger_mark, "modulate:a", 0.0, 0.45).set_delay(0.25)
+	_danger_tween.tween_callback(func() -> void:
+		_glint.visible = false
+		_glint.material_override = null
+		_danger_mark.visible = false)
+
+
+func is_danger_flash_visible() -> bool:
+	return _danger_mark.visible
+
+
+func _build_danger_flash() -> void:
+	_danger_material = ((_glint.mesh as PrimitiveMesh).material as StandardMaterial3D).duplicate()
+	_danger_material.albedo_color = Color(1.0, 0.12, 0.08)
+	_danger_mark = Label3D.new()
+	_danger_mark.text = "!"
+	_danger_mark.font_size = 160
+	_danger_mark.outline_size = 24
+	_danger_mark.modulate = Color(1.0, 0.15, 0.1)
+	_danger_mark.outline_modulate = Color(0.2, 0.0, 0.0, 0.8)
+	_danger_mark.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_danger_mark.no_depth_test = true
+	_danger_mark.pixel_size = 0.004
+	_danger_mark.position = Vector3(0.0, 2.35, 0.0)
+	_danger_mark.visible = false
+	add_child(_danger_mark)
 
 
 # --- Construcción ----------------------------------------------------------------

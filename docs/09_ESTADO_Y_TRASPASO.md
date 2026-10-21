@@ -16,7 +16,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 1 · Movimiento | ✅ OK del jugador |
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
-| 4 · Pulido del combate II (opciones) | 🔨 Empezado: repertorio de 9 movimientos hecho. Faltan ataques peligrosos, pisotón, más técnicas, armas secundarias, voces |
+| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Faltan más técnicas, armas secundarias, voces |
 | 5–9 | Pendientes (IA lista, loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -45,8 +45,14 @@ cambiar de objetivo con el stick derecho.
 | LB / K | Guardia / desvío |
 | B / Shift | Paso rápido / correr |
 | R3 / Tab | Fijar objetivo |
+| A en el aire junto al enemigo | Pisotón (daña su postura; interrumpe el barrido) |
+| B hacia el enemigo ante una estocada | Pisar la hoja (mucha postura, queda expuesto) |
 
-- **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones,
+- **Ataques peligrosos** (aviso rojo: destello rojo en el filo, "!" rojo sobre la cabeza y sonido grave; no se
+  pueden bloquear ni desviar): **barrido** (saltar), **estocada** (pisar la hoja con paso hacia él, o esquivar a un
+  lado), **agarre** (esquivar o saltar). Datos en `enemies/states/attack.gd`; tipos en `HitData.Kind`.
+- **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
+  normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
   arrodilla al romperse la postura, muere y reaparece (solo en pruebas).
 - **Sensación:** hitstop, chispas, sangre mínima (configurable), temblor de cámara, estela del filo,
@@ -88,7 +94,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

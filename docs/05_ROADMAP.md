@@ -50,10 +50,11 @@ velocidades y tiempos hasta que digas OK.
 **🧪 PRUEBA:** ¿se siente "como un juego de verdad" y no como cápsulas?
 
 ## Hito 4 — Pulido del combate II: opciones (3–4 semanas)
-- [ ] **Ataques peligrosos** con aviso rojo: barrido (se salta), estocada (contraataque especial pisando
-      el arma), agarre (hay que alejarse).
+- [x] **Ataques peligrosos** con aviso rojo: barrido (se salta), estocada (contraataque especial pisando
+      el arma), agarre (hay que alejarse). Hecho, con prueba automática y OK del jugador.
+      Animaciones provisionales (estocada y agarre) hasta tener unas propias.
 - [x] Ataque en salto, ataque tras paso rápido, golpe pesado, ataque a la carrera, patada que rompe guardia.
-- [ ] Pisar al enemigo tras saltar su barrido (como Sekiro).
+- [x] Pisar al enemigo tras saltar su barrido (como Sekiro).
 - [~] **Técnicas** de combate: Torbellino hecha (LB+RB). Faltan 1–2 más y que se desbloqueen.
 - [ ] Armas secundarias: ballesta de muñeca, bomba de humo, bomba de pólvora.
 - [ ] Voces y esfuerzos en combate (gritos de ataque, quejidos, frases de enemigos).

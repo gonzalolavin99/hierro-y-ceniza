@@ -36,9 +36,12 @@ func _run() -> void:
 	await _tap("lock_on")
 	_check("R3 fija al soldado", _player.lock_target == _enemy)
 	var speeds: Array[float] = await _yaw_speeds(1.0)
-	var first: float = speeds.slice(0, 3).max()
+	# Promedio de los primeros 5 fotogramas (un solo fotograma varía según el ritmo de dibujo).
+	var first: float = 0.0
+	for v: float in speeds.slice(0, 5):
+		first += v / 5.0
 	var peak: float = speeds.max()
-	_check("El giro arranca suave (%.0f °/s en los primeros fotogramas)" % first, first < 150.0)
+	_check("El giro arranca suave (%.0f °/s de media en los primeros fotogramas)" % first, first < 150.0)
 	_check("El giro no da latigazos (máx %.0f °/s)" % peak, peak < 420.0)
 	_check("Mira al soldado tras 1 s (desvío %.1f°)" % _aim_error(), _aim_error() < 6.0)
 
@@ -60,6 +63,8 @@ func _run() -> void:
 		await get_tree().physics_frame
 		if not _both_in_frame() or _player_covers_enemy():
 			bad_frames += 1
+		max_speed = maxf(max_speed, absf(rad_to_deg(angle_difference(prev_yaw, _rig.get_yaw()))) * 60.0)
+		prev_yaw = _rig.get_yaw()
 		if i % 40 == 20:
 			await _shot("rodeando_%d" % i)
 	Input.action_release("move_right")

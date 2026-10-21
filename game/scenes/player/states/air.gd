@@ -26,6 +26,8 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Attack", {"move": &"air_attack"})
 	elif player.wants_jump():
 		player.do_jump()
+	elif player.jump_buffer_timer > 0.0 and player.try_stomp():
+		pass
 	elif player.is_on_floor() and player.velocity.y <= 0.0:
 		if Input.is_action_pressed("dodge") and direction.length_squared() > 0.04:
 			machine.transition_to(&"Sprint")
