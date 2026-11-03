@@ -203,6 +203,44 @@ def counter(variant):
     return reverb(x, 0.7, 0.2)
 
 
+def crossbow(variant):
+    """Ballesta de muñeca: chasquido del gatillo + cuerda que vibra (grave y corta)."""
+    t = t_axis(0.5)
+    x = noise_burst(t, 2000, 8000, 0.008, 0.8)
+    x += 0.6 * ring(t, 180 + 15 * variant, [1.0, 2.01, 3.03], [1, 0.5, 0.25], [0.09, 0.06, 0.04], 1.01)
+    x += thump(t, 220, 120, 0.03, 0.6)
+    return reverb(x, 0.4, 0.1)
+
+
+def bolt_hit(variant):
+    """Virote que se clava: golpe seco de madera."""
+    t = t_axis(0.4)
+    x = thump(t, 260 + 30 * variant, 140, 0.03, 1.2)
+    x += noise_burst(t, 800, 4000, 0.02, 0.6)
+    return reverb(x, 0.4, 0.12)
+
+
+def smoke(variant):
+    """Bomba de humo: estallido sordo de barro cocido + siseo largo del humo saliendo."""
+    t = t_axis(2.2)
+    x = thump(t, 150, 60, 0.06, 1.0)
+    x += noise_burst(t, 300, 2500, 0.03, 0.7)
+    hiss = band(rng.standard_normal(len(t)), 2500, 9000) * np.clip(t / 0.1, 0, 1) * env_exp(t, 0.8)
+    x += 0.35 * hiss
+    return reverb(x, 0.8, 0.2)
+
+
+def explosion(variant):
+    """Bomba de pólvora: estampido grave, crujido y eco largo."""
+    t = t_axis(2.4)
+    x = thump(t, 70, 25, 0.35, 2.0)
+    x += noise_burst(t, 60, 900, 0.25, 1.4)
+    x += noise_burst(t, 1500, 9000, 0.06, 0.6)
+    crackle = band(rng.standard_normal(len(t)), 2000, 7000) * (rng.random(len(t)) > 0.995) * env_exp(t, 0.5) * 6.0
+    x += crackle
+    return reverb(x, 1.6, 0.3)
+
+
 SOUNDS = {
     "deflect": (deflect, 3),
     "block": (block, 3),
@@ -214,6 +252,10 @@ SOUNDS = {
     # Nuevos al final: así los anteriores salen idénticos (mismo orden del generador aleatorio).
     "danger": (danger, 1),
     "counter": (counter, 2),
+    "crossbow": (crossbow, 2),
+    "bolt_hit": (bolt_hit, 2),
+    "smoke": (smoke, 1),
+    "explosion": (explosion, 2),
 }
 
 if __name__ == "__main__":

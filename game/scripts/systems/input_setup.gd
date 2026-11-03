@@ -28,7 +28,9 @@ func _ready() -> void:
 	_button("crouch", JOY_BUTTON_LEFT_STICK, KEY_C)
 	_button("pause", JOY_BUTTON_START, KEY_ESCAPE)
 	_axis("heavy_attack", JOY_AXIS_TRIGGER_RIGHT, 1.0, KEY_L)  # Golpe pesado
-	_axis("item", JOY_AXIS_TRIGGER_LEFT, 1.0, KEY_Q)           # Armas secundarias (futuro)
+	_axis("item", JOY_AXIS_TRIGGER_LEFT, 1.0, KEY_Q)           # Usar el arma secundaria
+	_button("item_next", JOY_BUTTON_DPAD_RIGHT, KEY_2)        # Cambiar de arma secundaria
+	_button("item_prev", JOY_BUTTON_DPAD_LEFT, KEY_1)
 
 
 func _ensure(action: StringName) -> void:

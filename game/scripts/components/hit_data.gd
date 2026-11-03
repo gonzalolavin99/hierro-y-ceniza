@@ -15,6 +15,10 @@ var attacker: Node3D
 ## Rompe la guardia (patada): si el rival está bloqueando, queda expuesto.
 var guard_break: bool = false
 var kind: Kind = Kind.NORMAL
+## Golpe a distancia (virote): no provoca el contraataque del enemigo por bloquear seguido.
+var ranged: bool = false
+## Si golpea al enemigo mientras prepara o lanza un ataque, se lo interrumpe.
+var interrupts: bool = false
 
 
 func is_perilous() -> bool:

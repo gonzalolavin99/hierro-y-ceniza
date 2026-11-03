@@ -16,7 +16,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 1 · Movimiento | ✅ OK del jugador |
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
-| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Faltan más técnicas, armas secundarias, voces |
+| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Faltan más técnicas y voces |
 | 5–9 | Pendientes (IA lista, loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -47,10 +47,16 @@ cambiar de objetivo con el stick derecho.
 | R3 / Tab | Fijar objetivo |
 | A en el aire junto al enemigo | Pisotón (daña su postura; interrumpe el barrido) |
 | B hacia el enemigo ante una estocada | Pisar la hoja (mucha postura, queda expuesto) |
+| LT / Q | Arma secundaria equipada |
+| Cruceta ← → / 1, 2 | Cambiar de arma secundaria |
 
 - **Ataques peligrosos** (aviso rojo: destello rojo en el filo, "!" rojo sobre la cabeza y sonido grave; no se
   pueden bloquear ni desviar): **barrido** (saltar), **estocada** (pisar la hoja con paso hacia él, o esquivar a un
   lado), **agarre** (esquivar o saltar). Datos en `enemies/states/attack.gd`; tipos en `HitData.Kind`.
+- **Armas secundarias** (`player/tools.gd`, `weapons/`): ballesta de muñeca (10 virotes; un virote durante la
+  preparación de un ataque lo interrumpe; en guardia lo bloquea), bomba de humo (3; aturde 2,6 s: ni ataca ni
+  bloquea, estado `Dazed`), bomba de pólvora (3; 25 de daño y 35 de postura aunque esté en guardia, interrumpe;
+  radio 2,8 m, también te daña si estás cerca). Se rellenan al reaparecer. HUD: arma y usos sobre la vida.
 - **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
   normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
@@ -94,7 +100,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

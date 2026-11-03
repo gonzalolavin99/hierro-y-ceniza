@@ -19,6 +19,7 @@ const POSTURE_COLORS: Array[Color] = [Color(1.0, 0.85, 0.35), Color(1.0, 0.55, 0
 @onready var _deathblow_mark: Control = $DeathblowMark
 
 var _player: Player
+var _tool_label: Label
 
 
 func _ready() -> void:
@@ -30,6 +31,9 @@ func _ready() -> void:
 	_player.posture.changed.connect(_on_posture_changed)
 	_on_health_changed(_player.health.current, _player.health.max_health)
 	_on_posture_changed(0.0, _player.posture.max_posture)
+	_build_tool_label()
+	_player.tools.changed.connect(_on_tools_changed)
+	_on_tools_changed()
 
 
 func _process(_delta: float) -> void:
@@ -58,6 +62,25 @@ func _process(_delta: float) -> void:
 	if exposed:
 		_deathblow_mark.position = camera.unproject_position(exposed.lock_point()) - _deathblow_mark.size * 0.5
 		_lock_dot.visible = false
+
+
+## Arma secundaria equipada y usos restantes, encima de la barra de vida.
+func _build_tool_label() -> void:
+	_tool_label = Label.new()
+	_tool_label.add_theme_font_size_override("font_size", 22)
+	_tool_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.8))
+	_tool_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.8))
+	_tool_label.add_theme_constant_override("outline_size", 6)
+	add_child(_tool_label)
+	var health_bar: Control = $HealthBar
+	_tool_label.position = health_bar.position + Vector2(0.0, -40.0)
+
+
+func _on_tools_changed() -> void:
+	var tools: PlayerTools = _player.tools
+	var left: int = tools.ammo[tools.current]
+	_tool_label.text = "LT  %s  ×%d" % [tools.display_name(), left]
+	_tool_label.modulate = Color(1, 1, 1, 1) if left > 0 else Color(1, 0.45, 0.4, 0.8)
 
 
 func _find_exposed_enemy() -> Enemy:

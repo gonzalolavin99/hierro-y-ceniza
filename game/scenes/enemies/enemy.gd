@@ -151,7 +151,9 @@ func receive_hit(hit: HitData) -> int:
 
 	# Fuera de sus ataques, bloquea todo lo que tenga de frente.
 	# La patada rompe la guardia: queda expuesto sin bloquear.
-	if hit.guard_break and state != &"Attack" and state != &"Recoil" and facing_attacker:
+	# Aturdido (humo) o retrocediendo: no puede bloquear.
+	var can_guard: bool = state != &"Attack" and state != &"Recoil" and state != &"Dazed" and facing_attacker
+	if hit.guard_break and can_guard:
 		posture.add(hit.posture_damage)
 		Sfx.play(&"block", contact, -4.0)
 		CombatFX.hitstop(0.05)
@@ -162,7 +164,14 @@ func receive_hit(hit: HitData) -> int:
 			state_machine.transition_to(&"Recoil")
 		return HitData.Result.HIT
 
-	if state != &"Attack" and state != &"Recoil" and facing_attacker:
+	if can_guard and hit.ranged:
+		# Virote bloqueado con la espada: chispa y un poco de postura, sin reacción grande.
+		posture.add(hit.posture_damage)
+		Sfx.play(&"block", contact, -6.0)
+		CombatFX.sparks(contact, 6, 3.0)
+		return HitData.Result.BLOCKED
+
+	if can_guard:
 		posture.add(hit.posture_damage)
 		Sfx.play(&"block", contact)
 		CombatFX.sparks(contact, 10, 4.0)
@@ -178,12 +187,44 @@ func receive_hit(hit: HitData) -> int:
 
 	# Golpe directo (atacando, retrocediendo o de espaldas).
 	health.take_damage(hit.damage)
-	posture.add(hit.posture_damage * (1.0 if state == &"Recoil" else 0.5))
-	Sfx.play(&"hit", contact)
+	var exposed: bool = state == &"Recoil" or state == &"Dazed"
+	posture.add(hit.posture_damage * (1.0 if exposed else 0.5))
+	Sfx.play(&"bolt_hit" if hit.ranged else &"hit", contact)
 	CombatFX.blood(contact)
 	CombatFX.hitstop(0.05)
 	body.flinch(to_attacker, 0.8)
+	# El virote interrumpe el ataque que estaba preparando o lanzando.
+	if hit.interrupts and state == &"Attack" and not posture.is_broken:
+		state_machine.transition_to(&"Recoil")
 	return HitData.Result.HIT
+
+
+## Explosión de pólvora: daña aunque esté en guardia, sube mucho la postura y lo desequilibra
+## (interrumpe cualquier ataque).
+func receive_blast(origin: Vector3, damage: float, posture_damage: float) -> void:
+	var state: StringName = state_name()
+	if state == &"Dead" or state == &"Broken":
+		return
+	var away: Vector3 = global_position - origin
+	away.y = 0.0
+	away = away.normalized() if away.length() > 0.01 else -get_facing()
+	health.take_damage(damage)
+	posture.add(posture_damage)
+	CombatFX.blood(global_position + Vector3.UP * 1.2)
+	body.flinch(-away, 1.2)
+	push = away * 5.0
+	blocks_in_a_row = 0
+	if not posture.is_broken and not is_dead() and state_name() != &"Broken":
+		state_machine.transition_to(&"Recoil")
+
+
+## Bomba de humo: tose y queda aturdido un momento (ni ataca ni bloquea).
+func receive_smoke() -> void:
+	var state: StringName = state_name()
+	if state == &"Dead" or state == &"Broken":
+		return
+	blocks_in_a_row = 0
+	state_machine.transition_to(&"Dazed")
 
 
 func receive_deathblow(_attacker: Node3D) -> void:

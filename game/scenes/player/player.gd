@@ -87,6 +87,8 @@ var attack_buffer_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var deflect_timer: float = 0.0
 var lock_target: Enemy
+## Armas secundarias (LT) y su munición.
+var tools: PlayerTools = PlayerTools.new()
 ## Tiempo restante para pisar la hoja (lo activa un paso rápido hacia delante).
 var counter_timer: float = 0.0
 ## Dirección del último paso rápido.
@@ -123,6 +125,10 @@ func _physics_process(delta: float) -> void:
 		can_stomp = true
 	if Input.is_action_just_pressed("block"):
 		_on_block_pressed()
+	if Input.is_action_just_pressed("item_next"):
+		tools.cycle(1)
+	elif Input.is_action_just_pressed("item_prev"):
+		tools.cycle(-1)
 
 	_update_lock_on()
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
@@ -400,6 +406,34 @@ func receive_hit(hit: HitData) -> int:
 	return HitData.Result.HIT
 
 
+## ¿Se puede usar ahora el arma secundaria? (LT pulsado y le queda munición)
+func wants_tool() -> bool:
+	if not Input.is_action_just_pressed("item"):
+		return false
+	if not tools.can_use():
+		Sfx.play(&"block", global_position + Vector3.UP * 1.3, -18.0)  # "clic" seco: vacía
+		return false
+	return true
+
+
+## Explosión de pólvora cerca (la propia, si se lanza demasiado cerca).
+func receive_blast(origin: Vector3, damage: float) -> void:
+	if is_dead() or invulnerable:
+		return
+	var away: Vector3 = global_position - origin
+	away.y = 0.0
+	away = away.normalized() if away.length() > 0.01 else -get_facing()
+	health.take_damage(damage)
+	posture.add(damage)
+	CombatFX.blood(global_position + Vector3.UP * 1.2)
+	body.flinch(-away, 1.2)
+	push = away * 5.0
+	if health.current <= 0.0:
+		state_machine.transition_to(&"Dead")
+	elif state_machine.current.name != &"Stagger":
+		state_machine.transition_to(&"Hitstun", {"from": -away})
+
+
 func _on_thrust_countered(to_attacker: Vector3) -> void:
 	var contact: Vector3 = global_position + to_attacker * 0.8 + Vector3.UP * 0.2
 	Sfx.play(&"counter", contact)
@@ -419,6 +453,7 @@ func respawn() -> void:
 	body.stop_action(0.1)
 	health.heal(health.max_health)
 	posture.reset()
+	tools.refill()
 	lock_target = null
 	camera_rig.recenter()
 

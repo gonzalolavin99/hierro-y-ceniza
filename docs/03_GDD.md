@@ -52,7 +52,7 @@
 | Salto / ataque en salto | A / A + RB | |
 | Fijar objetivo | R3 | Stick derecho a un lado = cambiar de objetivo |
 | Curarse | X | (Hito 6) |
-| Armas secundarias | LT | (Hito 4) |
+| Armas secundarias | LT · cruceta ←/→ cambia | Ballesta de muñeca (interrumpe ataques), bomba de humo (aturde), bomba de pólvora (atraviesa la guardia) |
 | Agacharse / sigilo | L3 | (Hito 5) |
 
 El repertorio está en `game/scenes/player/moves.gd` (datos): añadir un movimiento es añadir una línea.

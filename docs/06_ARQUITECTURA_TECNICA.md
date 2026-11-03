@@ -96,10 +96,11 @@ G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path ga
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/moveset_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/camera_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/danger_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/tools_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --fixed-fps 60 --path game res://tests/anim_audit.tscn
 ```
 
-`camera_test` y `danger_test` aceptan una carpeta (con ventana, sin `--headless`) para guardar capturas del encuadre:
+`camera_test`, `danger_test` y `tools_test` aceptan una carpeta (con ventana, sin `--headless`) para guardar capturas del encuadre:
 `... --path game res://tests/camera_test.tscn -- <carpeta>`.
 
 El escenario de pruebas se genera con `python tools/gen_test_level.py` (no editarlo a mano).
