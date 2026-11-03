@@ -5,6 +5,10 @@ extends EnemyState
 func enter(_msg: Dictionary) -> void:
 	enemy.body.set_blocking(true)
 	enemy.body.stop_action(0.2)
+	# La primera vez que te ve en esta vida, te habla.
+	if not enemy.has_spoken_to_target:
+		enemy.has_spoken_to_target = true
+		Voice.say(&"soldier", &"spot", enemy.lock_point())
 
 
 func physics_update(delta: float) -> void:

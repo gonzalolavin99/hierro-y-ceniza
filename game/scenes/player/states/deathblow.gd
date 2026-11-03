@@ -17,6 +17,7 @@ func enter(msg: Dictionary) -> void:
 	# El tajo final de la animación coincide con el instante del golpe.
 	player.body.play_shaped(&"slash_c", 0.4, 0.83, STRIKE_AT)
 	player.body.set_trail(true)
+	Voice.say(&"kael", &"deathblow", player.global_position + Vector3.UP * 1.6)
 
 
 func exit() -> void:

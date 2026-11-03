@@ -25,6 +25,8 @@ func enter(msg: Dictionary) -> void:
 	var hits: Array = _move["hits"]
 	player.body.play_shaped(_move["anim"], _move["from"], hits[0]["at"], _move["windup"])
 	player.body.set_trail(true)
+	var effort: StringName = &"heavy" if _name == &"heavy" else (&"art" if String(_name).begins_with("art_") else &"attack")
+	Voice.say(&"kael", effort, player.global_position + Vector3.UP * 1.6)
 
 
 func exit() -> void:

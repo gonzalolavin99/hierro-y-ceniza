@@ -44,7 +44,7 @@
 | Combo ligero | RB ×3 | Tres tajos a una mano encadenados |
 | Golpe pesado | RT | Tajo descendente lento, mucho daño de postura |
 | Bloquear / **Desviar** | LB | Mantener = guardia. Pulsar justo antes del golpe = **desvío** (0,2 s; se achica si se pulsa seguido) |
-| **Técnica** "Torbellino" | LB + RB | Giro con dos tajos |
+| **Técnica** equipada | LB + RB · cruceta ↑ cambia | Torbellino (giro con dos tajos), Golpe de Martillo (salto y tajo vertical: mucha postura), Ráfaga (tres tajos: mucho daño, arriesgada) |
 | Patada | Y | Rompe la guardia del rival y lo deja expuesto |
 | Paso rápido | B | Esquiva corta con animación según la dirección. Mantener = correr |
 | Ataque a la carrera | B mantenido + RB | Estocada aprovechando el impulso |

@@ -35,6 +35,8 @@ const STOMP_POSTURE: float = 30.0
 
 var target: Player
 var blocks_in_a_row: int = 0
+## Ya le habló al jugador en esta vida (frase al verlo).
+var has_spoken_to_target: bool = false
 ## Velocidad que "pide" la animación actual (su paso real).
 var root_motion_velocity: Vector3 = Vector3.ZERO
 ## Empujón que se suma al movimiento y se desvanece (choques, golpes).
@@ -187,6 +189,7 @@ func receive_hit(hit: HitData) -> int:
 
 	# Golpe directo (atacando, retrocediendo o de espaldas).
 	health.take_damage(hit.damage)
+	Voice.say(&"soldier", &"hurt", lock_point())
 	var exposed: bool = state == &"Recoil" or state == &"Dazed"
 	posture.add(hit.posture_damage * (1.0 if exposed else 0.5))
 	Sfx.play(&"bolt_hit" if hit.ranged else &"hit", contact)
@@ -210,6 +213,7 @@ func receive_blast(origin: Vector3, damage: float, posture_damage: float) -> voi
 	away = away.normalized() if away.length() > 0.01 else -get_facing()
 	health.take_damage(damage)
 	posture.add(posture_damage)
+	Voice.say(&"soldier", &"hurt", lock_point())
 	CombatFX.blood(global_position + Vector3.UP * 1.2)
 	body.flinch(-away, 1.2)
 	push = away * 5.0
@@ -254,6 +258,7 @@ func respawn() -> void:
 	health.heal(health.max_health)
 	posture.reset()
 	blocks_in_a_row = 0
+	has_spoken_to_target = false
 	set_vulnerable(true)
 
 

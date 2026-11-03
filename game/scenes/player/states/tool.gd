@@ -25,6 +25,7 @@ func enter(_msg: Dictionary) -> void:
 	else:
 		player.body.play_timed(&"slash_c", 0.3, 0.83, data["windup"])
 		Sfx.play(&"swing", player.global_position + Vector3.UP * 1.4, -6.0)
+		Voice.say(&"kael", &"throw", player.global_position + Vector3.UP * 1.6)
 
 
 func exit() -> void:

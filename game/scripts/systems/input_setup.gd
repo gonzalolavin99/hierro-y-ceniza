@@ -31,6 +31,7 @@ func _ready() -> void:
 	_axis("item", JOY_AXIS_TRIGGER_LEFT, 1.0, KEY_Q)           # Usar el arma secundaria
 	_button("item_next", JOY_BUTTON_DPAD_RIGHT, KEY_2)        # Cambiar de arma secundaria
 	_button("item_prev", JOY_BUTTON_DPAD_LEFT, KEY_1)
+	_button("art_next", JOY_BUTTON_DPAD_UP, KEY_3)            # Cambiar de técnica (LB + RB)
 
 
 func _ensure(action: StringName) -> void:

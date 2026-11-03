@@ -10,6 +10,7 @@ func enter(msg: Dictionary) -> void:
 	player.velocity = -from * 4.0
 	player.snap_facing(from)
 	player.body.play_action(&"hit_light", 0.05, 1.6, 0.04)
+	Voice.say(&"kael", &"hurt", player.global_position + Vector3.UP * 1.6)
 
 
 func physics_update(delta: float) -> void:

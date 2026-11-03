@@ -16,7 +16,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 1 · Movimiento | ✅ OK del jugador |
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
-| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Faltan más técnicas y voces |
+| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Faltan los audios de voz (ElevenLabs, ver docs/10) |
 | 5–9 | Pendientes (IA lista, loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -37,7 +37,8 @@ cambiar de objetivo con el stick derecho.
 |---|---|
 | RB ×3 / J | Combo ligero (tres tramos del combo a una mano) |
 | RT / L | Golpe pesado |
-| LB+RB / K+J | Técnica "Torbellino" (dos tajos) |
+| LB+RB / K+J | Técnica equipada: Torbellino, Golpe de Martillo o Ráfaga |
+| Cruceta ↑ / 3 | Cambiar de técnica (solo las desbloqueadas) |
 | Y / F | Patada: rompe la guardia |
 | B mantenido + RB | Ataque a la carrera |
 | RB al final del paso | Contraataque tras esquiva |
@@ -57,6 +58,13 @@ cambiar de objetivo con el stick derecho.
   preparación de un ataque lo interrumpe; en guardia lo bloquea), bomba de humo (3; aturde 2,6 s: ni ataca ni
   bloquea, estado `Dazed`), bomba de pólvora (3; 25 de daño y 35 de postura aunque esté en guardia, interrumpe;
   radio 2,8 m, también te daña si estás cerca). Se rellenan al reaparecer. HUD: arma y usos sobre la vida.
+- **Técnicas** (`player/arts.gd`, datos en `moves.gd`): una equipada (LB+RB), cruceta ↑ cambia entre las
+  desbloqueadas. Torbellino de serie; Golpe de Martillo y Ráfaga se desbloquean (en el escenario de pruebas,
+  todas desde el inicio: `Player.start_with_all_arts`). La Ráfaga contra alguien en guardia provoca su contraataque.
+- **Voces** (autoload `Voice`, líneas en `systems/voice_lines.gd`): esfuerzos de Kael y del soldado, frases del
+  soldado (al verte, al ganarte) y del narrador al morir ("No… no fue así."), con subtítulos en español abajo al
+  centro. Probabilidad y pausa por evento para no saturar. Los audios aún no existen (el juego no falla sin ellos);
+  el guion para generarlos está en docs/10 (se regenera con `--script res://tests/export_voice_script.gd`).
 - **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
   normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
@@ -100,7 +108,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

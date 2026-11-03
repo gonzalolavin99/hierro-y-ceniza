@@ -1,0 +1,3 @@
+Voces de los personajes, generadas con ElevenLabs.
+Nombres exactos y textos en docs/10_GUION_VOCES.md.
+Una carpeta por personaje: kael/, soldier/, narrator/ (ej.: kael/kael_hurt_1.mp3).

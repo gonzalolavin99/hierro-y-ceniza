@@ -60,6 +60,11 @@ signal deflected
 ## La postura se recupera más rápido con la guardia alta.
 @export var block_posture_regen: float = 2.5
 
+@export_group("Técnicas")
+## Escenario de pruebas: todas las técnicas desbloqueadas desde el inicio. En el juego final se
+## desbloquearán con maestros y hallazgos.
+@export var start_with_all_arts: bool = true
+
 @export_group("Fijar objetivo")
 @export var lock_range: float = 18.0
 
@@ -89,6 +94,8 @@ var deflect_timer: float = 0.0
 var lock_target: Enemy
 ## Armas secundarias (LT) y su munición.
 var tools: PlayerTools = PlayerTools.new()
+## Técnicas (LB + RB): la equipada y las desbloqueadas.
+var arts: PlayerArts = PlayerArts.new()
 ## Tiempo restante para pisar la hoja (lo activa un paso rápido hacia delante).
 var counter_timer: float = 0.0
 ## Dirección del último paso rápido.
@@ -111,6 +118,8 @@ func _ready() -> void:
 	_spawn_position = global_position
 	state_machine.setup(self)
 	posture.broken.connect(_on_posture_broken)
+	if start_with_all_arts:
+		arts.unlock_all()
 
 
 func _physics_process(delta: float) -> void:
@@ -129,6 +138,8 @@ func _physics_process(delta: float) -> void:
 		tools.cycle(1)
 	elif Input.is_action_just_pressed("item_prev"):
 		tools.cycle(-1)
+	if Input.is_action_just_pressed("art_next"):
+		arts.cycle()
 
 	_update_lock_on()
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)

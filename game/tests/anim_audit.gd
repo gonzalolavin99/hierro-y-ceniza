@@ -94,7 +94,7 @@ func _run() -> void:
 		await _tap(&"attack")
 		await _frames(24)
 	await _frames(50)
-	for move: StringName in [&"heavy", &"kick", &"art_whirlwind", &"run_attack", &"dodge_attack"]:
+	for move: StringName in [&"heavy", &"kick", &"art_whirlwind", &"art_hammer", &"art_flurry", &"run_attack", &"dodge_attack"]:
 		await _setup(true)
 		_label = "J %s" % move
 		_player.state_machine.transition_to(&"Attack", {"move": move})

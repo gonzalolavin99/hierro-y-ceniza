@@ -145,7 +145,10 @@ func _set_phase(phase: Phase) -> void:
 			else:
 				enemy.body.danger_flash()
 				Sfx.play(&"danger", enemy.lock_point())
+				Voice.say(&"soldier", &"danger", enemy.lock_point())
 				enemy.danger_warned.emit(kind)
+			if kind == HitData.Kind.NORMAL and _index == 0:
+				Voice.say(&"soldier", &"attack", enemy.lock_point())
 		Phase.ACTIVE:
 			var hit := HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE)
 			hit.kind = swing.get("danger", HitData.Kind.NORMAL)

@@ -39,6 +39,14 @@ const MOVES: Dictionary[StringName, Dictionary] = {
 	# Técnica "Torbellino" (LB + RB): giro completo con dos tajos.
 	&"art_whirlwind": {"anim": &"spin", "from": 0.25, "windup": 0.3, "end": 1.60, "cancel": 1.30,
 		"hits": [{"at": 0.52, "damage": 14.0, "posture": 14.0}, {"at": 1.12, "damage": 18.0, "posture": 20.0}]},
+	# Técnica "Golpe de Martillo": salta hacia delante con la espada en alto y cae con un tajo vertical.
+	# Lenta, pero acorta distancia y rompe mucha postura aunque el rival bloquee.
+	&"art_hammer": {"anim": &"leap", "from": 0.3, "windup": 0.75, "end": 1.9, "cancel": 1.65,
+		"hits": [{"at": 1.23, "damage": 20.0, "posture": 42.0}]},
+	# Técnica "Ráfaga": tres tajos encadenados. Mucho daño a la vida, pero tarda en poder cancelarse.
+	&"art_flurry": {"anim": &"combo_long", "from": 0.35, "windup": 0.28, "end": 2.85, "cancel": 2.7,
+		"hits": [{"at": 0.68, "damage": 14.0, "posture": 10.0}, {"at": 1.65, "damage": 14.0, "posture": 10.0},
+			{"at": 2.52, "damage": 18.0, "posture": 14.0}]},
 }
 
 ## Margen (en segundos de animación) alrededor de cada impacto en que el arma hace daño.

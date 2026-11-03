@@ -13,6 +13,7 @@ func enter(_msg: Dictionary) -> void:
 	get_tree().create_timer(0.5, false).timeout.connect(_kneel)
 	CombatFX.shake(0.3)
 	Sfx.play(&"posture_break", enemy.lock_point())
+	Voice.say(&"soldier", &"broken", enemy.lock_point())
 
 
 func exit() -> void:

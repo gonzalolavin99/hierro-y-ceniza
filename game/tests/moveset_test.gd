@@ -13,6 +13,8 @@ func _ready() -> void:
 	_enemy = get_tree().get_first_node_in_group("enemies")
 	# En guardia y sin atacar: solo recibe (se mueve, para poder medir los empujones).
 	_enemy.aggro_range = 0.0
+	# Sin contraatacar tras bloquear seguido: aquí solo se mide cada movimiento por separado.
+	_enemy.blocks_before_counter = 99
 	await _wait(0.3)
 	for move in PlayerMoves.MOVES:
 		await _try(move)
@@ -37,6 +39,11 @@ func _try(move: StringName) -> void:
 	var health0: float = _enemy.health.current
 	_player.state_machine.transition_to(&"Attack", {"move": move})
 	await _wait(2.2)
+	# Los movimientos largos (p. ej. la Ráfaga) pueden durar algo más: se espera a que terminen.
+	for i in 120:
+		if _player.state_machine.current.name != &"Attack":
+			break
+		await get_tree().physics_frame
 	var affected: bool = _enemy.posture.current > posture0 or _enemy.health.current < health0 or _enemy.state_name() != &"Idle"
 	_check("%-14s conecta (postura %.0f→%.0f, vida %.0f→%.0f, %s)" % [move, posture0, _enemy.posture.current, health0, _enemy.health.current, _enemy.state_name()], affected)
 	_check("%-14s termina (%s)" % [move, _player.state_machine.current.name], _player.state_machine.current.name in [&"Ground", &"Air"])
