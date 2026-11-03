@@ -119,7 +119,8 @@ Para cada ajuste medible, primero añadimos una prueba que falla por el comporta
 | 7. Pies flotando en rampa | Corregido; falta prueba del jugador | Tobillo a 10,7 cm, pie levantado respetado |
 | 8. Transiciones de locomoción | Pendiente | |
 | 10. Cámara al fijar objetivo | ✅ OK del jugador |
-| 11. Ataques peligrosos y pisotón | ✅ OK del jugador | `danger_test`: 19 comprobaciones (aviso solo en peligrosos, no se bloquean, cada respuesta funciona y las equivocadas no) | `camera_test`: giro inicial ≤ 150 °/s (antes 577), sin latigazos (máx ~300 °/s); a 2,5 m, a 1,4 m y rodeando, ambos en pantalla y el jugador no tapa al enemigo (antes lo tapaba) |
+| 11. Ataques peligrosos y pisotón | ✅ OK del jugador |
+| 12. Auditoría de animaciones | ✅ OK del jugador | `anim_audit`: pies al saltar 29 → 0 cm; manos del soldado al bloquear 49 → 0 cm; paso al caminar/correr 117–206 % → 95–107 % | `danger_test`: 19 comprobaciones (aviso solo en peligrosos, no se bloquean, cada respuesta funciona y las equivocadas no) | `camera_test`: giro inicial ≤ 150 °/s (antes 577), sin latigazos (máx ~300 °/s); a 2,5 m, a 1,4 m y rodeando, ambos en pantalla y el jugador no tapa al enemigo (antes lo tapaba) |
 | 9. Ataques y reacciones | Pendiente | |
 
 ### Cámara al fijar objetivo (paso 10)
@@ -152,3 +153,25 @@ Para cada ajuste medible, primero añadimos una prueba que falla por el comporta
 - **Agarre** (`shove`, provisional): se evita esquivando o saltando. Solo lo usa a menos de 1,9 m.
 - El soldado elige un ataque peligroso en ~1 de cada 3 ataques.
 - Pendiente: animaciones propias de estocada, agarre (con lanzamiento) y de pisar la hoja (ahora usa la patada).
+
+### Auditoría de animaciones (paso 12)
+
+Herramienta `tests/anim_audit.tscn` (ejecutar con `--fixed-fps 60`): ambos personajes hacen todo su
+repertorio y se mide en cada fotograma: **saltos** (un hueso se teletransporta), **patinaje** (el pie apoyado
+se desliza; columna "paso" = cuánto retrocede el pie respecto a lo que avanza el cuerpo, ideal 100 %),
+**hundimiento** en el suelo y **choque** entre cuerpos. Al final comprueba que no vuelvan los defectos corregidos.
+
+Corregido:
+- **Apoyo de pies gradual** (`foot_grounding.gd`): antes se encendía/apagaba de golpe; al saltar, los pies
+  saltaban 29 cm. Ahora cada pierna tiene un peso que entra y sale en 0,1 s, y en el aire se desvanece.
+- **Mezclas sin tirones** (`mannequin.gd`): mínimo 0,08 s para cualquier acción (antes 0,04 en reacciones) y
+  curva en S. El "respingo" al recibir/bloquear dura 0,09 s (antes 0,05). Las manos del soldado al bloquear
+  saltaban hasta 49 cm.
+- **Paso sincronizado con la velocidad** (`update_locomotion`): la animación se acelera según la dirección,
+  con la velocidad real de pisada de cada animación (`WALK_SPEEDS`, `RUN_SPEEDS`), y elige un paso (caminar o
+  correr) en vez de mezclar los dos a medias. Herramienta auxiliar: `tests/measure_locomotion.gd`.
+- **Con objetivo fijado**, atrás 3,2 m/s y de lado 3,6 m/s (adelante sigue 4,6), como en Sekiro.
+- Nota: la pausa de impacto (hitstop) congela el tiempo a propósito; la auditoría no juzga esos fotogramas.
+
+Pendiente menor: al arrancar la esquiva hacia atrás la pierna se mueve 14 cm en un fotograma (impulso
+rápido real, aceptable); el soldado patina un poco al girar sobre sí mismo (faltan animaciones de giro).

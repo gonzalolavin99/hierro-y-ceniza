@@ -9,7 +9,7 @@ func enter(_msg: Dictionary) -> void:
 
 func physics_update(delta: float) -> void:
 	var direction: Vector3 = player.get_move_direction()
-	var speed: float = player.lock_on_speed if player.lock_target else player.run_speed
+	var speed: float = player.lock_on_speed_for(direction) if player.lock_target else player.run_speed
 	player.move_horizontal(direction, speed * minf(direction.length(), 1.0), player.ground_acceleration, delta)
 	if player.lock_target:
 		player.face_direction(player.direction_to_lock_target(), delta)

@@ -10,6 +10,10 @@ signal deflected
 @export var sprint_speed: float = 8.0
 ## Velocidad con un enemigo fijado (camina de lado mirándolo).
 @export var lock_on_speed: float = 4.6
+## Con objetivo fijado, hacia atrás y de lado se va más lento (como en Sekiro): las piernas no
+## pueden retroceder ni cruzarse tan rápido como al correr hacia delante.
+@export var lock_on_back_speed: float = 3.2
+@export var lock_on_side_speed: float = 3.6
 @export var block_move_speed: float = 2.2
 @export var ground_acceleration: float = 45.0
 @export var ground_deceleration: float = 60.0
@@ -129,7 +133,7 @@ func _physics_process(delta: float) -> void:
 	velocity -= push
 	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	body.align_to_ground(get_floor_normal(), is_on_floor(), delta)
-	body.update_locomotion(velocity, get_facing(), run_speed)
+	body.update_locomotion(velocity, get_facing())
 
 	DebugOverlay.watch("Estado", state_machine.current.name)
 	DebugOverlay.watch("Velocidad", "%.1f m/s" % Vector2(velocity.x, velocity.z).length())
@@ -148,6 +152,18 @@ func get_move_direction() -> Vector3:
 		if to.length_squared() > 0.0:
 			yaw = atan2(-to.x, -to.z)
 	return Vector3(input.x, 0.0, input.y).rotated(Vector3.UP, yaw)
+
+
+## Velocidad con objetivo fijado según hacia dónde se mueve respecto al enemigo.
+func lock_on_speed_for(direction: Vector3) -> float:
+	var to: Vector3 = direction_to_lock_target()
+	if direction.length_squared() < 0.0001 or to.length_squared() < 0.0001:
+		return lock_on_speed
+	var dir: Vector3 = direction.normalized()
+	var forward: float = dir.dot(to)
+	var side: float = sqrt(maxf(1.0 - forward * forward, 0.0))
+	var along: float = lock_on_speed if forward >= 0.0 else lock_on_back_speed
+	return (along * absf(forward) + lock_on_side_speed * side) / maxf(absf(forward) + side, 0.001)
 
 
 ## Hacia dónde mira el personaje (en el plano horizontal).

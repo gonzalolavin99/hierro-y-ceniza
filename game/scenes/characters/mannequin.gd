@@ -27,6 +27,7 @@ const UPPER_BODY: Array[String] = [
 
 @onready var _bot: Node3D = $YBot
 @onready var _skeleton: Skeleton3D = $YBot/Skeleton3D
+@onready var _foot_grounding: FootGroundingModifier = $YBot/Skeleton3D/FootGrounding
 @onready var _glint: Node3D = $YBot/Skeleton3D/RightHand/Sword/Glint
 
 var _tree: AnimationTree
@@ -86,16 +87,30 @@ func _process(delta: float) -> void:
 	_mix = move_toward(_mix, _mix_target, delta / maxf(_action_fade, 0.01))
 	_tree.set("parameters/loco/blend_position", _loco_pos)
 	_tree.set("parameters/block_blend/blend_amount", _block)
-	_tree.set("parameters/act_mix/blend_amount", _mix)
-	_tree.set("parameters/act_blend/blend_amount", _action)
+	# Curva en S: las mezclas arrancan y terminan despacio (sin tirones al empezar o acabar).
+	_tree.set("parameters/act_mix/blend_amount", smoothstep(0.0, 1.0, _mix))
+	_tree.set("parameters/act_blend/blend_amount", smoothstep(0.0, 1.0, _action))
 	_update_shape(delta)
 	_action_time += _action_speed * delta
 
 
 # --- API -------------------------------------------------------------------------
 
-## Locomoción. `local_velocity`: x = lateral (+ derecha), y = adelante, en múltiplos de la velocidad
-## de carrera (1 = correr). `time_scale` acelera las piernas (p. ej. al esprintar).
+## Velocidad real de pisada de cada animación de locomoción (tests/measure_locomotion.gd).
+const WALK_SPEEDS: Dictionary = {"fwd": 0.99, "back": 0.90, "left": 1.00, "right": 1.11}
+## Correr: medido en el juego con tests/anim_audit.gd (paso del pie apoyado ≈ 100 % del avance).
+const RUN_SPEEDS: Dictionary = {"fwd": 4.9, "back": 2.5, "left": 2.35, "right": 3.5}
+## Cuánto se puede acelerar caminar y frenar correr antes de mezclar los dos pasos.
+const GAIT_STRETCH_UP: float = 1.5
+const GAIT_STRETCH_DOWN: float = 0.6
+## Distancia al centro del espacio de mezcla a la que están las animaciones de caminar.
+const WALK_BLEND: float = 0.25
+## Mezcla mínima al empezar una acción: más corta, el cuerpo "salta" de una pose a otra.
+const MIN_ACTION_FADE: float = 0.08
+
+
+## Locomoción. `local_velocity`: x = lateral (+ derecha), y = adelante; 1 = posición de las animaciones
+## de correr en el espacio de mezcla. `time_scale` acelera las piernas.
 func set_locomotion(local_velocity: Vector2, time_scale: float = 1.0) -> void:
 	_loco_target = local_velocity.limit_length(1.0)
 	if _tree:
@@ -123,7 +138,7 @@ func play_action(anim: StringName, from: float = 0.0, speed: float = 1.0, fade: 
 	if _action < 0.01:
 		_mix = _mix_target
 	_action_target = 1.0
-	_action_fade = fade
+	_action_fade = maxf(fade, MIN_ACTION_FADE)
 	_action_name = anim
 
 
@@ -191,12 +206,13 @@ func stop_action_if(anim: StringName, fade: float = 0.2) -> void:
 
 ## Reproduce una acción corta y vuelve sola a la locomoción/guardia al cabo de `duration`.
 func play_reaction(anim: StringName, duration: float, from: float = 0.0, speed: float = 1.0) -> void:
-	play_action(anim, from, speed, 0.04)
+	play_action(anim, from, speed, MIN_ACTION_FADE)
 	get_tree().create_timer(duration, false).timeout.connect(stop_action_if.bind(anim, 0.15))
 
 
 ## Inclina solo el cuerpo visual para acompañar el suelo sin girar la cápsula de colisión.
 func align_to_ground(floor_normal: Vector3, grounded: bool, delta: float) -> void:
+	_foot_grounding.grounded = grounded
 	var normal_world: Vector3 = floor_normal.normalized() if grounded else Vector3.UP
 	var normal_local: Vector3 = (global_basis.inverse() * normal_world).normalized()
 	var forward: Vector3 = Vector3(0.0, 0.0, -1.0)
@@ -211,16 +227,49 @@ func align_to_ground(floor_normal: Vector3, grounded: bool, delta: float) -> voi
 	var weight: float = 1.0 - exp(-ground_alignment_speed * delta)
 	_bot.basis = _bot.basis.slerp(target_basis, weight)
 
-## Ajusta la locomoción según la velocidad real del personaje.
-## `facing`: hacia dónde mira; `reference_speed`: velocidad que corresponde a "correr" (1.0).
-func update_locomotion(velocity: Vector3, facing: Vector3, reference_speed: float) -> void:
+## Elige la mezcla de caminar/correr y su velocidad de reproducción para que el pie apoyado
+## avance exactamente lo que avanza el cuerpo (sin patinar), en cualquier dirección.
+func update_locomotion(velocity: Vector3, facing: Vector3) -> void:
 	var flat := Vector3(velocity.x, 0.0, velocity.z)
 	var right := facing.cross(Vector3.UP)
-	var local := Vector2(flat.dot(right), flat.dot(facing)) / reference_speed
-	var amount: float = local.length()
-	# Las piernas se aceleran un poco al correr y más al esprintar, para que los pies no "patinen".
-	var time_scale: float = lerpf(1.0, 1.3, clampf(amount, 0.0, 1.0)) * maxf(amount, 1.0)
-	set_locomotion(local, minf(time_scale, 2.4))
+	var local := Vector2(flat.dot(right), flat.dot(facing))
+	var speed: float = local.length()
+	if speed < 0.05:
+		set_locomotion(Vector2.ZERO, 1.0)
+		return
+	var dir: Vector2 = local / speed
+	var walk: float = natural_speed(dir, false)
+	var run: float = natural_speed(dir, true)
+	# Como un cuerpo real, elige un paso (caminar o correr) y ajusta su ritmo; solo mezcla los dos en
+	# una franja estrecha, porque al tener ritmos distintos la mezcla deja los pies "a medias".
+	var walk_top: float = walk * GAIT_STRETCH_UP
+	var run_bottom: float = run * GAIT_STRETCH_DOWN
+	var amount: float
+	var time_scale: float = 1.0
+	if speed <= walk:
+		amount = WALK_BLEND * speed / walk
+	elif speed <= walk_top:
+		amount = WALK_BLEND
+		time_scale = speed / walk
+	elif speed < run_bottom:
+		var f: float = (speed - walk_top) / (run_bottom - walk_top)
+		amount = lerpf(WALK_BLEND, 1.0, f)
+		time_scale = speed / lerpf(walk, run, f)
+	else:
+		amount = 1.0
+		time_scale = speed / run
+	set_locomotion(dir * amount, minf(time_scale, 2.4))
+
+
+## Velocidad (m/s) a la que pisan las animaciones de caminar o correr en una dirección local
+## (x = derecha, y = adelante). Medido con tests/measure_locomotion.gd.
+static func natural_speed(dir: Vector2, running: bool) -> float:
+	var s: Dictionary = RUN_SPEEDS if running else WALK_SPEEDS
+	var forward: float = s["fwd"] if dir.y >= 0.0 else s["back"]
+	var side: float = s["right"] if dir.x >= 0.0 else s["left"]
+	var wy: float = absf(dir.y)
+	var wx: float = absf(dir.x)
+	return (forward * wy + side * wx) / maxf(wx + wy, 0.001)
 
 
 ## Devuelve (y vacía) cuánto avanzó la animación desde la última llamada, en el mundo y en horizontal.
@@ -243,7 +292,8 @@ func flinch(from_direction: Vector3, strength: float = 1.0) -> void:
 	if _flinch_tween:
 		_flinch_tween.kill()
 	_flinch_tween = create_tween()
-	_flinch_tween.tween_property(self, "rotation", tilt, 0.05).set_ease(Tween.EASE_OUT)
+	# 0,09 s: rápido, pero sin saltar de pose en uno o dos fotogramas.
+	_flinch_tween.tween_property(self, "rotation", tilt, 0.09).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
 	_flinch_tween.tween_property(self, "rotation", Vector3.ZERO, 0.35).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 

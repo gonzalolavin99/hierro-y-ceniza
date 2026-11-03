@@ -22,6 +22,14 @@ var _legs: Array[PackedInt32Array] = []
 var _hips: int = -1
 var _hips_offset: float = 0.0
 var grounded_legs_last_frame: int = 0
+## Lo actualiza el maniquí: en el aire el ajuste se desvanece.
+var grounded: bool = true
+## Segundos que tarda una pierna en activar o soltar el ajuste.
+@export var fade_time: float = 0.1
+var _ground_weight: float = 1.0
+var _leg_weights: Array[float] = [1.0, 1.0]
+var _leg_corrections: Array[float] = [0.0, 0.0]
+var _leg_amounts: Array[float] = [0.0, 0.0]
 
 
 func _ready() -> void:
@@ -50,32 +58,39 @@ func _cache_legs() -> void:
 ## 3. Objetivo = suelo real + altura natural del tobillo + lift (el pie levantado sigue levantado).
 ## 4. Si un pie tiene que bajar, se baja la cadera esa cantidad (suavizado) para que llegue.
 ## 5. IK de dos huesos para colocar cada tobillo en su objetivo.
+## El ajuste nunca se enciende ni se apaga de golpe: cada pierna tiene un peso que sube y baja
+## en unas décimas de segundo (al despegar en un salto, si el rayo no encuentra suelo, etc.).
 func _process_modification_with_delta(delta: float) -> void:
 	grounded_legs_last_frame = 0
 	var skeleton: Skeleton3D = get_skeleton()
 	if skeleton == null or _legs.is_empty() or _hips < 0 or not is_inside_tree():
 		return
+	_ground_weight = move_toward(_ground_weight, 1.0 if grounded else 0.0, delta / maxf(fade_time, 0.001))
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 	var xf: Transform3D = skeleton.global_transform
 	var up_world: Vector3 = xf.basis.y.normalized()
-	var targets: Array = []
 	var lowest: float = 0.0
-	for leg: PackedInt32Array in _legs:
+	var feet_world: Array[Vector3] = []
+	for i in _legs.size():
+		var leg: PackedInt32Array = _legs[i]
 		var foot_pose: Transform3D = skeleton.get_bone_global_pose(leg[2])
 		var lift: float = maxf(foot_pose.origin.y - ankle_clearance, 0.0)
 		var foot_world: Vector3 = xf * foot_pose.origin
+		feet_world.append(foot_world)
 		var query := PhysicsRayQueryParameters3D.create(foot_world + Vector3.UP * ray_up, foot_world - Vector3.UP * ray_down, floor_collision_mask)
 		var hit: Dictionary = space.intersect_ray(query)
-		if hit.is_empty():
-			targets.append(null)
-			continue
-		var target_world: Vector3 = hit["position"] + Vector3.UP * (ankle_clearance + lift)
-		var correction: float = (target_world - foot_world).dot(up_world)
-		if absf(correction) > max_correction:
-			targets.append(null)
-			continue
-		targets.append(target_world)
-		lowest = minf(lowest, correction)
+		var wanted_weight: float = 0.0
+		if not hit.is_empty():
+			var target_world: Vector3 = hit["position"] + Vector3.UP * (ankle_clearance + lift)
+			var correction: float = (target_world - foot_world).dot(up_world)
+			# Cuanto mayor es la corrección, menos se fía de ella (se apaga suavemente hacia max_correction).
+			wanted_weight = 1.0 - smoothstep(max_correction * 0.5, max_correction, absf(correction))
+			if wanted_weight > 0.0:
+				_leg_corrections[i] = correction
+		_leg_weights[i] = move_toward(_leg_weights[i], wanted_weight, delta / maxf(fade_time, 0.001))
+		var amount: float = _leg_corrections[i] * _leg_weights[i] * _ground_weight
+		_leg_amounts[i] = amount
+		lowest = minf(lowest, amount)
 	# Bajar la cadera lo que necesite el pie más bajo (nunca subirla).
 	var wanted: float = maxf(lowest, -max_hips_drop)
 	_hips_offset = lerpf(_hips_offset, wanted, 1.0 - exp(-hips_smoothing * delta))
@@ -84,12 +99,15 @@ func _process_modification_with_delta(delta: float) -> void:
 		hips_pose.origin.y += _hips_offset
 		skeleton.set_bone_global_pose(_hips, hips_pose)
 	for i in _legs.size():
-		if targets[i] == null:
+		if absf(_leg_amounts[i]) < 0.0005 and _leg_weights[i] < 0.001:
 			continue
 		var leg: PackedInt32Array = _legs[i]
-		var target_skeleton: Vector3 = xf.affine_inverse() * (targets[i] as Vector3)
+		# El objetivo se mide desde la pose animada original (antes de bajar la cadera).
+		var target_world: Vector3 = feet_world[i] + up_world * _leg_amounts[i]
+		var target_skeleton: Vector3 = xf.affine_inverse() * target_world
 		_solve_leg(skeleton, leg[0], leg[1], leg[2], target_skeleton)
-		grounded_legs_last_frame += 1
+		if _leg_weights[i] > 0.5:
+			grounded_legs_last_frame += 1
 
 
 func _solve_leg(skeleton: Skeleton3D, upper: int, lower: int, foot: int, target: Vector3) -> void:

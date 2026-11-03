@@ -66,7 +66,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	velocity -= push
 	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
-	body.update_locomotion(velocity, get_facing(), walk_speed * 1.4)
+	body.update_locomotion(velocity, get_facing())
 
 
 # --- Utilidades para los estados ------------------------------------------------
