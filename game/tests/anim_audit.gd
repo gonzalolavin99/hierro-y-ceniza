@@ -112,6 +112,21 @@ func _run() -> void:
 	await _frames(70)
 	Input.action_release(&"block")
 	await _frames(20)
+	await _setup(true)
+	_label = "J vendarse"
+	_player.health.take_damage(30.0)
+	await _tap(&"heal")
+	await _frames(110)
+	await _setup(false)
+	_label = "J agacharse y caminar agachado"
+	await _tap(&"crouch")
+	await _frames(30)
+	Input.action_press(&"move_forward")
+	await _frames(90)
+	Input.action_release(&"move_forward")
+	await _frames(30)
+	await _tap(&"crouch")
+	await _frames(40)
 
 	# Soldado: cada patrón de ataque contra un jugador quieto (invulnerable).
 	_enemy.aggro_range = 12.0

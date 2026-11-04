@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scenes/player/states/heal.gd" id="90_heal"]
 [ext_resource type="PackedScene" path="res://scenes/characters/mannequin.tscn" id="90_mannequin"]
 [ext_resource type="Script" path="res://scenes/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://scenes/player/camera_rig.gd" id="2_camera"]
@@ -147,3 +148,6 @@ script = ExtResource("16_counter")
 
 [node name="Tool" type="Node" parent="StateMachine"]
 script = ExtResource("17_tool")
+
+[node name="Heal" type="Node" parent="StateMachine"]
+script = ExtResource("90_heal")

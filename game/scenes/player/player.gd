@@ -4,6 +4,8 @@ extends CharacterBody3D
 ## qué hace en cada momento lo deciden los estados (carpeta states/).
 
 signal deflected
+## Cambió el número de vendajes (para el HUD).
+signal bandages_changed(count: int)
 ## Empezó un paso rápido (los enemigos lo observan para leer si abusa de él).
 signal dashed
 
@@ -64,6 +66,12 @@ signal dashed
 ## La postura se recupera más rápido con la guardia alta.
 @export var block_posture_regen: float = 2.5
 
+@export_group("Curación")
+## Vendajes que lleva (se reponen al reaparecer y, más adelante, al descansar).
+@export var max_bandages: int = 3
+## Parte de la vida máxima que cura cada vendaje.
+@export var bandage_heal_ratio: float = 0.45
+
 @export_group("Técnicas")
 ## Escenario de pruebas: todas las técnicas desbloqueadas desde el inicio. En el juego final se
 ## desbloquearán con maestros y hallazgos.
@@ -110,6 +118,11 @@ var can_stomp: bool = true
 var engaged_enemy: Enemy
 ## Agachado (L3 / C): cuesta más verte y casi no haces ruido.
 var crouching: bool = false
+## Vendajes que quedan.
+var bandages: int = 0:
+	set(value):
+		bandages = clampi(value, 0, max_bandages)
+		bandages_changed.emit(bandages)
 
 var _last_block_press: float = -10.0
 var _spam_count: int = 0
@@ -122,6 +135,7 @@ func _ready() -> void:
 	model.rotation.y = deg_to_rad(start_facing_degrees)
 	camera_rig.rotation.y = model.rotation.y
 	_spawn_position = global_position
+	bandages = max_bandages
 	state_machine.setup(self)
 	posture.broken.connect(_on_posture_broken)
 	if start_with_all_arts:
@@ -504,6 +518,7 @@ func respawn() -> void:
 	health.heal(health.max_health)
 	posture.reset()
 	tools.refill()
+	bandages = max_bandages
 	lock_target = null
 	camera_rig.recenter()
 
@@ -585,3 +600,23 @@ func _find_lock_target(side: int) -> Enemy:
 func _has_line_of_sight(enemy: Enemy) -> bool:
 	var query := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 1.5, enemy.lock_point(), 1)
 	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+
+# --- Curación ----------------------------------------------------------------------
+
+## ¿Quiere vendarse? Sin vendajes suena un "clic" seco y no hace nada.
+func wants_heal() -> bool:
+	if not Input.is_action_just_pressed("heal"):
+		return false
+	if bandages <= 0:
+		Sfx.play(&"block", global_position + Vector3.UP * 1.3, -18.0)
+		return false
+	return true
+
+
+## El vendaje queda apretado: cura y se gasta.
+func apply_bandage() -> void:
+	if bandages <= 0:
+		return
+	bandages -= 1
+	health.heal(health.max_health * bandage_heal_ratio)

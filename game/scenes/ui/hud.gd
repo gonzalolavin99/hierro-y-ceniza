@@ -20,6 +20,7 @@ const POSTURE_COLORS: Array[Color] = [Color(1.0, 0.85, 0.35), Color(1.0, 0.55, 0
 
 var _player: Player
 var _tool_label: Label
+var _bandage_label: Label
 var _art_label: Label
 var _subtitle_label: Label
 var _subtitle_line: String = ""
@@ -41,6 +42,8 @@ func _ready() -> void:
 	_build_tool_label()
 	_player.tools.changed.connect(_on_tools_changed)
 	_on_tools_changed()
+	_player.bandages_changed.connect(_on_bandages_changed)
+	_on_bandages_changed(_player.bandages)
 	_player.arts.changed.connect(_on_arts_changed)
 	_on_arts_changed()
 
@@ -122,6 +125,20 @@ func _build_tool_label() -> void:
 	_art_label = _tool_label.duplicate() as Label
 	add_child(_art_label)
 	_art_label.position = _tool_label.position + Vector2(0.0, -32.0)
+	# Vendajes, encima de la técnica.
+	_bandage_label = _tool_label.duplicate() as Label
+	add_child(_bandage_label)
+	_bandage_label.position = _art_label.position + Vector2(0.0, -32.0)
+
+
+func _on_bandages_changed(count: int) -> void:
+	_bandage_label.text = "X  Vendajes  ×%d" % count
+	_bandage_label.modulate = Color(1, 1, 1, 1) if count > 0 else Color(1, 0.45, 0.4, 0.8)
+
+
+## Texto de los vendajes en el HUD (para las pruebas).
+func bandage_text() -> String:
+	return _bandage_label.text if _bandage_label else ""
 
 
 func _on_arts_changed() -> void:

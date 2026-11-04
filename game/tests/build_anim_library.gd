@@ -49,6 +49,8 @@ const MAP := {
 	"dodge_back": ["dodge_backward", false],
 	"dodge_left": ["dodge_left", false],
 	"dodge_right": ["dodge_right", false],
+	# Curarse (provisional: se lleva la mano al cuello y al hombro, como apretando un vendaje).
+	"heal": ["idle_4", false],
 	# Arquero (Longbow de Mixamo).
 	"bow_draw": ["bow_draw", false],
 	"bow_aim": ["bow_aim", true],

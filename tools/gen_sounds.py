@@ -241,6 +241,20 @@ def explosion(variant):
     return reverb(x, 1.6, 0.3)
 
 
+def bandage(variant):
+    """Vendaje: dos tirones de tela (roce filtrado) y un apretón final."""
+    t = t_axis(1.0)
+    x = np.zeros_like(t)
+    for start, length, lo, hi in ((0.05, 0.22, 900, 5000), (0.38, 0.18, 1200, 6000), (0.72, 0.1, 600, 3000)):
+        seg = (t >= start) & (t < start + length)
+        env = np.zeros_like(t)
+        local = (t[seg] - start) / length
+        env[seg] = np.sin(np.pi * local) ** 2
+        x += band(rng.standard_normal(len(t)), lo, hi) * env * 0.6
+    x += thump(np.clip(t - 0.8, 0, None), 180, 120, 0.02, 0.25) * (t >= 0.8)
+    return reverb(x, 0.3, 0.08)
+
+
 SOUNDS = {
     "deflect": (deflect, 3),
     "block": (block, 3),
@@ -256,6 +270,7 @@ SOUNDS = {
     "bolt_hit": (bolt_hit, 2),
     "smoke": (smoke, 1),
     "explosion": (explosion, 2),
+    "bandage": (bandage, 1),
 }
 
 if __name__ == "__main__":

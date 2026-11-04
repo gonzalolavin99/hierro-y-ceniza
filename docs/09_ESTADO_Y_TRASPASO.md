@@ -18,7 +18,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Pendiente menor: animaciones de caminar agachado (Mixamo) |
-| 6 · El loop souls | Siguiente: curación con vendajes (y que la IA castigue curarse a destiempo), campamento, experiencia, guardado, menú de pausa |
+| 6 · El loop souls | 🔨 Paso 1 (vendajes y castigo de la IA al curarse) hecho y probado (OK). Siguen: campamento, experiencia, guardado, menú de pausa |
 | 7–9 | Pendientes (historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -51,6 +51,7 @@ cambiar de objetivo con el stick derecho.
 | A en el aire junto al enemigo | Pisotón (daña su postura; interrumpe el barrido) |
 | B hacia el enemigo ante una estocada | Pisar la hoja (mucha postura, queda expuesto) |
 | LT / Q | Arma secundaria equipada |
+| X / R | Vendarse (cura 45 %; quieto y sin guardia 1,4 s; 3 vendajes) |
 | L3 / C | Agacharse (alterna): sigilo; por la espalda sin que te vean, ataque = golpe mortal |
 | Cruceta ← → / 1, 2 | Cambiar de arma secundaria |
 
@@ -107,6 +108,12 @@ cambiar de objetivo con el stick derecho.
   En grupo, el arquero pide turno a Squad como los demás (lo tiene mientras tensa y apunta; lo suelta al
   disparar), así nunca coinciden su flecha y un tajo. Zona "GRUPO MIXTO" (x=34, z=46). `group_test` sección 4.
   Rendimiento con 9 enemigos en el escenario: 60 FPS con vsync, 223 sin él (`tests/perf_probe.tscn`).
+- **Vendajes** (Player `max_bandages` 3, `bandage_heal_ratio` 0,45, señal `bandages_changed`; estado
+  `player/states/heal.gd`): 1,4 s quieto y sin guardia, cura a los 0,9 s; golpe antes = no cura ni gasta;
+  paso rápido para cancelar desde 1,05 s. Se reponen en `respawn()`. HUD "X Vendajes ×N" encima de la técnica.
+  Sonido `bandage` (gen_sounds.py). Castigo de la IA: `Enemy._watch_player_heal()` (≤7 m, alerta, no
+  predecible, nadie más atacando): toma el turno y lanza `lunge`/`quick`, o `Shoot` si es arquero.
+  Animación provisional `heal` = `idle_4` (0,9→2,3 s). Se prueba en `heal_test`.
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
   caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
@@ -153,7 +160,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

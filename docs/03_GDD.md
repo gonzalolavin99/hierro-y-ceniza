@@ -51,7 +51,7 @@
 | Contraataque tras esquiva | RB al final del paso | |
 | Salto / ataque en salto | A / A + RB | |
 | Fijar objetivo | R3 | Stick derecho a un lado = cambiar de objetivo |
-| Curarse | X | (Hito 6) |
+| Curarse | X (teclado: R) | Vendarse: cura 45 %, 1,4 s quieto y sin guardia, 3 vendajes |
 | Armas secundarias | LT · cruceta ←/→ cambia | Ballesta de muñeca (interrumpe ataques), bomba de humo (aturde), bomba de pólvora (atraviesa la guardia) |
 | Agacharse / sigilo | L3 (teclado: C) | Alterna agachado: más lento, casi sin ruido, cuesta más verte |
 

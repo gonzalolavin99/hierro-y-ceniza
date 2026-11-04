@@ -99,7 +99,12 @@ Quedan para más adelante: castigar curarse a destiempo (cuando exista la curaci
 de caminar agachado (Mixamo, las descarga el jugador).
 
 ## Hito 6 — El loop souls (2 semanas)
-- [ ] Curación con vendajes, campamento, reaparición de enemigos al descansar.
+- [~] Curación con vendajes, campamento, reaparición de enemigos al descansar.
+      Paso 1 hecho y probado (OK del jugador): **vendajes** (X / R): 3 cargas, cada una cura el 45 % de la vida;
+      vendarse dura 1,4 s quieto y sin guardia (se aprieta a los 0,9 s); un golpe antes lo interrumpe sin gastar
+      el vendaje; se reponen al reaparecer. Los enemigos alerta a ≤7 m que te ven empezar a vendarte se lanzan
+      a castigarte (embestida o tajo rápido; el arquero dispara), salvo que otro ya esté atacando. Animación
+      provisional (`idle_4`: mano al cuello); pendiente una de vendarse de Mixamo.
 - [ ] Experiencia: perderla al morir y recuperarla. Subir atributos.
 - [ ] Guardado/carga. Menú de pausa.
 - [ ] Muerte con la voz del narrador: "No… no fue así".

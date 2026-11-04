@@ -93,6 +93,8 @@ const STEALTH_KILL_RANGE: float = 2.4
 const KEEP_AWAY_COOLDOWN: float = 2.5
 ## Más cerca que esto, el que ataca a distancia se defiende con una patada.
 const MELEE_RANGE: float = 2.2
+## Castigo: si te ve curarte a esta distancia o menos, se lanza a por ti.
+const PUNISH_HEAL_RANGE: float = 7.0
 ## Esquiva: solo si el ataque empieza a esta distancia, y tras este tiempo de reacción.
 const EVADE_RANGE: float = 3.2
 const EVADE_REACTION: float = 0.1
@@ -123,6 +125,7 @@ var _mark_timer: float = 0.0
 ## Durante el inicio de una esquiva no le alcanzan los golpes (como el paso rápido del jugador).
 var evading: bool = false
 var _saw_player_attack: bool = false
+var _saw_player_heal: bool = false
 var _evade_in: float = -1.0
 ## Momento (reloj de Squad) del último salto para recuperar distancia.
 var last_keep_away: float = -100.0
@@ -159,6 +162,7 @@ func _physics_process(delta: float) -> void:
 	_update_awareness(delta)
 	_update_mark(delta)
 	_watch_player_attack(delta)
+	_watch_player_heal()
 	# Con poca vida, la postura se recupera más lento (como en Sekiro).
 	posture.regen_multiplier = 0.25 + 0.75 * health.ratio()
 	velocity.y -= gravity * delta
@@ -623,3 +627,32 @@ func too_close() -> bool:
 ## ¿Hay línea de tiro limpia hasta el jugador? (para disparar)
 func has_clear_shot() -> bool:
 	return _can_see_target()
+
+
+# --- Castigar curarse a destiempo ----------------------------------------------------
+
+## Si te ve EMPEZAR a vendarte cerca, no espera su turno de ataque: se lanza (embestida si está lejos,
+## tajo rápido si está cerca) o, si es arquero, dispara. Respeta a un compañero que ya esté atacando.
+func _watch_player_heal() -> void:
+	if target == null:
+		return
+	var healing: bool = target.state_machine.current.name == &"Heal"
+	if healing and not _saw_player_heal and _can_punish_heal():
+		Squad.take_turn(self)
+		if ranged:
+			state_machine.transition_to(&"Shoot")
+		else:
+			var pattern: StringName = &"lunge" if distance_to_target() > 2.6 else &"quick"
+			state_machine.transition_to(&"Attack", {"pattern": pattern})
+	_saw_player_heal = healing
+
+
+func _can_punish_heal() -> bool:
+	if mind.predictable or not alerted or not has_target() or distance_to_target() > PUNISH_HEAL_RANGE:
+		return false
+	if Squad.is_busy_for(self):
+		return false
+	if ranged and not has_clear_shot():
+		return false
+	var state: StringName = state_name()
+	return state == &"Idle" or state == &"Circle" or state == &"Chase"

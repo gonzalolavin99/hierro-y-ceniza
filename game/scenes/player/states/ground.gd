@@ -33,6 +33,8 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Block")
 	elif player.wants_tool():
 		machine.transition_to(&"Tool")
+	elif player.wants_heal():
+		machine.transition_to(&"Heal")
 	elif Input.is_action_just_pressed("dodge") and player.dash_cooldown_timer <= 0.0:
 		machine.transition_to(&"Dash")
 	elif not player.is_on_floor() and player.coyote_timer <= 0.0:
