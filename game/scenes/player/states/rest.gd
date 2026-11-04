@@ -1,7 +1,8 @@
 extends PlayerState
 ## Descansar en un campamento (Y / E junto a la fogata): Kael se arrodilla junto al fuego, la pantalla
 ## se funde a negro, recupera vida, vendajes y herramientas, los enemigos vuelven a su puesto y este
-## campamento pasa a ser su punto de reaparición. Luego la pantalla se aclara y se levanta.
+## campamento pasa a ser su punto de reaparición. Al aclararse se abre el menú de atributos; al cerrarlo
+## (B / Esc) se levanta.
 
 ## Se arrodilla y empieza a oscurecer.
 const FADE_OUT_FROM: float = 0.5
@@ -17,6 +18,7 @@ var _elapsed: float
 var _restored: bool
 var _faded_out: bool
 var _faded_in: bool
+var _menu_closed: bool
 
 
 func enter(msg: Dictionary) -> void:
@@ -25,6 +27,7 @@ func enter(msg: Dictionary) -> void:
 	_restored = false
 	_faded_out = false
 	_faded_in = false
+	_menu_closed = false
 	player.lock_target = null
 	player.body.set_blocking(false)
 	player.body.play_action(&"kneel", 0.0, 1.0, 0.3)
@@ -34,6 +37,9 @@ func enter(msg: Dictionary) -> void:
 
 func exit() -> void:
 	player.body.stop_action(0.4)
+	if Camps.level_menu.closed.is_connected(_on_menu_closed):
+		Camps.level_menu.closed.disconnect(_on_menu_closed)
+	Camps.level_menu.close()
 	if not _faded_in:
 		Camps.fade_to(0.0, 0.3)
 
@@ -57,5 +63,14 @@ func physics_update(delta: float) -> void:
 	if not _faded_in and _elapsed >= FADE_IN_FROM:
 		_faded_in = true
 		Camps.fade_to(0.0, FADE_IN)
-	if _elapsed >= DURATION:
+		if _fire:
+			Camps.level_menu.closed.connect(_on_menu_closed, CONNECT_ONE_SHOT)
+			Camps.level_menu.open(player)
+		else:
+			_menu_closed = true
+	if _menu_closed and _elapsed >= DURATION:
 		machine.transition_to(&"Ground")
+
+
+func _on_menu_closed() -> void:
+	_menu_closed = true

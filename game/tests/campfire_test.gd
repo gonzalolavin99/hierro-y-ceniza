@@ -59,7 +59,9 @@ func _run() -> void:
 	_check("Pulsar Y junto a la fogata empieza a descansar (%s)" % _player.state_machine.current.name, _player.state_machine.current.name == &"Rest")
 	await _wait(1.0)
 	_check("La pantalla se oscurece al descansar (%.2f)" % Camps.fade_alpha(), Camps.fade_alpha() > 0.5)
-	await _wait(4.0)
+	await _wait(3.0)
+	Camps.level_menu.close()  # el menú de atributos se abre al descansar
+	await _wait(1.0)
 	_check("Al descansar recupera toda la vida (%.0f/%.0f)" % [_player.health.current, _player.health.max_health], is_equal_approx(_player.health.current, _player.health.max_health))
 	_check("…y todos los vendajes (%d)" % _player.bandages, _player.bandages == _player.max_bandages)
 	_check("El enemigo muerto vuelve a la vida (%s)" % _enemy.state_name(), not _enemy.is_dead())

@@ -75,7 +75,8 @@ El repertorio está en `game/scenes/player/moves.gd` (datos): añadir un movimie
 
 ## 5. Progresión
 
-- **Atributos** (se suben en el campamento): Vigor (vida), Temple (postura), Fuerza, Destreza.
+- **Atributos** (se suben en el campamento, al descansar): Vigor (vida), Temple (postura), Fuerza (daño),
+  Destreza (daño a la postura enemiga). Cada punto cuesta experiencia, un poco más cada nivel; tope 10.
 - **Arma principal fija** (katana-espada larga del protagonista), que se mejora con el herrero.
   Las técnicas se aprenden de maestros o se encuentran.
 - **Armas secundarias**: ballesta de muñeca, bombas de pólvora, bomba de humo, cuchillos.

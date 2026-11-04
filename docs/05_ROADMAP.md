@@ -115,7 +115,11 @@ de caminar agachado (Mixamo, las descarga el jugador).
       bandido 35, arquero 45, lancero 55); HUD abajo a la derecha con "+N" al ganarla. Al morir, Kael la pierde
       y queda en su **morral** donde cayó (bolsa de cuero con un jirón rojo en una estaca, se ve de lejos, con
       letrero "Tu morral · N"). Pasar junto a él la recupera. Si muere antes de recogerlo, ese morral se pierde.
-      Descansar no lo borra. Falta: subir atributos en el campamento.
+      Descansar no lo borra.
+      Paso 4 hecho y probado (OK del jugador): **atributos**. Al descansar se abre el menú del campamento
+      (arriba/abajo elige, A / Intro sube, B / Esc se levanta). Vigor +10 vida, Temple +8 postura, Fuerza
+      +6 % daño, Destreza +6 % daño a la postura, por punto; tope 10 cada uno. Nivel = suma − 3; cada punto
+      cuesta 60 + 20 × (nivel − 1) de experiencia.
 - [ ] Guardado/carga. Menú de pausa.
 - [ ] Muerte con la voz del narrador: "No… no fue así".
 

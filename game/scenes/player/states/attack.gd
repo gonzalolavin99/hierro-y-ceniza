@@ -55,7 +55,7 @@ func physics_update(delta: float) -> void:
 	if _hit_index < hits.size():
 		var hit: Dictionary = hits[_hit_index]
 		if not _hit_active and t >= hit["at"] - PlayerMoves.HIT_BEFORE:
-			var data := HitData.create(player, hit["damage"], hit["posture"])
+			var data := player.make_hit(hit["damage"], hit["posture"])
 			data.guard_break = hit.get("guard_break", false)
 			player.hitbox.activate(data)
 			_hit_active = true

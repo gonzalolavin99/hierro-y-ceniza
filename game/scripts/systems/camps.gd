@@ -9,6 +9,8 @@ var _layer: CanvasLayer
 var _black: ColorRect
 var _caption: Label
 var _tween: Tween
+## Menú para subir atributos (se abre al descansar).
+var level_menu: LevelMenu
 
 
 func _ready() -> void:
@@ -29,6 +31,8 @@ func _ready() -> void:
 	_caption.add_theme_color_override("font_color", Color(0.95, 0.82, 0.6))
 	_caption.modulate.a = 0.0
 	_black.add_child(_caption)
+	level_menu = LevelMenu.new()
+	add_child(level_menu)
 
 
 ## Oscurece (1) o aclara (0) la pantalla en `seconds`, con un texto opcional en el centro.

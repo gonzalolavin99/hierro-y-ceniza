@@ -127,6 +127,10 @@ var xp: int = 0:
 		var old: int = xp
 		xp = maxi(value, 0)
 		xp_changed.emit(xp, xp - old)
+## Atributos (Vigor, Temple, Fuerza, Destreza), que se suben en el campamento.
+var attributes: Attributes
+var _base_max_health: float
+var _base_max_posture: float
 ## Último punto donde pisó suelo (allí cae el morral si muere en el aire o al caer).
 var _last_floor_position: Vector3
 var bandages: int = 0:
@@ -142,6 +146,11 @@ var _stick_flicked: bool = false
 
 func _ready() -> void:
 	add_to_group("player")
+	attributes = Attributes.new()
+	attributes.name = "Attributes"
+	add_child(attributes)
+	_base_max_health = health.max_health
+	_base_max_posture = posture.max_posture
 	model.rotation.y = deg_to_rad(start_facing_degrees)
 	camera_rig.rotation.y = model.rotation.y
 	_spawn_position = global_position
@@ -677,3 +686,30 @@ func drop_xp() -> void:
 func recover_xp(amount: int, at: Vector3) -> void:
 	Sfx.play(&"pickup", at + Vector3.UP * 0.3)
 	gain_xp(amount)
+
+
+# --- Atributos ---------------------------------------------------------------------
+
+## Sube un atributo pagando su coste en experiencia. Devuelve si pudo.
+func raise_attribute(attribute: StringName) -> bool:
+	if not attributes.can_raise(attribute, xp):
+		return false
+	xp -= attributes.next_cost()
+	attributes.raise(attribute)
+	apply_attributes()
+	return true
+
+
+## Ajusta vida y postura máximas a los atributos (lo ganado se suma también a la actual).
+func apply_attributes() -> void:
+	var new_health: float = attributes.max_health(_base_max_health)
+	var gained: float = new_health - health.max_health
+	health.max_health = new_health
+	health.heal(maxf(gained, 0.0))
+	posture.max_posture = attributes.max_posture(_base_max_posture)
+	posture.changed.emit(posture.current, posture.max_posture)
+
+
+## Golpe del jugador con Fuerza (daño) y Destreza (postura) aplicadas.
+func make_hit(damage: float, posture_damage: float) -> HitData:
+	return HitData.create(self, damage * attributes.damage_scale(), posture_damage * attributes.posture_scale())

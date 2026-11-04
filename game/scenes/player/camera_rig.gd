@@ -119,6 +119,8 @@ func _clip_fraction(pivot: Vector3, offset: Vector3) -> float:
 
 func _free_look(delta: float) -> void:
 	var look: Vector2 = Input.get_vector("cam_left", "cam_right", "cam_up", "cam_down")
+	if Camps.level_menu and Camps.level_menu.is_open():
+		look = Vector2.ZERO  # las flechas mueven el menú, no la cámara
 	if look.length_squared() > 0.0:
 		_recentering = false
 	rotation.y -= look.x * sensitivity.x * delta

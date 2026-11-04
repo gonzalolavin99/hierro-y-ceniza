@@ -54,7 +54,9 @@ func _run() -> void:
 	# 4. Descansar no borra el morral.
 	await _place(_fire.rest_position())
 	await _tap("interact")
-	await _wait(4.0)
+	await _wait(3.0)
+	Camps.level_menu.close()  # el menú de atributos se abre al descansar
+	await _wait(1.0)
 	_check("Descansar no borra el morral (%d)" % _satchels().size(), _satchels().size() == 1)
 
 	# 5. Volver a por él: la recupera y el morral desaparece.
