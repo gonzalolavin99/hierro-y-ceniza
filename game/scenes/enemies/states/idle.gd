@@ -21,5 +21,9 @@ func physics_update(delta: float) -> void:
 		return
 	_wait -= delta
 	if _wait <= 0.0:
+		# En grupo, ataca solo quien tiene el turno; los demás esperan rodeando.
+		if not Squad.request_turn(enemy):
+			machine.transition_to(&"Circle")
+			return
 		# La mente elige el ataque según lo que ha leído del jugador.
 		machine.transition_to(&"Attack", {"pattern": enemy.mind.pick_pattern(enemy.distance_to_target())})

@@ -80,11 +80,13 @@ func enter(msg: Dictionary) -> void:
 	_forced_delay = msg.get("delay", -1.0)
 	_forced_feint = msg.get("feint", false)
 	_swings = PATTERNS[msg.get("pattern", &"single")]
+	Squad.take_turn(enemy)
 	_index = 0
 	_set_phase(Phase.WINDUP)
 
 
 func exit() -> void:
+	Squad.end_turn(enemy)
 	enemy.hitbox.deactivate()
 	enemy.body.set_trail(false)
 

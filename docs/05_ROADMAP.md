@@ -73,7 +73,10 @@ velocidades y tiempos hasta que digas OK.
       hace fintas y retrasa golpes si siempre desvías igual, se retira y flanquea en grupo.
       Paso 1 hecho (`EnemyMind`, OK del jugador): retrasa golpes y amaga si desvías mucho, estocadas
       si abusas del paso rápido, barridos/agarres si te escondes tras la guardia, contraataca antes si atacas
-      sin pausa. Pendiente: curarse a destiempo (Hito 6), grupo (paso 2).
+      sin pausa. Pendiente: curarse a destiempo (Hito 6).
+      Paso 2 hecho (OK del jugador): pelea en grupo con turnos (`Squad`): ataca uno cada vez,
+      con respiro entre uno y otro; los demás esperan a ~3,6 m con la guardia alta y te rodean hacia los
+      costados y la espalda; no se hieren entre ellos; al caer el fijado, la cámara pasa al siguiente.
 - [ ] 3 tipos: bandido, soldado con lanza, arquero. Patrulla, alerta, sigilo y ataque sorpresa.
 
 **🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?

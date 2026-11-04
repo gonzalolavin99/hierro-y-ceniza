@@ -36,6 +36,9 @@ func _physics_process(_delta: float) -> void:
 		var hurtbox := area as Hurtbox
 		if hurtbox == null or hurtbox in _already_hit or hurtbox.target == _hit.attacker:
 			continue
+		# Los enemigos no se hieren entre ellos (pelea en grupo).
+		if _hit.attacker.is_in_group("enemies") and hurtbox.target.is_in_group("enemies"):
+			continue
 		_already_hit.append(hurtbox)
 		var result: int = hurtbox.receive(_hit)
 		hit_landed.emit(result, hurtbox)

@@ -329,3 +329,27 @@ billboard = 1
 text = "Placa de postura (quédate encima)"
 font_size = 48
 outline_size = 12
+
+[node name="GroupArena" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0.02, 17)
+radius = 9.0
+height = 0.04
+sides = 32
+material = SubResource("arena_material")
+
+[node name="LblGroup" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 2.6, 17)
+billboard = 1
+text = "PELEA EN GRUPO
+(tres soldados: se turnan para atacar)"
+font_size = 48
+outline_size = 12
+
+[node name="GroupSoldier1" parent="." instance=ExtResource("4_soldier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, 13)
+
+[node name="GroupSoldier2" parent="." instance=ExtResource("4_soldier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0, 18)
+
+[node name="GroupSoldier3" parent="." instance=ExtResource("4_soldier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.5, 0, 18)

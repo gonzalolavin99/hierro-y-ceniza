@@ -489,7 +489,10 @@ func _on_posture_broken() -> void:
 # --- Fijar objetivo -----------------------------------------------------------
 
 func _update_lock_on() -> void:
-	if lock_target and (lock_target.is_dead() or global_position.distance_to(lock_target.global_position) > lock_range * 1.3):
+	if lock_target and lock_target.is_dead():
+		# Como en Sekiro: al caer el fijado, pasa al enemigo más cercano que tengas delante.
+		lock_target = _find_lock_target(0)
+	elif lock_target and global_position.distance_to(lock_target.global_position) > lock_range * 1.3:
 		lock_target = null
 
 	if Input.is_action_just_pressed("lock_on"):
