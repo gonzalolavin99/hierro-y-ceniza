@@ -59,10 +59,13 @@ velocidades y tiempos hasta que digas OK.
       Ráfaga, con desbloqueo. Hechas con prueba automática y OK del jugador.
 - [x] Armas secundarias: ballesta de muñeca, bomba de humo, bomba de pólvora. Hechas, con prueba
       automática y OK del jugador. Gestos provisionales (sin animaciones propias de disparo/lanzamiento).
-- [~] Voces y esfuerzos en combate (gritos de ataque, quejidos, frases de enemigos). Sistema hecho, con
-      subtítulos y prueba automática; **faltan los audios**: generarlos con ElevenLabs según `docs/10_GUION_VOCES.md`.
+- [x] Voces y esfuerzos en combate (gritos de ataque, quejidos, frases de enemigos). Sistema hecho, con
+      subtítulos y prueba automática. Audios generados en local con Kokoro (gratis), con turnos para que no se pisen.
+      Pendiente para más adelante: pulido fino de audio y diálogo (volúmenes, mezcla, más variedad).
 
 **🧪 PRUEBA:** ¿hay varias formas de ganar una pelea?
+
+✅ **Hito 4 cerrado con OK del jugador (2026-11-03).**
 
 ## Hito 5 — IA inteligente y enemigos (3–4 semanas)
 - [ ] **Una sola dificultad** (D13): la IA tiene que ser lista, no tramposa.

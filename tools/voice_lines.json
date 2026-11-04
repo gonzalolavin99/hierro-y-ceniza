@@ -1,0 +1,182 @@
+{
+  "kael": [
+    {
+      "event": "attack",
+      "id": "kael_attack_1",
+      "phrase": false,
+      "text": "Hut!"
+    },
+    {
+      "event": "attack",
+      "id": "kael_attack_2",
+      "phrase": false,
+      "text": "Hup!"
+    },
+    {
+      "event": "attack",
+      "id": "kael_attack_3",
+      "phrase": false,
+      "text": "Hah!"
+    },
+    {
+      "event": "heavy",
+      "id": "kael_heavy_1",
+      "phrase": false,
+      "text": "Haraah!"
+    },
+    {
+      "event": "heavy",
+      "id": "kael_heavy_2",
+      "phrase": false,
+      "text": "Hyah!"
+    },
+    {
+      "event": "art",
+      "id": "kael_art_1",
+      "phrase": false,
+      "text": "Haaah!"
+    },
+    {
+      "event": "art",
+      "id": "kael_art_2",
+      "phrase": false,
+      "text": "Rraaagh!"
+    },
+    {
+      "event": "throw",
+      "id": "kael_throw_1",
+      "phrase": false,
+      "text": "Huff!"
+    },
+    {
+      "event": "hurt",
+      "id": "kael_hurt_1",
+      "phrase": false,
+      "text": "Ugh!"
+    },
+    {
+      "event": "hurt",
+      "id": "kael_hurt_2",
+      "phrase": false,
+      "text": "Agh!"
+    },
+    {
+      "event": "hurt",
+      "id": "kael_hurt_3",
+      "phrase": false,
+      "text": "Ungh..."
+    },
+    {
+      "event": "deathblow",
+      "id": "kael_deathblow_1",
+      "phrase": false,
+      "text": "Haaah..."
+    },
+    {
+      "event": "death",
+      "id": "kael_death_1",
+      "phrase": false,
+      "text": "Aaagh... ahh..."
+    }
+  ],
+  "narrator": [
+    {
+      "event": "player_death",
+      "id": "narrator_death_1",
+      "phrase": true,
+      "text": "No... no, that's not how it happened."
+    },
+    {
+      "event": "player_death",
+      "id": "narrator_death_2",
+      "phrase": true,
+      "text": "Wait. Let me start again."
+    },
+    {
+      "event": "player_death",
+      "id": "narrator_death_3",
+      "phrase": true,
+      "text": "No... I'm getting ahead of myself."
+    }
+  ],
+  "soldier": [
+    {
+      "event": "spot",
+      "id": "soldier_spot_1",
+      "phrase": true,
+      "text": "You shouldn't have come here."
+    },
+    {
+      "event": "spot",
+      "id": "soldier_spot_2",
+      "phrase": true,
+      "text": "Halt! Who goes there?"
+    },
+    {
+      "event": "spot",
+      "id": "soldier_spot_3",
+      "phrase": true,
+      "text": "Draw your blade."
+    },
+    {
+      "event": "attack",
+      "id": "soldier_attack_1",
+      "phrase": false,
+      "text": "Rah!"
+    },
+    {
+      "event": "attack",
+      "id": "soldier_attack_2",
+      "phrase": false,
+      "text": "Hup!"
+    },
+    {
+      "event": "danger",
+      "id": "soldier_danger_1",
+      "phrase": false,
+      "text": "Raaaagh!"
+    },
+    {
+      "event": "danger",
+      "id": "soldier_danger_2",
+      "phrase": false,
+      "text": "Hyaaah!"
+    },
+    {
+      "event": "hurt",
+      "id": "soldier_hurt_1",
+      "phrase": false,
+      "text": "Ugh!"
+    },
+    {
+      "event": "hurt",
+      "id": "soldier_hurt_2",
+      "phrase": false,
+      "text": "Aagh!"
+    },
+    {
+      "event": "broken",
+      "id": "soldier_broken_1",
+      "phrase": false,
+      "text": "Hah... agh..."
+    },
+    {
+      "event": "death",
+      "id": "soldier_death_1",
+      "phrase": false,
+      "text": "Aaargh... ahh..."
+    },
+    {
+      "event": "victory",
+      "id": "soldier_victory_1",
+      "phrase": true,
+      "text": "Stay down."
+    },
+    {
+      "event": "victory",
+      "id": "soldier_victory_2",
+      "phrase": true,
+      "text": "That's the end of you."
+    }
+  ]
+}

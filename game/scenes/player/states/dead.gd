@@ -19,7 +19,7 @@ func enter(_msg: Dictionary) -> void:
 	var winner: Enemy = player.engaged_enemy
 	if winner and not winner.is_dead():
 		get_tree().create_timer(0.7, false).timeout.connect(Voice.say.bind(&"soldier", &"victory", winner.lock_point()))
-	get_tree().create_timer(1.6, false).timeout.connect(Voice.say.bind(&"narrator", &"player_death", Vector3.ZERO))
+	get_tree().create_timer(2.3, false).timeout.connect(Voice.say.bind(&"narrator", &"player_death", Vector3.ZERO))
 
 
 func physics_update(delta: float) -> void:

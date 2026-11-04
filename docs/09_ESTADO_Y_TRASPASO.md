@@ -16,7 +16,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 1 · Movimiento | ✅ OK del jugador |
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
-| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Faltan los audios de voz (ElevenLabs, ver docs/10) |
+| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
 | 5–9 | Pendientes (IA lista, loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -63,8 +63,9 @@ cambiar de objetivo con el stick derecho.
   todas desde el inicio: `Player.start_with_all_arts`). La Ráfaga contra alguien en guardia provoca su contraataque.
 - **Voces** (autoload `Voice`, líneas en `systems/voice_lines.gd`): esfuerzos de Kael y del soldado, frases del
   soldado (al verte, al ganarte) y del narrador al morir ("No… no fue así."), con subtítulos en español abajo al
-  centro. Probabilidad y pausa por evento para no saturar. Los audios aún no existen (el juego no falla sin ellos);
-  el guion para generarlos está en docs/10 (se regenera con `--script res://tests/export_voice_script.gd`).
+  centro. Probabilidad y pausa por evento para no saturar; turnos para que no se pisen: cada personaje dice una
+  cosa a la vez, como mucho 2 voces a la vez (gana la más importante, `EVENT_PRIORITY`) y el narrador calla al resto. Audios generados en local y gratis con **Kokoro**
+  (licencia Apache 2.0) por `tools/gen_voices.py`: Kael `bm_daniel`, soldado `am_onyx`, anciano `bm_lewis`. Guion: docs/10.
 - **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
   normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
@@ -115,6 +116,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 | Capturas (con ventana) | `res://tests/visual_check.tscn -- <carpeta>` · `polish_preview.tscn` · `anim_preview.tscn` · `ramp_shot.tscn` |
 | Medir pies | `res://tests/feet_probe.tscn` (con ventana) |
 | Regenerar escenario / sonidos | `python tools/gen_test_level.py` · `python tools/gen_sounds.py` (desde `G:\Game`) |
+| Voces (tras cambiar `voice_lines.gd`) | `--headless --path . --script res://tests/export_voice_script.gd` y luego, desde `G:\Game`: `G:\Herramientas	tsenv\Scripts\python tools/gen_voices.py` (`--all` rehace todas) |
 
 Mixamo en un PC nuevo: ver [06_ARQUITECTURA_TECNICA](06_ARQUITECTURA_TECNICA.md) § Animaciones.
 Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One + 4 Standing Dodge
@@ -135,6 +137,13 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 - Al editar archivos con scripts, **no abrir en modo escritura antes de leer** (se vaciaron archivos así).
 - `class_name` nuevos: ejecutar una vez `--headless --editor --quit` para refrescar la caché de clases.
 - Animaciones descartadas por la guía de contenido: *casting*, *spell cast*, *power up*.
+- **Tiempo de juego ≠ tiempo real** en las pruebas sin ventana (0,7 s de juego ≈ 0,57 s reales). Las esperas y
+  pausas del juego deben medirse en tiempo de juego (`delta`), nunca con `Time.get_ticks_msec()`.
+- **Voz Kokoro**: las interjecciones con consonantes sueltas ("Hh!", "Nngh", "Hmph") se leen **deletreadas**
+  ("eich-eich"). `gen_voices.py` lo detecta por los fonemas y se detiene. Usar "Hut!", "Huff!", "Ungh...", "Rah!".
+- Entorno de voz: `G:\Herramientas	ts` (venv con `kokoro-onnx` + modelos `kokoro-v1.0.onnx` y `voices-v1.0.bin`,
+  de github.com/thewh1teagle/kokoro-onnx, release model-files-v1.0). En un PC nuevo: crear el venv e instalar
+  `kokoro-onnx soundfile`, y descargar esos dos archivos en `models/`.
 
 ## 6. Reglas del proyecto (resumen)
 
