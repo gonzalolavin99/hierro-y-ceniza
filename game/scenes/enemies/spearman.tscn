@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="1_base"]
+
+[sub_resource type="BoxShape3D" id="spear_reach"]
+size = Vector3(1.4, 1.4, 2.9)
+
+[node name="Spearman" instance=ExtResource("1_base")]
+display_name = "Lancero"
+walk_speed = 2.8
+attack_range = 3.3
+blocks_before_counter = 3
+moveset = Array[StringName]([&"spear_thrust", &"spear_thrust", &"thrust_combo", &"spear_swing", &"spear_thrust"])
+danger_moveset = Array[StringName]([&"thrust", &"sweep"])
+danger_ratio = 0.35
+idle_wait = Vector2(0.6, 1.4)
+strike_distance = 2.5
+keep_away_range = 1.9
+
+[node name="Mannequin" parent="Model"]
+weapon = 1
+body_color = Color(0.26, 0.32, 0.42, 1)
+
+[node name="Hitbox" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.75)
+
+[node name="Shape" parent="Model/Hitbox"]
+shape = SubResource("spear_reach")
+
+[node name="Posture" parent="."]
+max_posture = 110.0

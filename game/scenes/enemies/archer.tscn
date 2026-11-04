@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="1_base"]
+
+[node name="Archer" instance=ExtResource("1_base")]
+display_name = "Arquero"
+walk_speed = 2.6
+attack_range = 13.0
+moveset = Array[StringName]([&"kick_push"])
+danger_moveset = Array[StringName]([])
+danger_ratio = 0.0
+idle_wait = Vector2(0.8, 1.6)
+can_block = false
+keep_away_range = 5.0
+ranged = true
+
+[node name="Mannequin" parent="Model"]
+weapon = 2
+guard_anim = &"bow_aim"
+body_color = Color(0.32, 0.4, 0.26, 1)
+
+[node name="Health" parent="."]
+max_health = 70.0
+
+[node name="Posture" parent="."]
+max_posture = 60.0
+regen_rate = 10.0

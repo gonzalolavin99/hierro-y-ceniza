@@ -52,6 +52,20 @@ const PATTERNS: Dictionary[StringName, Array] = {
 	&"lunge": [
 		{"windup": 0.5, "active": 0.14, "after": 0.7, "anim": &"slash_b", "from": 0.0, "impact": 0.33, "lunge": true},
 	],
+	# --- Lancero (golpes con la lanza; se para más lejos, ver Enemy.strike_distance) ---
+	# Estocada larga y directa (normal: se desvía).
+	&"spear_thrust": [
+		{"windup": 0.55, "active": 0.14, "after": 0.65, "anim": &"slash_d", "from": 0.0, "impact": 0.47},
+	],
+	# Golpe amplio de lado con el asta.
+	&"spear_swing": [
+		{"windup": 0.6, "active": 0.16, "after": 0.7, "anim": &"combo_two_hand", "from": 0.15, "impact": 0.63},
+	],
+	# --- Arquero ---
+	# Patada para quitárselo de encima cuando te pegas a él.
+	&"kick_push": [
+		{"windup": 0.45, "active": 0.14, "after": 0.6, "anim": &"kick", "from": 0.25, "impact": 0.5},
+	],
 	# Contraataque tras bloquear varios golpes: más rápido.
 	&"counter": [
 		{"windup": 0.3, "active": 0.12, "after": 0.25, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},

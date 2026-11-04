@@ -5,6 +5,8 @@
 [ext_resource type="Script" path="res://tests/posture_plate.gd" id="3_plate"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="4_soldier"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/bandit.tscn" id="5_bandit"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/spearman.tscn" id="6_spearman"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/archer.tscn" id="7_archer"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_material"]
 sky_top_color = Color(0.32, 0.37, 0.44, 1)
@@ -437,3 +439,44 @@ outline_size = 12
 [node name="Bandit" parent="." instance=ExtResource("5_bandit")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 12, 0, 36)
 aggro_range = 9.0
+
+[node name="SpearRing" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.02, 34)
+radius = 6.0
+height = 0.04
+sides = 32
+material = SubResource("arena_material")
+
+[node name="LblSpear" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.8, 27.5)
+billboard = 1
+text = "LANCERO
+largo alcance y estocadas: no le dejes distancia"
+font_size = 44
+outline_size = 12
+
+[node name="Spearman" parent="." instance=ExtResource("6_spearman")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -12, 0, 36)
+aggro_range = 9.0
+
+[node name="ArcherField" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 50)
+size = Vector3(14, 0.04, 16)
+material = SubResource("arena_material")
+
+[node name="ArcherCover" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.6, 47)
+use_collision = true
+size = Vector3(2.5, 1.2, 0.5)
+
+[node name="LblArcher" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 42.5)
+billboard = 1
+text = "ARQUERO
+las flechas se bloquean y se desvían; si te acercas, retrocede"
+font_size = 44
+outline_size = 12
+
+[node name="Archer" parent="." instance=ExtResource("7_archer")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 55)
+aggro_range = 13.0

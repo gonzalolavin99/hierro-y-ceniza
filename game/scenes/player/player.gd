@@ -425,7 +425,7 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.hitstop(0.09)
 		CombatFX.shake(0.25)
 		body.play_reaction(&"block_impact", 0.22, 0.05, 1.8)
-		push = -to_attacker * 1.6  # Choque de espadas: los dos retroceden
+		push = -to_attacker * (0.4 if hit.ranged else 1.6)  # Choque de espadas: los dos retroceden
 		_spam_count = 0
 		deflected.emit()
 		return HitData.Result.DEFLECTED
@@ -437,7 +437,7 @@ func receive_hit(hit: HitData) -> int:
 		CombatFX.sparks(contact, 10, 4.0)
 		CombatFX.hitstop(0.04)
 		CombatFX.shake(0.12)
-		push = -to_attacker * 2.5
+		push = -to_attacker * (0.6 if hit.ranged else 2.5)
 		body.play_reaction(&"block_impact", 0.3, 0.0, 1.4)
 		body.flinch(to_attacker, 0.4)
 		return HitData.Result.BLOCKED

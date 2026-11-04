@@ -86,8 +86,11 @@ velocidades y tiempos hasta que digas OK.
 - [~] 3 tipos: bandido, soldado con lanza, arquero. Paso 4a hecho (OK del jugador): **bandido**
       (`bandit.tscn`, hereda del soldado): 80 de vida, postura 75, más rápido e impaciente; tajos rápidos,
       ráfaga de 3, embestida desde lejos, barrido y agarre (sin estocadas); ve empezar tu ataque y a veces se
-      aparta de un salto (estado `Evade`) y contraataca embistiendo. Pendiente: lancero y arquero (necesitan
-      animaciones de Mixamo que descarga el jugador).
+      aparta de un salto (estado `Evade`) y contraataca embistiendo.
+      Paso 4b hecho (OK del jugador): **lancero** (`spearman.tscn`): lanza de 2,3 m, alcance 3,3 m,
+      sobre todo estocadas, golpe amplio, estocada y barrido peligrosos; si te pegas a él salta atrás y
+      contraataca. **Arquero** (`archer.tscn`, animaciones Longbow de Mixamo): dispara flechas que se bloquean
+      y desvían (aviso con destello al apuntar), retrocede si te acercas, patada si te pegas, no bloquea.
 
 **🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?
 

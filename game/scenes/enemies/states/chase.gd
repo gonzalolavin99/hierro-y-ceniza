@@ -21,5 +21,5 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Circle")
 		return
 	enemy.move_horizontal(enemy.direction_to_target(), enemy.walk_speed, delta)
-	if enemy.distance_to_target() <= enemy.attack_range * 0.9:
+	if enemy.distance_to_target() <= enemy.attack_range * (0.8 if enemy.ranged else 0.9):
 		machine.transition_to(&"Idle", {"wait": randf_range(0.2, 0.6)})

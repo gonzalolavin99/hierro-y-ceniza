@@ -19,6 +19,12 @@ const UPPER_BODY: Array[String] = [
 	"RightShoulder", "RightArm", "RightForeArm", "RightHand",
 ]
 
+enum Weapon { SWORD, SPEAR, BOW }
+
+## Arma que lleva: espada (por defecto), lanza (lancero) o arco en la mano izquierda (arquero).
+@export var weapon: Weapon = Weapon.SWORD
+## Pose de la parte de arriba "en guardia" (el arquero tiene el arco listo en vez de la espada).
+@export var guard_anim: StringName = &"block_hold"
 @export var body_color: Color = Color(0.55, 0.15, 0.12)
 @export var joints_color: Color = Color(0.15, 0.13, 0.12)
 ## Qué tan rápido entran/salen las mezclas (por segundo).
@@ -70,6 +76,7 @@ func _ready() -> void:
 	_paint()
 	_glint.visible = false
 	_build_danger_flash()
+	_setup_weapon()
 	_trail = SwordTrail.new()
 	_trail.base_node = $YBot/Skeleton3D/RightHand/Sword/Guard
 	_trail.tip_node = _glint
@@ -113,6 +120,14 @@ const GAIT_STRETCH_UP: float = 1.5
 const GAIT_STRETCH_DOWN: float = 0.6
 ## Distancia al centro del espacio de mezcla a la que están las animaciones de caminar.
 const WALK_BLEND: float = 0.25
+## Lanza: dónde queda el centro del asta respecto a la mano (se sujeta por un tercio).
+const SPEAR_SHAFT_CENTER: float = 0.35
+## Colocación del arco en la mano izquierda (ajustada mirando capturas del arquero apuntando).
+## Medido con tests/bow_probe.gd: apuntando, el "arriba" del mundo es -X de la mano y "adelante" es +Y.
+## El arco queda vertical, con la cuerda hacia el arquero.
+const BOW_GRIP: Transform3D = Transform3D(
+	Basis(Vector3(-0.236, 0.268, 0.934), Vector3(-0.950, 0.140, -0.280), Vector3(-0.206, -0.953, 0.222)),
+	Vector3(0.0, 0.08, 0.03))
 ## Mezcla mínima al empezar una acción: más corta, el cuerpo "salta" de una pose a otra.
 const MIN_ACTION_FADE: float = 0.08
 ## Caminar agachado: velocidad de pisada de cada dirección. Provisional (son las de caminar de pie
@@ -287,8 +302,8 @@ func update_locomotion(velocity: Vector3, facing: Vector3) -> void:
 	set_locomotion(dir * amount, minf(time_scale, 2.4))
 
 
-func _set_crouch_locomotion(position: Vector2, time_scale: float) -> void:
-	_crouch_pos_target = position
+func _set_crouch_locomotion(blend: Vector2, time_scale: float) -> void:
+	_crouch_pos_target = blend
 	if _tree:
 		_tree.set("parameters/crouch_speed/scale", minf(time_scale, 2.4))
 
@@ -431,7 +446,7 @@ func _build_tree() -> void:
 	bt.connect_node(&"crouch_blend", 0, &"loco_speed")
 	bt.connect_node(&"crouch_blend", 1, &"crouch_speed")
 
-	bt.add_node(&"block_anim", _anim(&"block_hold"), Vector2(0, 200))
+	bt.add_node(&"block_anim", _anim(guard_anim), Vector2(0, 200))
 	var block_blend := AnimationNodeBlend2.new()
 	block_blend.filter_enabled = true
 	for bone in UPPER_BODY:
@@ -494,3 +509,91 @@ func _paint() -> void:
 	for mesh in _skeleton.get_children():
 		if mesh is MeshInstance3D:
 			(mesh as MeshInstance3D).material_override = joints if String(mesh.name).contains("Joints") else surface
+
+
+# --- Armas ------------------------------------------------------------------------
+
+## Lanza y arco se construyen aquí a partir de piezas simples (provisionales, como el maniquí).
+func _setup_weapon() -> void:
+	var sword: Node3D = $YBot/Skeleton3D/RightHand/Sword
+	match weapon:
+		Weapon.SPEAR:
+			_build_spear(sword)
+		Weapon.BOW:
+			_build_bow(sword)
+
+
+## Lanza: asta larga sujeta por un tercio, con la punta de hierro hacia delante.
+func _build_spear(sword: Node3D) -> void:
+	var wood := StandardMaterial3D.new()
+	wood.albedo_color = Color(0.36, 0.25, 0.15)
+	var shaft := CylinderMesh.new()
+	shaft.top_radius = 0.018
+	shaft.bottom_radius = 0.022
+	shaft.height = 2.3
+	shaft.material = wood
+	var handle := sword.get_node("Handle") as MeshInstance3D
+	handle.mesh = shaft
+	handle.position = Vector3(0.0, SPEAR_SHAFT_CENTER, 0.0)
+	var blade := sword.get_node("Blade") as MeshInstance3D
+	var head := BoxMesh.new()
+	head.size = Vector3(0.025, 0.32, 0.07)
+	head.material = (blade.mesh as BoxMesh).material
+	blade.mesh = head
+	blade.position = Vector3(0.0, SPEAR_SHAFT_CENTER + 1.15 + 0.16, 0.0)
+	# La guarda pasa a ser el refuerzo bajo la punta (y la base de la estela).
+	(sword.get_node("Guard") as Node3D).position = Vector3(0.0, SPEAR_SHAFT_CENTER + 1.12, 0.0)
+	_glint.position = Vector3(0.0, SPEAR_SHAFT_CENTER + 1.47, 0.0)
+
+
+## Arco en la mano izquierda (la espada no se ve). El destello de aviso pasa al arco.
+func _build_bow(sword: Node3D) -> void:
+	for child in sword.get_children():
+		if child != _glint:
+			(child as Node3D).visible = false
+	var hand := BoneAttachment3D.new()
+	hand.name = "LeftHand"
+	hand.bone_name = "mixamorig_LeftHand"
+	_skeleton.add_child(hand)
+	var bow := Node3D.new()
+	bow.name = "Bow"
+	hand.add_child(bow)
+	bow.transform = BOW_GRIP
+	var wood := StandardMaterial3D.new()
+	wood.albedo_color = Color(0.3, 0.2, 0.12)
+	# Palas del arco: segmentos a lo largo de un arco de circunferencia (el centro, en la empuñadura).
+	var segments: int = 8
+	var radius: float = 0.85
+	var half_angle: float = deg_to_rad(42.0)
+	var tips: Array[Vector3] = []
+	for i in segments:
+		var a0: float = lerpf(-half_angle, half_angle, float(i) / segments)
+		var a1: float = lerpf(-half_angle, half_angle, float(i + 1) / segments)
+		var p0 := Vector3(0.0, sin(a0) * radius, (1.0 - cos(a0)) * radius)
+		var p1 := Vector3(0.0, sin(a1) * radius, (1.0 - cos(a1)) * radius)
+		if i == 0:
+			tips.append(p0)
+		if i == segments - 1:
+			tips.append(p1)
+		bow.add_child(_rod(p0, p1, 0.016, wood))
+	var string_material := StandardMaterial3D.new()
+	string_material.albedo_color = Color(0.85, 0.82, 0.72)
+	bow.add_child(_rod(tips[0], tips[1], 0.003, string_material))
+	_glint.reparent(bow, false)
+	_glint.position = Vector3.ZERO
+
+
+## Cilindro de `from` a `to` (para montar piezas simples).
+func _rod(from: Vector3, to: Vector3, radius: float, material: Material) -> MeshInstance3D:
+	var cylinder := CylinderMesh.new()
+	cylinder.top_radius = radius
+	cylinder.bottom_radius = radius
+	cylinder.height = from.distance_to(to)
+	cylinder.material = material
+	var rod := MeshInstance3D.new()
+	rod.mesh = cylinder
+	var up: Vector3 = (to - from).normalized()
+	var side: Vector3 = up.cross(Vector3.FORWARD) if absf(up.dot(Vector3.FORWARD)) < 0.99 else up.cross(Vector3.RIGHT)
+	side = side.normalized()
+	rod.transform = Transform3D(Basis(side, up, side.cross(up)), (from + to) * 0.5)
+	return rod

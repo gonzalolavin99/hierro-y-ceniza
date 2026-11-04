@@ -12,16 +12,20 @@ const COUNTER_CHANCE: float = 0.5
 
 var _direction: Vector3
 var _elapsed: float
+var _counter: StringName
+var _counter_chance: float
 
 
-func enter(_msg: Dictionary) -> void:
+func enter(msg: Dictionary) -> void:
+	_counter = msg.get("counter", &"lunge")
+	_counter_chance = msg.get("counter_chance", COUNTER_CHANCE)
 	_elapsed = 0.0
 	var back: Vector3 = -enemy.get_facing()
 	var right: Vector3 = enemy.get_facing().cross(Vector3.UP)
 	var anim: StringName = &"dodge_back"
 	_direction = back
 	# A veces en diagonal hacia atrás (se lee peor y te descoloca).
-	if randf() < 0.4:
+	if not msg.get("back", false) and randf() < 0.4:
 		var side: float = 1.0 if randf() < 0.5 else -1.0
 		_direction = (back + right * side * 0.9).normalized()
 		anim = &"dodge_right" if side > 0.0 else &"dodge_left"
@@ -47,7 +51,7 @@ func physics_update(delta: float) -> void:
 	enemy.face_target(delta)
 	enemy.evading = _elapsed < UNTOUCHABLE
 	if t >= 1.0:
-		if randf() < COUNTER_CHANCE:
-			machine.transition_to(&"Attack", {"pattern": &"lunge"})
+		if randf() < _counter_chance and enemy.has_target():
+			machine.transition_to(&"Attack", {"pattern": _counter})
 		else:
 			machine.transition_to(&"Idle", {"wait": randf_range(0.2, 0.5)})

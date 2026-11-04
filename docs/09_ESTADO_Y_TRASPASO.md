@@ -17,7 +17,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
-| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Paso 3 (patrulla y sigilo) ✅ OK del jugador (faltan las animaciones de caminar agachado). Paso 4a (bandido) ✅ OK del jugador. Siguen: patrulla/sigilo, 3 tipos de enemigo |
+| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Paso 3 (patrulla y sigilo) ✅ OK del jugador (faltan las animaciones de caminar agachado). Paso 4a (bandido) ✅ OK del jugador. Paso 4b (lancero y arquero) ✅ OK del jugador. Siguen: patrulla/sigilo, 3 tipos de enemigo |
 | 6–9 | Pendientes (loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -93,6 +93,17 @@ cambiar de objetivo con el stick derecho.
   preparación), `double`; peligrosos barrido y agarre. Esquiva (`states/evade.gd`): ve empezar tu ataque a ≤3,2 m,
   reacciona en 0,1 s, salta 2,4 m atrás o en diagonal sin que le alcancen los golpes los primeros 0,22 s, y la
   mitad de las veces embiste después. Círculo del bandido en el escenario (x=12, z=34). Se prueba en `enemy_types_test`.
+  **Lancero** (`spearman.tscn`): `Mannequin.weapon = SPEAR` (lanza montada en código sobre la espada), golpe que
+  llega más lejos (Hitbox más larga, `strike_distance` 2,5, `attack_range` 3,3), `spear_thrust`, `spear_swing`,
+  `thrust_combo`; peligrosos estocada y barrido; `keep_away_range` 1,9: si te pegas, `Evade` hacia atrás y
+  estocada (cada 2,5 s como mucho). Círculo en x=-12, z=34.
+  **Arquero** (`archer.tscn`): `weapon = BOW` (arco en la mano izquierda, orientado con `BOW_GRIP` medido con
+  `tests/bow_probe.gd`), pose de guardia `bow_aim`, `ranged`, `can_block = false`. Estado `Shoot`: tensa 0,95 s,
+  apunta 0,6 s con destello, suelta una `Arrow` (`weapons/arrow.gd`, 26 m/s, se bloquea/desvía como un tajo; si
+  estás invulnerable pasa de largo). No usa los turnos de Squad para disparar. Retrocede caminando si estás a
+  <5 m; a <2,2 m, patada (`kick_push`). Campo con muro en z=50. Animaciones Longbow renombradas:
+  `bow_draw`, `bow_aim`, `bow_shoot`, `bow_walk_back` (esta aún sin usar).
+  Rendimiento con 9 enemigos en el escenario: 60 FPS con vsync, 223 sin él (`tests/perf_probe.tscn`).
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
   caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
@@ -154,6 +165,9 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 5. Lecciones aprendidas (evitan horas de depuración)
 
+- **Enemigos colocados girados en el nivel**: el modelo gira *dentro* del cuerpo, así que `Enemy.face_direction`
+  pasa la dirección del mundo a la del cuerpo. Sin eso, un enemigo puesto con 180° te da la espalda al pelear
+  (pasó con lancero, arquero, bandido y guardias). Lo comprueba `enemy_types_test` (sección 9).
 - **El modelo de Mixamo mira hacia +Z**; el nodo `YBot` está girado 180°. Cualquier código que cambie
   `_bot.basis` debe conservar ese giro (`_bot_facing`). Hay prueba automática.
 - **Empujones (`push`)**: se suman solo al movimiento de cada fotograma y se restan después; si se

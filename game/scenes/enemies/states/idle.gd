@@ -12,7 +12,14 @@ func enter(msg: Dictionary) -> void:
 
 
 func physics_update(delta: float) -> void:
-	enemy.move_horizontal(Vector3.ZERO, 0.0, delta)
+	# Quieto, salvo el que ataca a distancia cuando te acercas (retrocede): un solo movimiento por
+	# fotograma, para que "frenar" y "retroceder" no se anulen.
+	var retreating: bool = enemy.has_target() and enemy.ranged and enemy.too_close() \
+		and enemy.distance_to_target() > enemy.MELEE_RANGE
+	if retreating:
+		enemy.move_horizontal(-enemy.direction_to_target(), enemy.walk_speed * 0.8, delta)
+	else:
+		enemy.move_horizontal(Vector3.ZERO, 0.0, delta)
 	if not enemy.alerted:
 		machine.transition_to(&"Patrol")
 		return
@@ -22,8 +29,21 @@ func physics_update(delta: float) -> void:
 	if enemy.distance_to_target() > enemy.attack_range:
 		machine.transition_to(&"Chase")
 		return
+	# Armas largas o a distancia: si te pegas a él, recupera distancia.
+	if enemy.too_close() and not enemy.ranged:
+		if Squad.clock() - enemy.last_keep_away > enemy.KEEP_AWAY_COOLDOWN:
+			enemy.last_keep_away = Squad.clock()
+			machine.transition_to(&"Evade", {"back": true, "counter": &"spear_thrust", "counter_chance": 0.6})
+			return
 	_wait -= delta
 	if _wait <= 0.0:
+		# A distancia y con tiro limpio, dispara (no necesita turno: no se mete en el cuerpo a cuerpo).
+		if enemy.ranged and enemy.distance_to_target() > enemy.MELEE_RANGE:
+			if enemy.has_clear_shot():
+				machine.transition_to(&"Shoot")
+			else:
+				_wait = 0.4
+			return
 		# En grupo, ataca solo quien tiene el turno; los demás esperan rodeando.
 		if not Squad.request_turn(enemy):
 			machine.transition_to(&"Circle")

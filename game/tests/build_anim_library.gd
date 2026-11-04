@@ -49,6 +49,11 @@ const MAP := {
 	"dodge_back": ["dodge_backward", false],
 	"dodge_left": ["dodge_left", false],
 	"dodge_right": ["dodge_right", false],
+	# Arquero (Longbow de Mixamo).
+	"bow_draw": ["bow_draw", false],
+	"bow_aim": ["bow_aim", true],
+	"bow_shoot": ["bow_shoot", false],
+	"bow_walk_back": ["bow_walk_back", true],
 	# Sigilo: agachado quieto y caminando agachado.
 	"crouch_idle": ["crouching_3", true],
 	"crouch_fwd": ["crouch_walk_fwd", true],

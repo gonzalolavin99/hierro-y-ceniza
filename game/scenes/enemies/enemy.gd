@@ -33,6 +33,15 @@ signal danger_warned(kind: int)
 @export var evade_chance: float = 0.0
 ## Multiplicador del daño de sus golpes.
 @export var damage_scale: float = 1.0
+## ¿Puede bloquear con su arma? (el arquero no).
+@export var can_block: bool = true
+## Distancia a la que se para al lanzar un golpe (más con armas largas como la lanza).
+@export var strike_distance: float = 1.3
+## Si te acercas más que esto, recupera distancia (0 = no le importa). El lancero salta atrás;
+## el que ataca a distancia retrocede caminando.
+@export var keep_away_range: float = 0.0
+## Ataca a distancia (arquero): dispara cuando le toca atacar y estás lejos.
+@export var ranged: bool = false
 
 @export_group("Sigilo")
 ## Empieza sin saber que estás ahí (patrulla o guardia). Si es false, está alerta desde el principio
@@ -80,6 +89,10 @@ const ALARM_RADIUS: float = 12.0
 const LOSE_TIME: float = 4.0
 ## Golpe mortal por sorpresa: distancia máxima.
 const STEALTH_KILL_RANGE: float = 2.4
+## Al recuperar distancia con un salto, no lo repite hasta pasado este tiempo.
+const KEEP_AWAY_COOLDOWN: float = 2.5
+## Más cerca que esto, el que ataca a distancia se defiende con una patada.
+const MELEE_RANGE: float = 2.2
 ## Esquiva: solo si el ataque empieza a esta distancia, y tras este tiempo de reacción.
 const EVADE_RANGE: float = 3.2
 const EVADE_REACTION: float = 0.1
@@ -111,6 +124,8 @@ var _mark_timer: float = 0.0
 var evading: bool = false
 var _saw_player_attack: bool = false
 var _evade_in: float = -1.0
+## Momento (reloj de Squad) del último salto para recuperar distancia.
+var last_keep_away: float = -100.0
 var _spawn: Transform3D
 var _base_posture_regen: float
 
@@ -185,8 +200,10 @@ func face_direction(dir: Vector3, delta: float, speed_multiplier: float = 1.0) -
 	dir.y = 0.0
 	if dir.length_squared() < 0.001:
 		return
-	dir = dir.normalized()
-	var yaw: float = atan2(-dir.x, -dir.z)
+	# El modelo gira dentro del cuerpo: si el enemigo está colocado girado en el nivel, la dirección
+	# del mundo hay que pasarla a la del cuerpo (si no, mira justo al revés).
+	var local: Vector3 = global_basis.orthonormalized().inverse() * dir.normalized()
+	var yaw: float = atan2(-local.x, -local.z)
 	model.rotation.y = lerp_angle(model.rotation.y, yaw, 1.0 - exp(-turn_speed * speed_multiplier * delta))
 
 
@@ -198,7 +215,9 @@ func move_horizontal(direction: Vector3, speed: float, delta: float, acceleratio
 
 ## Aplica el avance real de la animación, frenando antes de atravesar al jugador
 ## y estirándolo si está lejos para que el ataque llegue.
-func apply_root_motion(stop_distance: float = 1.3) -> void:
+func apply_root_motion(stop_distance: float = -1.0) -> void:
+	if stop_distance < 0.0:
+		stop_distance = strike_distance
 	var motion := root_motion_velocity
 	if target:
 		var dir := direction_to_target()
@@ -248,7 +267,7 @@ func receive_hit(hit: HitData) -> int:
 	# Fuera de sus ataques, bloquea todo lo que tenga de frente.
 	# La patada rompe la guardia: queda expuesto sin bloquear.
 	# Aturdido (humo) o retrocediendo: no puede bloquear.
-	var can_guard: bool = not unaware and state != &"Attack" and state != &"Recoil" and state != &"Dazed" and facing_attacker
+	var can_guard: bool = can_block and not unaware and state != &"Attack" and state != &"Recoil" and state != &"Dazed" and facing_attacker
 	if hit.guard_break and can_guard:
 		posture.add(hit.posture_damage)
 		Sfx.play(&"block", contact, -4.0)
@@ -565,9 +584,9 @@ func _update_mark(delta: float) -> void:
 			_mark.visible = false
 		return
 	# "?" amarillo que se llena con la sospecha.
-	var show: bool = not alerted and not is_dead() and awareness > 0.05
-	_mark.visible = show
-	if show:
+	var showing: bool = not alerted and not is_dead() and awareness > 0.05
+	_mark.visible = showing
+	if showing:
 		_mark.text = "?"
 		_mark.modulate = Color(1.0, 0.85, 0.2, clampf(0.35 + awareness, 0.0, 1.0))
 
@@ -594,3 +613,13 @@ func _watch_player_attack(delta: float) -> void:
 func _can_evade_now() -> bool:
 	var state: StringName = state_name()
 	return alerted and (state == &"Idle" or state == &"Circle" or state == &"Chase")
+
+
+## ¿Está demasiado cerca el jugador para su gusto (lancero, arquero)?
+func too_close() -> bool:
+	return keep_away_range > 0.0 and distance_to_target() < keep_away_range
+
+
+## ¿Hay línea de tiro limpia hasta el jugador? (para disparar)
+func has_clear_shot() -> bool:
+	return _can_see_target()
