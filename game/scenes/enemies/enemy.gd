@@ -8,6 +8,8 @@ signal died
 signal danger_warned(kind: int)
 
 @export var display_name: String = "Soldado"
+## Experiencia que da al morir.
+@export var xp_reward: int = 40
 @export var walk_speed: float = 3.0
 @export var turn_speed: float = 8.0
 @export var gravity: float = 24.0

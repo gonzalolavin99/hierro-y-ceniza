@@ -18,7 +18,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Pendiente menor: animaciones de caminar agachado (Mixamo) |
-| 6 · El loop souls | 🔨 Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Siguen: experiencia, guardado, menú de pausa |
+| 6 · El loop souls | 🔨 Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Siguen: atributos, guardado, menú de pausa |
 | 7–9 | Pendientes (historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -123,6 +123,11 @@ cambiar de objetivo con el stick derecho.
   va antes de la patada en `ground.gd` (ambas en Y). Muerte (`player/states/dead.gd`): fundido 2,6→3,4,
   `respawn()` + `reset_world()`. `Enemy.respawn_delay` ahora vale 0 por defecto (no reaparecen solos).
   Se prueba en `campfire_test`; capturas con `campfire_shot`.
+- **Experiencia** (Player `xp` con señal `xp_changed(total, delta)`, `gain_xp`, `drop_xp`, `recover_xp`;
+  `Enemy.xp_reward`, se da en `enemies/states/dead.gd`). Al morir (`player/states/dead.gd` → `drop_xp()`) se
+  borra el morral anterior y, si lleva algo, aparece un `XpSatchel` (`scenes/props/xp_satchel.gd`, grupo
+  `xp_satchels`) en el suelo donde cayó (`_last_floor_position` si murió en el aire). Se recoge al pasar a
+  ≤1,3 m (sonido `pickup`). HUD: `xp_text()`, "+N" que se desvanece. Se prueba en `xp_test`; capturas `xp_shot`.
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
   caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
@@ -169,7 +174,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -224,9 +229,8 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 7. Siguiente paso recomendado
 
-1. **Hito 6 — el loop souls**: hechos vendajes y campamento. Sigue la **experiencia** (los enemigos la dan,
-   se pierde al morir y queda donde caíste para recuperarla), luego subir atributos en el campamento,
-   guardado/carga y menú de pausa.
+1. **Hito 6 — el loop souls**: hechos vendajes, campamento y experiencia. Sigue **subir atributos** en el
+   campamento (Vigor, Temple, Fuerza, Destreza, gastando experiencia), luego guardado/carga y menú de pausa.
 2. Cuando el jugador descargue las animaciones de caminar agachado (`crouch_walk_fwd/back/left/right.fbx`):
    reconstruir la biblioteca y medir `CROUCH_SPEEDS` (ver § Caminar agachado).
 3. Pulido fino de audio y diálogo (volúmenes, mezcla, variedad), pedido por el jugador para más adelante.

@@ -105,6 +105,7 @@ G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path ga
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/enemy_types_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/heal_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/campfire_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/xp_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --fixed-fps 60 --path game res://tests/anim_audit.tscn
 ```
 

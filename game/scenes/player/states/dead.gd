@@ -14,6 +14,7 @@ var _elapsed: float
 func enter(_msg: Dictionary) -> void:
 	_elapsed = 0.0
 	_faded = false
+	player.drop_xp()
 	player.hitbox.deactivate()
 	player.lock_target = null
 	player.body.set_blocking(false)

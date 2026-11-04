@@ -6,6 +6,8 @@ extends CharacterBody3D
 signal deflected
 ## Cambió el número de vendajes (para el HUD).
 signal bandages_changed(count: int)
+## Cambió la experiencia (total y cuánto cambió).
+signal xp_changed(total: int, delta: int)
 ## Empezó un paso rápido (los enemigos lo observan para leer si abusa de él).
 signal dashed
 
@@ -119,6 +121,14 @@ var engaged_enemy: Enemy
 ## Agachado (L3 / C): cuesta más verte y casi no haces ruido.
 var crouching: bool = false
 ## Vendajes que quedan.
+## Experiencia que lleva encima (se pierde al morir y queda en su morral).
+var xp: int = 0:
+	set(value):
+		var old: int = xp
+		xp = maxi(value, 0)
+		xp_changed.emit(xp, xp - old)
+## Último punto donde pisó suelo (allí cae el morral si muere en el aire o al caer).
+var _last_floor_position: Vector3
 var bandages: int = 0:
 	set(value):
 		bandages = clampi(value, 0, max_bandages)
@@ -152,6 +162,7 @@ func _physics_process(delta: float) -> void:
 	counter_timer = maxf(counter_timer - delta, 0.0)
 	if is_on_floor():
 		can_stomp = true
+		_last_floor_position = global_position
 	if Input.is_action_just_pressed("block"):
 		_on_block_pressed()
 	if Input.is_action_just_pressed("item_next"):
@@ -642,3 +653,27 @@ func apply_bandage() -> void:
 		return
 	bandages -= 1
 	health.heal(health.max_health * bandage_heal_ratio)
+
+
+# --- Experiencia -------------------------------------------------------------------
+
+func gain_xp(amount: int) -> void:
+	if amount > 0:
+		xp += amount
+
+
+## Al morir: la experiencia queda en su morral donde cayó (el morral anterior, si lo había, se pierde).
+func drop_xp() -> void:
+	for node in get_tree().get_nodes_in_group("xp_satchels"):
+		node.queue_free()
+	if xp <= 0:
+		return
+	var at: Vector3 = global_position if is_on_floor() else _last_floor_position
+	XpSatchel.spawn(get_parent(), at, xp)
+	xp = 0
+
+
+## Recogió su morral.
+func recover_xp(amount: int, at: Vector3) -> void:
+	Sfx.play(&"pickup", at + Vector3.UP * 0.3)
+	gain_xp(amount)

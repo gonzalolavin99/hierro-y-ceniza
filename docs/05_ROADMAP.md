@@ -110,7 +110,12 @@ de caminar agachado (Mixamo, las descarga el jugador).
       todos los enemigos vuelven vivos a su puesto, y pasa a ser el punto de reaparición. No se puede con un
       enemigo que te tenga en la mira a ≤20 m (el aviso dice "Hay enemigos cerca"). Los enemigos muertos ya no
       reaparecen solos: solo al descansar o al morir Kael (que reaparece en el último campamento, con fundido).
-- [ ] Experiencia: perderla al morir y recuperarla. Subir atributos.
+- [~] Experiencia: perderla al morir y recuperarla. Subir atributos.
+      Paso 3 hecho y probado (OK del jugador): **experiencia**. Cada enemigo da la suya al morir (soldado 40,
+      bandido 35, arquero 45, lancero 55); HUD abajo a la derecha con "+N" al ganarla. Al morir, Kael la pierde
+      y queda en su **morral** donde cayó (bolsa de cuero con un jirón rojo en una estaca, se ve de lejos, con
+      letrero "Tu morral · N"). Pasar junto a él la recupera. Si muere antes de recogerlo, ese morral se pierde.
+      Descansar no lo borra. Falta: subir atributos en el campamento.
 - [ ] Guardado/carga. Menú de pausa.
 - [ ] Muerte con la voz del narrador: "No… no fue así".
 

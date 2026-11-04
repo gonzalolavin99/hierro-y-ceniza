@@ -4,6 +4,7 @@
 
 [node name="Archer" instance=ExtResource("1_base")]
 display_name = "Arquero"
+xp_reward = 45
 walk_speed = 2.6
 attack_range = 13.0
 moveset = Array[StringName]([&"kick_push"])

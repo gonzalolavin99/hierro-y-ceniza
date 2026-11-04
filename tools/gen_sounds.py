@@ -276,6 +276,16 @@ def fire(variant):
     return x
 
 
+def pickup(variant):
+    """Recoger el morral: golpe sordo de cuero y un tintineo de hebilla."""
+    t = t_axis(0.6)
+    x = thump(t, 140, 90, 0.05, 0.6)
+    x += noise_burst(t, 400, 2500, 0.04, 0.25)
+    clink = np.clip(t - 0.08, 0, None)
+    x += ring(clink, 2300, [1.0, 2.7, 4.1], [0.25, 0.12, 0.06], [0.08, 0.05, 0.03]) * (t >= 0.08)
+    return reverb(x, 0.3, 0.1)
+
+
 SOUNDS = {
     "deflect": (deflect, 3),
     "block": (block, 3),
@@ -293,6 +303,7 @@ SOUNDS = {
     "explosion": (explosion, 2),
     "bandage": (bandage, 1),
     "fire": (fire, 1),
+    "pickup": (pickup, 1),
 }
 
 if __name__ == "__main__":

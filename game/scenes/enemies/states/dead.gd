@@ -8,6 +8,9 @@ func enter(_msg: Dictionary) -> void:
 	_elapsed = 0.0
 	enemy.set_vulnerable(false)
 	enemy.died.emit()
+	var player := enemy.get_tree().get_first_node_in_group("player") as Player
+	if player:
+		player.gain_xp(enemy.xp_reward)
 	enemy.body.set_blocking(false)
 	enemy.body.play_action(&"death", 0.0, 1.1, 0.06)
 	Voice.say(&"soldier", &"death", enemy.lock_point())

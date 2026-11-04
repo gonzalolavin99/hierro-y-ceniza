@@ -21,6 +21,9 @@ const POSTURE_COLORS: Array[Color] = [Color(1.0, 0.85, 0.35), Color(1.0, 0.55, 0
 var _player: Player
 var _tool_label: Label
 var _bandage_label: Label
+var _xp_label: Label
+var _xp_gain: Label
+var _xp_tween: Tween
 var _art_label: Label
 var _subtitle_label: Label
 var _subtitle_line: String = ""
@@ -44,6 +47,9 @@ func _ready() -> void:
 	_on_tools_changed()
 	_player.bandages_changed.connect(_on_bandages_changed)
 	_on_bandages_changed(_player.bandages)
+	_build_xp_label()
+	_player.xp_changed.connect(_on_xp_changed)
+	_on_xp_changed(_player.xp, 0)
 	_player.arts.changed.connect(_on_arts_changed)
 	_on_arts_changed()
 
@@ -129,6 +135,41 @@ func _build_tool_label() -> void:
 	_bandage_label = _tool_label.duplicate() as Label
 	add_child(_bandage_label)
 	_bandage_label.position = _art_label.position + Vector2(0.0, -32.0)
+
+
+## Experiencia, abajo a la derecha; al ganarla aparece "+N" encima un momento.
+func _build_xp_label() -> void:
+	_xp_label = _tool_label.duplicate() as Label
+	add_child(_xp_label)
+	_xp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_xp_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_xp_label.offset_left = -420.0
+	_xp_label.offset_right = -48.0
+	_xp_label.offset_top = -78.0
+	_xp_label.offset_bottom = -46.0
+	_xp_gain = _xp_label.duplicate() as Label
+	add_child(_xp_gain)
+	_xp_gain.offset_top -= 30.0
+	_xp_gain.offset_bottom -= 30.0
+	_xp_gain.add_theme_color_override("font_color", Color(1.0, 0.85, 0.5))
+	_xp_gain.modulate.a = 0.0
+
+
+func _on_xp_changed(total: int, delta: int) -> void:
+	_xp_label.text = "Experiencia  %d" % total
+	if delta > 0:
+		_xp_gain.text = "+%d" % delta
+		if _xp_tween:
+			_xp_tween.kill()
+		_xp_gain.modulate.a = 1.0
+		_xp_tween = create_tween()
+		_xp_tween.tween_interval(1.2)
+		_xp_tween.tween_property(_xp_gain, "modulate:a", 0.0, 0.6)
+
+
+## Texto de la experiencia en el HUD (para las pruebas).
+func xp_text() -> String:
+	return _xp_label.text if _xp_label else ""
 
 
 func _on_bandages_changed(count: int) -> void:
