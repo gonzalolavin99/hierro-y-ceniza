@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="1_base"]
+
+[node name="Bandit" instance=ExtResource("1_base")]
+display_name = "Bandido"
+walk_speed = 3.6
+turn_speed = 10.0
+blocks_before_counter = 2
+moveset = Array[StringName]([&"quick", &"quick", &"double", &"flurry", &"quick", &"flurry"])
+danger_moveset = Array[StringName]([&"sweep", &"grab"])
+danger_ratio = 0.25
+idle_wait = Vector2(0.25, 0.7)
+evade_chance = 0.45
+damage_scale = 0.85
+
+[node name="Mannequin" parent="Model"]
+body_color = Color(0.5, 0.36, 0.22, 1)
+
+[node name="Health" parent="."]
+max_health = 80.0
+
+[node name="Posture" parent="."]
+max_posture = 75.0
+regen_rate = 16.0

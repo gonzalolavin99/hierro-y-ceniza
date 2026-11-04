@@ -14,6 +14,7 @@ func _ready() -> void:
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_enemy = get_tree().get_first_node_in_group("enemies") as Enemy
 	_enemy.mind.predictable = true  # Ritmo fijo: esta prueba no trata de la IA adaptativa (ver ai_test).
+	_enemy.mind.danger_ratio = 0.0  # Solo tajos normales: los peligrosos (no se desvían) tienen su prueba (danger_test).
 	_player.deflected.connect(func() -> void: _deflects += 1)
 	await _run()
 	print("RESULTADO: %s" % ("TODO OK" if _failures == 0 else "%d FALLOS" % _failures))

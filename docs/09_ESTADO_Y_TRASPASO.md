@@ -17,7 +17,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
-| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Paso 3 (patrulla y sigilo) ✅ OK del jugador (faltan las animaciones de caminar agachado). Siguen: patrulla/sigilo, 3 tipos de enemigo |
+| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Paso 3 (patrulla y sigilo) ✅ OK del jugador (faltan las animaciones de caminar agachado). Paso 4a (bandido) ✅ OK del jugador. Siguen: patrulla/sigilo, 3 tipos de enemigo |
 | 6–9 | Pendientes (loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -86,6 +86,13 @@ cambiar de objetivo con el stick derecho.
   con el jugador a su espalda o costado (≤2,4 m). Agacharse: C / L3 (alterna). El soldado de práctica y los del
   grupo siguen empezando alerta. Patio de sigilo en x=-34 con 2 guardias. Se prueba en `stealth_test`;
   capturas con `tests/stealth_shot.tscn`.
+- **Tipos de enemigo** (grupo "Tipo" en Enemy): `moveset`, `danger_moveset`, `danger_ratio`, `idle_wait`,
+  `evade_chance`, `damage_scale`; la mente usa ese repertorio (`EnemyMind.configure`). Cada tipo es una escena que
+  hereda de `training_soldier.tscn` y cambia esos valores, la vida, la postura y el color. **Bandido**
+  (`bandit.tscn`): ataques `quick`, `flurry` (3 tajos), `lunge` (embestida: avanza hasta 1,4 m durante la
+  preparación), `double`; peligrosos barrido y agarre. Esquiva (`states/evade.gd`): ve empezar tu ataque a ≤3,2 m,
+  reacciona en 0,1 s, salta 2,4 m atrás o en diagonal sin que le alcancen los golpes los primeros 0,22 s, y la
+  mitad de las veces embiste después. Círculo del bandido en el escenario (x=12, z=34). Se prueba en `enemy_types_test`.
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
   caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
@@ -132,7 +139,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

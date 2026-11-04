@@ -83,7 +83,11 @@ velocidades y tiempos hasta que digas OK.
       te descubren ("!") y avisan a los cercanos; si te pierden 4 s, buscan y vuelven a la ronda. Golpe mortal
       por sorpresa por la espalda. Patio de sigilo en el escenario. Pendiente: animaciones de caminar
       agachado (Mixamo, las descarga el jugador; de momento se usan las de caminar de pie).
-- [ ] 3 tipos: bandido, soldado con lanza, arquero.
+- [~] 3 tipos: bandido, soldado con lanza, arquero. Paso 4a hecho (OK del jugador): **bandido**
+      (`bandit.tscn`, hereda del soldado): 80 de vida, postura 75, más rápido e impaciente; tajos rápidos,
+      ráfaga de 3, embestida desde lejos, barrido y agarre (sin estocadas); ve empezar tu ataque y a veces se
+      aparta de un salto (estado `Evade`) y contraataca embistiendo. Pendiente: lancero y arquero (necesitan
+      animaciones de Mixamo que descarga el jugador).
 
 **🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?
 

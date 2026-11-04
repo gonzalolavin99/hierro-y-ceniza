@@ -37,6 +37,21 @@ const PATTERNS: Dictionary[StringName, Array] = {
 		{"windup": 0.55, "active": 0.14, "after": 0.25, "anim": &"slash_c", "from": 0.1, "impact": 0.83},
 		{"windup": 0.7, "active": 0.16, "after": 0.8, "anim": &"slash_d", "from": 0.0, "impact": 0.47, "danger": HitData.Kind.THRUST},
 	],
+	# --- Bandido ---
+	# Tajo rápido de una mano: menos preparación (hay que reaccionar antes).
+	&"quick": [
+		{"windup": 0.42, "active": 0.12, "after": 0.55, "anim": &"slash_a", "from": 0.1, "impact": 0.53},
+	],
+	# Ráfaga de tres tajos seguidos (todos se desvían; desviar los tres le hace mucho daño de postura).
+	&"flurry": [
+		{"windup": 0.34, "active": 0.12, "after": 0.12, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},
+		{"windup": 0.3, "active": 0.12, "after": 0.12, "anim": &"combo_one_hand", "from": 1.7, "impact": 1.95},
+		{"windup": 0.36, "active": 0.12, "after": 0.75, "anim": &"combo_one_hand", "from": 2.7, "impact": 2.98},
+	],
+	# Embestida: se lanza desde lejos con un tajo (cierra la distancia de golpe).
+	&"lunge": [
+		{"windup": 0.5, "active": 0.14, "after": 0.7, "anim": &"slash_b", "from": 0.0, "impact": 0.33, "lunge": true},
+	],
 	# Contraataque tras bloquear varios golpes: más rápido.
 	&"counter": [
 		{"windup": 0.3, "active": 0.12, "after": 0.25, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},
@@ -54,6 +69,11 @@ const DANGER_DAMAGE: Dictionary = {HitData.Kind.SWEEP: 28.0, HitData.Kind.THRUST
 const COUNTER_POSTURE: float = 45.0
 
 enum Phase { WINDUP, ACTIVE, AFTER }
+
+## Embestida: desde qué fracción de la preparación se lanza, dónde se para y velocidad máxima.
+const LUNGE_FROM: float = 0.45
+const LUNGE_STOP: float = 1.4
+const LUNGE_MAX_SPEED: float = 11.0
 
 ## Golpe retrasado: poco antes del impacto la espada se queda arriba (casi quieta) y luego cae.
 const HOLD_LEAD: float = 0.22
@@ -99,14 +119,20 @@ func physics_update(delta: float) -> void:
 		Phase.WINDUP:
 			# Sigue al jugador mientras se prepara; se lanza al final de la preparación.
 			enemy.face_target(delta, 1.5)
-			enemy.apply_root_motion()
+			if swing.get("lunge", false) and _timer >= swing["windup"] * LUNGE_FROM:
+				_lunge(swing["windup"] + _delay - _timer + swing["active"] * 0.5)
+			else:
+				enemy.apply_root_motion()
 			_update_hold(swing, delta)
 			if _feint and _held:
 				_cancel_feint()
 			elif _timer >= swing["windup"] + _delay:
 				_set_phase(Phase.ACTIVE)
 		Phase.ACTIVE:
-			enemy.apply_root_motion()
+			if swing.get("lunge", false):
+				_lunge(swing["active"] * 0.5 - _timer)
+			else:
+				enemy.apply_root_motion()
 			if _timer >= swing["active"]:
 				_set_phase(Phase.AFTER)
 		Phase.AFTER:
@@ -144,6 +170,17 @@ func on_deflected() -> void:
 		enemy.body.play_action(&"block_impact", 0.0, 1.6, 0.04)
 		enemy.push = -enemy.get_facing() * 2.2  # Choque de espadas: retrocede
 		_deflected_last = _index == _swings.size() - 1
+
+
+## Embestida: avanza lo justo para llegar a distancia de golpe en `time_left` segundos.
+func _lunge(time_left: float) -> void:
+	var dist: float = enemy.distance_to_target()
+	var dir: Vector3 = enemy.direction_to_target()
+	var speed: float = 0.0
+	if dist > LUNGE_STOP:
+		speed = minf((dist - LUNGE_STOP) / maxf(time_left, 0.08), LUNGE_MAX_SPEED)
+	enemy.velocity.x = dir.x * speed
+	enemy.velocity.z = dir.z * speed
 
 
 ## Retraso del tajo actual (segundos que aguanta arriba), decidido al empezar su preparación.
@@ -217,6 +254,7 @@ func _set_phase(phase: Phase) -> void:
 			hit.kind = swing.get("danger", HitData.Kind.NORMAL)
 			if hit.is_perilous():
 				hit.damage = DANGER_DAMAGE[hit.kind]
+			hit.damage *= enemy.damage_scale
 			enemy.hitbox.activate(hit)
 			enemy.body.set_trail(true)
 			Sfx.play(&"swing", enemy.lock_point())

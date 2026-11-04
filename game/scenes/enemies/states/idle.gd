@@ -6,7 +6,7 @@ var _wait: float
 
 
 func enter(msg: Dictionary) -> void:
-	_wait = msg.get("wait", randf_range(0.5, 1.3))
+	_wait = msg.get("wait", randf_range(enemy.idle_wait.x, enemy.idle_wait.y))
 	enemy.body.set_blocking(true)
 	enemy.body.stop_action(0.2)
 

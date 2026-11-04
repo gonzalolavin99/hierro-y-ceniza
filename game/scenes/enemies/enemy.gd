@@ -20,6 +20,20 @@ signal danger_warned(kind: int)
 ## Solo para pruebas: reaparece tras morir. 0 = no reaparece.
 @export var respawn_delay: float = 5.0
 
+@export_group("Tipo")
+## Ataques normales de este tipo (vacío = los del soldado). Ver EnemyAttackState.PATTERNS.
+@export var moveset: Array[StringName] = []
+## Ataques peligrosos (aviso rojo). &"grab" solo se usa de cerca.
+@export var danger_moveset: Array[StringName] = [&"sweep", &"thrust", &"slash_thrust", &"grab"]
+## Proporción de ataques peligrosos.
+@export var danger_ratio: float = 0.33
+## Segundos que espera en guardia antes de atacar (mínimo, máximo).
+@export var idle_wait: Vector2 = Vector2(0.5, 1.3)
+## Probabilidad de apartarse de un salto al ver empezar tu ataque (en vez de bloquear).
+@export var evade_chance: float = 0.0
+## Multiplicador del daño de sus golpes.
+@export var damage_scale: float = 1.0
+
 @export_group("Sigilo")
 ## Empieza sin saber que estás ahí (patrulla o guardia). Si es false, está alerta desde el principio
 ## (el soldado de práctica de la arena).
@@ -66,6 +80,9 @@ const ALARM_RADIUS: float = 12.0
 const LOSE_TIME: float = 4.0
 ## Golpe mortal por sorpresa: distancia máxima.
 const STEALTH_KILL_RANGE: float = 2.4
+## Esquiva: solo si el ataque empieza a esta distancia, y tras este tiempo de reacción.
+const EVADE_RANGE: float = 3.2
+const EVADE_REACTION: float = 0.1
 
 var target: Player
 ## Lo que ha aprendido de los hábitos del jugador (ver EnemyMind).
@@ -90,6 +107,10 @@ var _lost_time: float = 0.0
 var _alarm_in: float = -1.0
 var _mark: Label3D
 var _mark_timer: float = 0.0
+## Durante el inicio de una esquiva no le alcanzan los golpes (como el paso rápido del jugador).
+var evading: bool = false
+var _saw_player_attack: bool = false
+var _evade_in: float = -1.0
 var _spawn: Transform3D
 var _base_posture_regen: float
 
@@ -103,6 +124,7 @@ func _ready() -> void:
 	health.died.connect(_on_health_depleted)
 	hitbox.hit_landed.connect(_on_hit_landed)
 	_build_mark()
+	mind.configure(moveset, danger_moveset, danger_ratio)
 	post_direction = get_facing()
 	alerted = not starts_unaware
 	if starts_unaware:
@@ -121,6 +143,7 @@ func _physics_process(delta: float) -> void:
 			DebugOverlay.watch("IA lee", mind.describe())
 	_update_awareness(delta)
 	_update_mark(delta)
+	_watch_player_attack(delta)
 	# Con poca vida, la postura se recupera más lento (como en Sekiro).
 	posture.regen_multiplier = 0.25 + 0.75 * health.ratio()
 	velocity.y -= gravity * delta
@@ -210,7 +233,7 @@ func can_be_deathblowed() -> bool:
 
 func receive_hit(hit: HitData) -> int:
 	var state: StringName = state_name()
-	if state == &"Dead" or state == &"Broken":
+	if state == &"Dead" or state == &"Broken" or evading:
 		return HitData.Result.IGNORED
 
 	var to_attacker: Vector3 = hit.attacker.global_position - global_position
@@ -547,3 +570,27 @@ func _update_mark(delta: float) -> void:
 	if show:
 		_mark.text = "?"
 		_mark.modulate = Color(1.0, 0.85, 0.2, clampf(0.35 + awareness, 0.0, 1.0))
+
+
+# --- Esquiva (tipos ágiles como el bandido) ----------------------------------------
+
+## Ve EMPEZAR tu ataque (lo mismo que vería un rival real) y, según su probabilidad, se aparta de un salto
+## tras un instante de reacción. Decide una vez por ataque.
+func _watch_player_attack(delta: float) -> void:
+	if _evade_in >= 0.0:
+		_evade_in -= delta
+		if _evade_in < 0.0 and _can_evade_now():
+			state_machine.transition_to(&"Evade")
+		return
+	if target == null or evade_chance <= 0.0:
+		return
+	var attacking: bool = target.state_machine.current.name == &"Attack"
+	if attacking and not _saw_player_attack and _can_evade_now() and distance_to_target() <= EVADE_RANGE \
+			and randf() < evade_chance:
+		_evade_in = EVADE_REACTION
+	_saw_player_attack = attacking
+
+
+func _can_evade_now() -> bool:
+	var state: StringName = state_name()
+	return alerted and (state == &"Idle" or state == &"Circle" or state == &"Chase")

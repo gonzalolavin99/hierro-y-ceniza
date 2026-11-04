@@ -22,6 +22,12 @@ const FEINT_FROM_STREAK: int = 5
 const TURTLE_TIME: float = 2.0
 
 var rng := RandomNumberGenerator.new()
+## Repertorio de este tipo de enemigo (por defecto, el del soldado). Ver Enemy.moveset.
+var normal_patterns: Array[StringName] = NORMAL.duplicate()
+var danger_patterns: Array[StringName] = DANGER.duplicate()
+var danger_ratio: float = DANGER_RATIO
+## ¿Puede agarrar? (el agarre se elige aparte, solo de cerca)
+var can_grab: bool = true
 ## Solo para pruebas que no tratan de la IA: no se adapta al jugador (ni retrasa, ni amaga, ni cambia
 ## de ataques o de cuándo contraataca); se comporta como un soldado de ritmo fijo y repetible.
 var predictable: bool = false
@@ -105,18 +111,34 @@ func blocks_before_counter(base: int) -> int:
 
 # --- Decisiones (se toman al empezar cada ataque) --------------------------------
 
+## Ajusta el repertorio a un tipo de enemigo. `danger` puede incluir &"grab" (solo se usa de cerca).
+func configure(normal: Array[StringName], danger: Array[StringName], ratio: float) -> void:
+	if not normal.is_empty():
+		normal_patterns = normal.duplicate()
+	danger_patterns = danger.filter(func(p: StringName) -> bool: return p != &"grab")
+	can_grab = &"grab" in danger
+	danger_ratio = ratio
+
+
 func pick_pattern(distance: float) -> StringName:
 	var close: bool = distance <= GRAB_RANGE
 	if is_turtling() and rng.randf() < 0.75:
-		return &"grab" if close and rng.randf() < 0.5 else &"sweep"
+		if close and can_grab and rng.randf() < 0.5:
+			return &"grab"
+		if &"sweep" in danger_patterns:
+			return &"sweep"
 	if is_dash_abusing() and rng.randf() < 0.6:
-		return THRUSTS[rng.randi() % THRUSTS.size()]
-	if rng.randf() < DANGER_RATIO:
-		var options: Array[StringName] = DANGER.duplicate()
-		if close:
+		var thrusts: Array[StringName] = THRUSTS.filter(func(p: StringName) -> bool:
+			return p in normal_patterns or p in danger_patterns)
+		if not thrusts.is_empty():
+			return thrusts[rng.randi() % thrusts.size()]
+	if rng.randf() < danger_ratio:
+		var options: Array[StringName] = danger_patterns.duplicate()
+		if close and can_grab:
 			options.append(&"grab")
-		return options[rng.randi() % options.size()]
-	return NORMAL[rng.randi() % NORMAL.size()]
+		if not options.is_empty():
+			return options[rng.randi() % options.size()]
+	return normal_patterns[rng.randi() % normal_patterns.size()]
 
 
 ## Segundos que aguantará un golpe normal antes de soltarlo (0 = sin retraso).

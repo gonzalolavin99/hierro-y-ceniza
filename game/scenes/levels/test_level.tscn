@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2_hud"]
 [ext_resource type="Script" path="res://tests/posture_plate.gd" id="3_plate"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="4_soldier"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bandit.tscn" id="5_bandit"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_material"]
 sky_top_color = Color(0.32, 0.37, 0.44, 1)
@@ -417,3 +418,22 @@ patrol_points = PackedVector3Array(-36, 0, 16.5, -36, 0, 24, -30, 0, 25, -30, 0,
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -40, 0, 22.5)
 display_name = "Centinela"
 starts_unaware = true
+
+[node name="BanditRing" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.02, 34)
+radius = 6.0
+height = 0.04
+sides = 32
+material = SubResource("arena_material")
+
+[node name="LblBandit" type="Label3D" parent="Labels"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.8, 27.5)
+billboard = 1
+text = "BANDIDO
+rápido y frágil: esquiva y embiste"
+font_size = 44
+outline_size = 12
+
+[node name="Bandit" parent="." instance=ExtResource("5_bandit")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 12, 0, 36)
+aggro_range = 9.0
