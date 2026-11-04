@@ -55,14 +55,30 @@ const COUNTER_POSTURE: float = 45.0
 
 enum Phase { WINDUP, ACTIVE, AFTER }
 
+## Golpe retrasado: poco antes del impacto la espada se queda arriba (casi quieta) y luego cae.
+const HOLD_LEAD: float = 0.22
+## Mientras aguanta, la animación sigue avanzando muy despacio: congelarla del todo queda robótico.
+const HOLD_CREEP: float = 0.06
+
 var _swings: Array
 var _index: int
 var _phase: Phase
 var _timer: float
 var _deflected_last: bool
+## Retraso y amago del tajo actual: se deciden al empezar su preparación y ya no cambian.
+var _delay: float
+var _feint: bool
+var _holding: bool
+var _held: bool
+var _hold_left: float
+var _forced_delay: float = -1.0
+var _forced_feint: bool = false
 
 
 func enter(msg: Dictionary) -> void:
+	# "delay"/"feint" solo los usan las pruebas para forzar un golpe retrasado o un amago.
+	_forced_delay = msg.get("delay", -1.0)
+	_forced_feint = msg.get("feint", false)
 	_swings = PATTERNS[msg.get("pattern", &"single")]
 	_index = 0
 	_set_phase(Phase.WINDUP)
@@ -82,7 +98,10 @@ func physics_update(delta: float) -> void:
 			# Sigue al jugador mientras se prepara; se lanza al final de la preparación.
 			enemy.face_target(delta, 1.5)
 			enemy.apply_root_motion()
-			if _timer >= swing["windup"]:
+			_update_hold(swing, delta)
+			if _feint and _held:
+				_cancel_feint()
+			elif _timer >= swing["windup"] + _delay:
 				_set_phase(Phase.ACTIVE)
 		Phase.ACTIVE:
 			enemy.apply_root_motion()
@@ -125,6 +144,37 @@ func on_deflected() -> void:
 		_deflected_last = _index == _swings.size() - 1
 
 
+## Retraso del tajo actual (segundos que aguanta arriba), decidido al empezar su preparación.
+func current_delay() -> float:
+	return _delay
+
+
+## Golpe retrasado: poco antes del impacto congela la animación (espada en alto) y luego la reanuda
+## para que llegue al impacto justo al terminar la espera.
+func _update_hold(swing: Dictionary, delta: float) -> void:
+	if _delay <= 0.0 or _held:
+		return
+	if not _holding and _timer >= swing["windup"] - HOLD_LEAD:
+		_holding = true
+		_hold_left = _delay
+		enemy.body.set_action_speed(HOLD_CREEP)
+	elif _holding:
+		_hold_left -= delta
+		if _hold_left <= 0.0:
+			_holding = false
+			_held = true
+			if not _feint:
+				var remaining: float = swing["impact"] - enemy.body.action_time()
+				enemy.body.set_action_speed(clampf(remaining / HOLD_LEAD, 0.3, 3.0))
+
+
+## Amago: tras aguantar el golpe, no lo suelta y vuelve a la guardia (castiga desviar sin mirar).
+func _cancel_feint() -> void:
+	enemy.body.stop_action(0.25)
+	enemy.push = -enemy.get_facing() * 1.0
+	machine.transition_to(&"Idle", {"wait": 0.3})
+
+
 func state_is_active() -> bool:
 	return machine.current == self
 
@@ -136,6 +186,17 @@ func _set_phase(phase: Phase) -> void:
 	match phase:
 		Phase.WINDUP:
 			_deflected_last = false
+			_holding = false
+			_held = false
+			var danger: bool = swing.get("danger", HitData.Kind.NORMAL) != HitData.Kind.NORMAL
+			# Los ataques peligrosos nunca se retrasan: su aviso rojo tiene que ser fiable.
+			if danger:
+				_delay = 0.0
+			elif _forced_delay >= 0.0:
+				_delay = _forced_delay
+			else:
+				_delay = enemy.mind.choose_delay()
+			_feint = _forced_feint if _forced_delay >= 0.0 else (_delay > 0.0 and enemy.mind.choose_feint())
 			enemy.body.set_blocking(false)
 			enemy.body.play_shaped(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
 			var kind: HitData.Kind = swing.get("danger", HitData.Kind.NORMAL)

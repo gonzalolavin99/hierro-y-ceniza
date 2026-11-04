@@ -13,6 +13,7 @@ func _ready() -> void:
 	add_child(level)
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_enemy = get_tree().get_first_node_in_group("enemies") as Enemy
+	_enemy.mind.predictable = true  # Ritmo fijo: esta prueba no trata de la IA adaptativa (ver ai_test).
 	_player.deflected.connect(func() -> void: _deflects += 1)
 	await _run()
 	print("RESULTADO: %s" % ("TODO OK" if _failures == 0 else "%d FALLOS" % _failures))

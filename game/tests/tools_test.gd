@@ -14,6 +14,7 @@ func _ready() -> void:
 	add_child(level)
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_enemy = get_tree().get_first_node_in_group("enemies") as Enemy
+	_enemy.mind.predictable = true  # Ritmo fijo: esta prueba no trata de la IA adaptativa (ver ai_test).
 	if not OS.get_cmdline_user_args().is_empty():
 		_shots_dir = OS.get_cmdline_user_args()[0]
 	await _run()

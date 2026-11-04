@@ -16,8 +16,9 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 1 · Movimiento | ✅ OK del jugador |
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
-| 4 · Pulido del combate II (opciones) | 🔨 Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
-| 5–9 | Pendientes (IA lista, loop souls, historia, primer jefe, vertical slice) |
+| 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
+| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Siguen: grupo, patrulla/sigilo, 3 tipos de enemigo |
+| 6–9 | Pendientes (loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
 El mundo, por ahora, solo es el escenario de pruebas.
@@ -66,6 +67,11 @@ cambiar de objetivo con el stick derecho.
   centro. Probabilidad y pausa por evento para no saturar; turnos para que no se pisen: cada personaje dice una
   cosa a la vez, como mucho 2 voces a la vez (gana la más importante, `EVENT_PRIORITY`) y el narrador calla al resto. Audios generados en local y gratis con **Kokoro**
   (licencia Apache 2.0) por `tools/gen_voices.py`: Kael `bm_daniel`, soldado `am_onyx`, anciano `bm_lewis`. Guion: docs/10.
+- **IA que lee al jugador** (`enemies/enemy_mind.gd`): observa solo lo visible (desvíos, esquivas, guardia,
+  ataques) y decide al empezar cada ataque. Desvías 3+ seguidos → retrasa golpes (espada arriba 0,25–0,5 s); 5+ →
+  a veces amaga. Abusas del paso rápido → estocadas. Guardia 2 s+ → barridos y agarres. Atacas sin pausa →
+  contraataca tras 2 bloqueos. Un golpe que te acierta borra la racha. F3 muestra "IA lee". Las pruebas que no
+  tratan de la IA usan `mind.predictable = true` (ritmo fijo); la IA se prueba en `ai_test`.
 - **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
   normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
@@ -109,7 +115,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -139,6 +145,8 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 - Animaciones descartadas por la guía de contenido: *casting*, *spell cast*, *power up*.
 - **Tiempo de juego ≠ tiempo real** en las pruebas sin ventana (0,7 s de juego ≈ 0,57 s reales). Las esperas y
   pausas del juego deben medirse en tiempo de juego (`delta`), nunca con `Time.get_ticks_msec()`.
+- **Funciones anónimas de GDScript copian las variables locales**: `var n = 0; var f = func(): n += 1` nunca
+  cambia `n` fuera. En pruebas, contar con variables de la clase.
 - **Voz Kokoro**: las interjecciones con consonantes sueltas ("Hh!", "Nngh", "Hmph") se leen **deletreadas**
   ("eich-eich"). `gen_voices.py` lo detecta por los fonemas y se detiene. Usar "Hut!", "Huff!", "Ungh...", "Rah!".
 - Entorno de voz: `G:\Herramientas	ts` (venv con `kokoro-onnx` + modelos `kokoro-v1.0.onnx` y `voices-v1.0.bin`,

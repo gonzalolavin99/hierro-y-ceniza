@@ -4,6 +4,8 @@ extends CharacterBody3D
 ## qué hace en cada momento lo deciden los estados (carpeta states/).
 
 signal deflected
+## Empezó un paso rápido (los enemigos lo observan para leer si abusa de él).
+signal dashed
 
 @export_group("Movimiento")
 @export var run_speed: float = 5.5

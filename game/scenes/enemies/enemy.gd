@@ -34,6 +34,8 @@ signal danger_warned(kind: int)
 const STOMP_POSTURE: float = 30.0
 
 var target: Player
+## Lo que ha aprendido de los hábitos del jugador (ver EnemyMind).
+var mind: EnemyMind = EnemyMind.new()
 var blocks_in_a_row: int = 0
 ## Ya le habló al jugador en esta vida (frase al verlo).
 var has_spoken_to_target: bool = false
@@ -58,6 +60,12 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if target == null:
 		target = get_tree().get_first_node_in_group("player") as Player
+		if target:
+			target.deflected.connect(mind.on_player_deflect)
+			target.dashed.connect(mind.on_player_dash)
+	if target:
+		mind.observe_guard(target.state_machine.current.name == &"Block", delta)
+		DebugOverlay.watch("IA lee", mind.describe())
 	# Con poca vida, la postura se recupera más lento (como en Sekiro).
 	posture.regen_multiplier = 0.25 + 0.75 * health.ratio()
 	velocity.y -= gravity * delta
@@ -182,7 +190,8 @@ func receive_hit(hit: HitData) -> int:
 		body.flinch(to_attacker, 0.35)
 		push = -to_attacker * 1.2
 		blocks_in_a_row += 1
-		if blocks_in_a_row >= blocks_before_counter and not posture.is_broken:
+		mind.on_attack_blocked()
+		if blocks_in_a_row >= mind.blocks_before_counter(blocks_before_counter) and not posture.is_broken:
 			blocks_in_a_row = 0
 			state_machine.transition_to(&"Attack", {"pattern": &"counter"})
 		return HitData.Result.BLOCKED
@@ -284,6 +293,8 @@ func receive_stomp(attacker: Node3D) -> void:
 
 func _on_hit_landed(result: int, _hurtbox: Hurtbox) -> void:
 	var attack := state_machine.current as EnemyAttackState
+	if result == HitData.Result.HIT:
+		mind.on_player_hit()
 	if result == HitData.Result.DEFLECTED and attack:
 		attack.on_deflected()
 	elif result == HitData.Result.COUNTERED and attack:

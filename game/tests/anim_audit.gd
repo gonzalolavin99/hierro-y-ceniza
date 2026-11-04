@@ -33,6 +33,7 @@ func _ready() -> void:
 	add_child(level)
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_enemy = get_tree().get_first_node_in_group("enemies") as Enemy
+	_enemy.mind.predictable = true  # Ritmo fijo: esta prueba no trata de la IA adaptativa (ver ai_test).
 	_skeleton(_player).skeleton_updated.connect(_sample.bind("p"))
 	_skeleton(_enemy).skeleton_updated.connect(_sample.bind("e"))
 	await _run()
@@ -249,7 +250,7 @@ func _sample(who: String) -> void:
 		for bone in BONES:
 			disp[bone] = (local[bone] - prev["local"][bone]).length()
 		# La pausa de impacto (hitstop) congela el tiempo a propósito: junto a ella no se juzgan saltos.
-		var frozen: bool = Engine.time_scale < 0.99 or prev.get("frozen", false) or prev.get("frozen2", false)
+		var frozen: bool = _frame_frozen() or prev.get("frozen", false) or prev.get("frozen2", false)
 		if not frozen and not prev.get("disp", {}).is_empty() and not prev.get("disp2", {}).is_empty():
 			for bone in BONES:
 				var middle: float = prev["disp"][bone]
@@ -257,6 +258,8 @@ func _sample(who: String) -> void:
 				var ratio: float = middle / maxf(neighbours, 0.004)
 				if middle > 0.035 and ratio > 2.5:
 					r["pops"] += 1
+					if OS.get_environment("AUDIT_POPS") == key:
+						print("    salto %s f%d: antes %.1f cm, este %.1f cm, después %.1f cm, time_scale %.2f" % [bone, r["frames"] - 1, prev["disp2"][bone] * 100.0, middle * 100.0, disp[bone] * 100.0, Engine.time_scale])
 					if middle > r["pop"]:
 						r["pop"] = middle
 						r["pop_bone"] = bone
@@ -289,7 +292,7 @@ func _sample(who: String) -> void:
 				if gap < -0.04:
 					r["clip"] += 1
 	_prev[who] = {"local": local, "world": world, "disp": disp, "disp2": prev.get("disp", {}), "support": support,
-		"frozen": Engine.time_scale < 0.99, "frozen2": prev.get("frozen", false)}
+		"frozen": _frame_frozen(), "frozen2": prev.get("frozen", false)}
 
 
 ## Comprobaciones que fijan las mejoras ya hechas (para que no vuelvan los defectos).
@@ -313,6 +316,12 @@ func _check_regressions() -> int:
 		if not c[1]:
 			failures += 1
 	return failures
+
+
+## ¿Este fotograma avanzó mucho menos tiempo de juego de lo normal? (pausa de impacto). Se mira la
+## duración real del fotograma porque, al medir, el juego puede haber restaurado ya la velocidad.
+func _frame_frozen() -> bool:
+	return get_process_delta_time() < DT * 0.5 or Engine.time_scale < 0.99
 
 
 func _print_report() -> void:

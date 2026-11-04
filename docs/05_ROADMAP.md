@@ -69,8 +69,11 @@ velocidades y tiempos hasta que digas OK.
 
 ## Hito 5 — IA inteligente y enemigos (3–4 semanas)
 - [ ] **Una sola dificultad** (D13): la IA tiene que ser lista, no tramposa.
-- [ ] IA que lee al jugador: castiga curarse a destiempo y el abuso del paso rápido, cambia el ritmo,
+- [~] IA que lee al jugador: castiga curarse a destiempo y el abuso del paso rápido, cambia el ritmo,
       hace fintas y retrasa golpes si siempre desvías igual, se retira y flanquea en grupo.
+      Paso 1 hecho (`EnemyMind`, OK del jugador): retrasa golpes y amaga si desvías mucho, estocadas
+      si abusas del paso rápido, barridos/agarres si te escondes tras la guardia, contraataca antes si atacas
+      sin pausa. Pendiente: curarse a destiempo (Hito 6), grupo (paso 2).
 - [ ] 3 tipos: bandido, soldado con lanza, arquero. Patrulla, alerta, sigilo y ataque sorpresa.
 
 **🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?
