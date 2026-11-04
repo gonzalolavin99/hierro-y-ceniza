@@ -37,12 +37,13 @@ func physics_update(delta: float) -> void:
 			return
 	_wait -= delta
 	if _wait <= 0.0:
-		# A distancia y con tiro limpio, dispara (no necesita turno: no se mete en el cuerpo a cuerpo).
+		# A distancia y con tiro limpio, dispara cuando le toca el turno (en grupo, nunca a la vez que
+		# un tajo de otro: una amenaza cada vez).
 		if enemy.ranged and enemy.distance_to_target() > enemy.MELEE_RANGE:
-			if enemy.has_clear_shot():
+			if enemy.has_clear_shot() and Squad.request_turn(enemy):
 				machine.transition_to(&"Shoot")
 			else:
-				_wait = 0.4
+				_wait = 0.2
 			return
 		# En grupo, ataca solo quien tiene el turno; los demás esperan rodeando.
 		if not Squad.request_turn(enemy):

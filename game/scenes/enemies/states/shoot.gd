@@ -1,7 +1,9 @@
+class_name EnemyShootState
 extends EnemyState
 ## Arquero: saca una flecha y tensa el arco, apunta un instante (destello de aviso en el arco) y suelta.
 ## Apunta a donde estás al soltar, no adonde vas: moverse de lado o el paso rápido la esquivan, y la
 ## guardia la bloquea (o la desvía, pulsada justo a tiempo).
+## En grupo respeta los turnos (Squad): tiene el turno mientras tensa y apunta, y lo suelta al disparar.
 
 enum Phase { DRAW, AIM, RECOVER }
 
@@ -21,6 +23,15 @@ func enter(_msg: Dictionary) -> void:
 	_set_phase(Phase.DRAW)
 
 
+func exit() -> void:
+	Squad.end_turn(enemy)
+
+
+## ¿Está tensando o apuntando? (aún no ha soltado la flecha)
+func is_aiming() -> bool:
+	return machine.current == self and _phase != Phase.RECOVER
+
+
 func physics_update(delta: float) -> void:
 	_timer += delta
 	enemy.move_horizontal(Vector3.ZERO, 0.0, delta, 10.0)
@@ -37,6 +48,7 @@ func physics_update(delta: float) -> void:
 		Phase.AIM:
 			if _timer >= AIM_TIME:
 				_release()
+				Squad.end_turn(enemy)  # La flecha ya vuela: el siguiente puede atacar tras el respiro.
 				_set_phase(Phase.RECOVER)
 		Phase.RECOVER:
 			if _timer >= RECOVER_TIME:

@@ -66,7 +66,7 @@ func _run() -> void:
 	_check("El bandido esquiva tu ataque (%s)" % bandit.state_name(), bandit.state_name() == &"Evade")
 	await _wait(0.6)
 	var dist: float = bandit.distance_to_target()
-	_check("Se aparta fuera de tu alcance (%.1f m)" % dist, dist >= 2.6)
+	_check("Se aparta fuera de tu alcance (%.1f m; tu tajo llega a ~2,2)" % dist, dist >= 2.3)
 	_check("Tu tajo no le alcanza (vida %.0f)" % bandit.health.current, bandit.health.current == bandit.health.max_health)
 	await _wait(1.2)
 

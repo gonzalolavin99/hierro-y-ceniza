@@ -17,8 +17,9 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
-| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Paso 3 (patrulla y sigilo) ✅ OK del jugador (faltan las animaciones de caminar agachado). Paso 4a (bandido) ✅ OK del jugador. Paso 4b (lancero y arquero) ✅ OK del jugador. Siguen: patrulla/sigilo, 3 tipos de enemigo |
-| 6–9 | Pendientes (loop souls, historia, primer jefe, vertical slice) |
+| 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Pendiente menor: animaciones de caminar agachado (Mixamo) |
+| 6 · El loop souls | Siguiente: curación con vendajes (y que la IA castigue curarse a destiempo), campamento, experiencia, guardado, menú de pausa |
+| 7–9 | Pendientes (historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
 El mundo, por ahora, solo es el escenario de pruebas.
@@ -103,6 +104,8 @@ cambiar de objetivo con el stick derecho.
   estás invulnerable pasa de largo). No usa los turnos de Squad para disparar. Retrocede caminando si estás a
   <5 m; a <2,2 m, patada (`kick_push`). Campo con muro en z=50. Animaciones Longbow renombradas:
   `bow_draw`, `bow_aim`, `bow_shoot`, `bow_walk_back` (esta aún sin usar).
+  En grupo, el arquero pide turno a Squad como los demás (lo tiene mientras tensa y apunta; lo suelta al
+  disparar), así nunca coinciden su flecha y un tajo. Zona "GRUPO MIXTO" (x=34, z=46). `group_test` sección 4.
   Rendimiento con 9 enemigos en el escenario: 60 FPS con vsync, 223 sin él (`tests/perf_probe.tscn`).
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
@@ -205,12 +208,10 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 7. Siguiente paso recomendado
 
-1. **Cerrar el Hito 3:** cámara al fijar objetivo (transición suave al fijar/soltar, encuadre que
-   mantenga a ambos personajes en pantalla en peleas cercanas, que no atraviese al enemigo). Pedir OK.
-2. **Hito 4 — ataques peligrosos (lo más "Sekiro" que falta):**
-   - Aviso rojo: destello rojo sobre el enemigo + sonido grave (distinto del destello blanco normal).
-   - **Barrido** → se esquiva saltando; saltar sobre el enemigo permite **pisotón** (daño de postura).
-   - **Estocada** → contraataque especial (pisar la hoja con paso hacia delante en el momento justo).
-   - **Agarre** → no se puede bloquear: alejarse o esquivar a un lado.
-   - Con animaciones existentes (sweep_low, slash_b para estocada, shove para agarre) o nuevas de Mixamo.
-3. Después: 1–2 técnicas más, armas secundarias (LT), voces con ElevenLabs, y el Hito 5 (IA lista).
+1. **Hito 6 — el loop souls**, empezando por la **curación con vendajes** (es lo que más se nota al jugar y
+   permite que la IA castigue curarse a destiempo, lo único que quedó del Hito 5). Después: campamento
+   (descansar repone vendajes y hace reaparecer a los enemigos), experiencia que se pierde al morir y se
+   recupera, subir atributos, guardado/carga y menú de pausa.
+2. Cuando el jugador descargue las animaciones de caminar agachado (`crouch_walk_fwd/back/left/right.fbx`):
+   reconstruir la biblioteca y medir `CROUCH_SPEEDS` (ver § Caminar agachado).
+3. Pulido fino de audio y diálogo (volúmenes, mezcla, variedad), pedido por el jugador para más adelante.

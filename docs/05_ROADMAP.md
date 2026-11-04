@@ -67,9 +67,9 @@ velocidades y tiempos hasta que digas OK.
 
 ✅ **Hito 4 cerrado con OK del jugador (2026-11-03).**
 
-## Hito 5 — IA inteligente y enemigos (3–4 semanas)
-- [ ] **Una sola dificultad** (D13): la IA tiene que ser lista, no tramposa.
-- [~] IA que lee al jugador: castiga curarse a destiempo y el abuso del paso rápido, cambia el ritmo,
+## Hito 5 — IA inteligente y enemigos (3–4 semanas) ✅ CERRADO (OK del jugador)
+- [x] **Una sola dificultad** (D13): la IA tiene que ser lista, no tramposa.
+- [x] IA que lee al jugador: castiga curarse a destiempo y el abuso del paso rápido, cambia el ritmo,
       hace fintas y retrasa golpes si siempre desvías igual, se retira y flanquea en grupo.
       Paso 1 hecho (`EnemyMind`, OK del jugador): retrasa golpes y amaga si desvías mucho, estocadas
       si abusas del paso rápido, barridos/agarres si te escondes tras la guardia, contraataca antes si atacas
@@ -77,13 +77,13 @@ velocidades y tiempos hasta que digas OK.
       Paso 2 hecho (OK del jugador): pelea en grupo con turnos (`Squad`): ataca uno cada vez,
       con respiro entre uno y otro; los demás esperan a ~3,6 m con la guardia alta y te rodean hacia los
       costados y la espalda; no se hieren entre ellos; al caer el fijado, la cámara pasa al siguiente.
-- [~] Patrulla, alerta, sigilo y ataque sorpresa. Paso 3 hecho (OK del jugador): agacharse
+- [x] Patrulla, alerta, sigilo y ataque sorpresa. Paso 3 hecho (OK del jugador): agacharse
       (C / L3), los guardias desprevenidos hacen su ronda, te ven (cono de 120°, 15 m, se tapan con muros;
       agachado cuesta más) y te oyen (correr hace ruido, agachado casi nada), sospechan ("?") y van a mirar,
       te descubren ("!") y avisan a los cercanos; si te pierden 4 s, buscan y vuelven a la ronda. Golpe mortal
       por sorpresa por la espalda. Patio de sigilo en el escenario. Pendiente: animaciones de caminar
       agachado (Mixamo, las descarga el jugador; de momento se usan las de caminar de pie).
-- [~] 3 tipos: bandido, soldado con lanza, arquero. Paso 4a hecho (OK del jugador): **bandido**
+- [x] 3 tipos: bandido, soldado con lanza, arquero. Paso 4a hecho (OK del jugador): **bandido**
       (`bandit.tscn`, hereda del soldado): 80 de vida, postura 75, más rápido e impaciente; tajos rápidos,
       ráfaga de 3, embestida desde lejos, barrido y agarre (sin estocadas); ve empezar tu ataque y a veces se
       aparta de un salto (estado `Evade`) y contraataca embistiendo.
@@ -93,6 +93,10 @@ velocidades y tiempos hasta que digas OK.
       y desvían (aviso con destello al apuntar), retrocede si te acercas, patada si te pegas, no bloquea.
 
 **🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?
+Zona "GRUPO MIXTO" montada (soldado + lancero + arquero, x=34, z=46). El arquero también pide turno: tensa y
+apunta solo cuando nadie más ataca y suelta el turno al disparar. ✅ OK del jugador: Hito 5 cerrado.
+Quedan para más adelante: castigar curarse a destiempo (cuando exista la curación, Hito 6) y las animaciones
+de caminar agachado (Mixamo, las descarga el jugador).
 
 ## Hito 6 — El loop souls (2 semanas)
 - [ ] Curación con vendajes, campamento, reaparición de enemigos al descansar.

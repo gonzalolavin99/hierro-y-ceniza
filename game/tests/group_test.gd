@@ -5,15 +5,19 @@ extends Node
 ## Ejecutar: Godot --headless --path game res://tests/group_test.tscn
 
 const SOLDIER: PackedScene = preload("res://scenes/enemies/training_soldier.tscn")
+const SPEARMAN: PackedScene = preload("res://scenes/enemies/spearman.tscn")
+const ARCHER: PackedScene = preload("res://scenes/enemies/archer.tscn")
 const RUN_TIME: float = 16.0
 
 var _player: Player
+var _level: Node
 var _soldiers: Array[Enemy] = []
 var _failures: int = 0
 
 
 func _ready() -> void:
 	var level: Node = load("res://scenes/levels/test_level.tscn").instantiate()
+	_level = level
 	add_child(level)
 	_player = get_tree().get_first_node_in_group("player") as Player
 	# Los soldados del escenario se apartan: aquí pelean solo los de la prueba.
@@ -129,6 +133,52 @@ func _run() -> void:
 	await _wait(0.2)
 	var next: Enemy = _player.lock_target
 	_check("Al caer el fijado, fija al siguiente (%s)" % (next.name if next else "nadie"), next != null and next != b and not next.is_dead())
+
+	# 4. Grupo mixto (soldado + lancero + arquero): el arquero también respeta los turnos. Nunca tensa o
+	# apunta mientras otro está atacando, así que no te llegan dos amenazas a la vez.
+	for s in _soldiers:
+		s.queue_free()
+	_soldiers.clear()
+	await _wait(0.2)
+	var mixed: Array[Enemy] = []
+	for pair: Array in [[SOLDIER, Vector3(0.0, 0.0, -4.0)], [SPEARMAN, Vector3(3.5, 0.0, -3.5)], [ARCHER, Vector3(-2.0, 0.0, -10.0)]]:
+		var e := (pair[0] as PackedScene).instantiate() as Enemy
+		e.position = pair[1]
+		e.respawn_delay = 0.0
+		_level.add_child(e)
+		e.mind.predictable = true
+		mixed.append(e)
+	_soldiers = mixed
+	var archer: Enemy = mixed[2]
+	_player.global_position = Vector3.ZERO
+	_player.reset_physics_interpolation()
+	_player.lock_target = null
+	Squad.reset()
+	var arrows: int = 0
+	var seen_arrows: Dictionary = {}
+	var overlap_frames: int = 0
+	var melee_attacks: Dictionary = {mixed[0]: 0, mixed[1]: 0}
+	var was_attacking: Dictionary = {mixed[0]: false, mixed[1]: false}
+	var t0: float = Squad.clock()
+	while Squad.clock() - t0 < 20.0:
+		await get_tree().physics_frame
+		var melee_busy: bool = false
+		for m: Enemy in [mixed[0], mixed[1]]:
+			var attacking: bool = m.state_name() == &"Attack"
+			if attacking and not was_attacking[m]:
+				melee_attacks[m] += 1
+			was_attacking[m] = attacking
+			melee_busy = melee_busy or attacking
+		var shoot := archer.state_machine.current as EnemyShootState
+		if shoot and shoot.is_aiming() and melee_busy:
+			overlap_frames += 1
+		for node in get_tree().get_nodes_in_group("enemy_projectiles"):
+			if not seen_arrows.has(node):
+				seen_arrows[node] = true
+				arrows += 1
+	_check("Grupo mixto: el arquero dispara (%d flechas)" % arrows, arrows >= 2)
+	_check("Grupo mixto: soldado y lancero atacan %s" % str(melee_attacks.values()), melee_attacks.values().all(func(n: int) -> bool: return n >= 1))
+	_check("El arquero nunca apunta mientras otro ataca (%d fotogramas)" % overlap_frames, overlap_frames == 0)
 
 
 ## Menor ángulo (visto desde el jugador) entre dos soldados.
