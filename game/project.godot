@@ -24,6 +24,7 @@ CombatFX="*res://scripts/systems/combat_fx.gd"
 Sfx="*res://scripts/systems/sfx.gd"
 Voice="*res://scripts/systems/voice.gd"
 Squad="*res://scripts/systems/squad.gd"
+Camps="*res://scripts/systems/camps.gd"
 
 [display]
 

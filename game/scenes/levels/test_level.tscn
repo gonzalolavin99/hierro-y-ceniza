@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/bandit.tscn" id="5_bandit"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/spearman.tscn" id="6_spearman"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/archer.tscn" id="7_archer"]
+[ext_resource type="PackedScene" path="res://scenes/props/campfire.tscn" id="8_campfire"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_material"]
 sky_top_color = Color(0.32, 0.37, 0.44, 1)
@@ -510,3 +511,7 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 37.5, 0, 46)
 
 [node name="MixedArcher" parent="." instance=ExtResource("7_archer")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 31, 0, 52)
+
+[node name="Campfire" parent="." instance=ExtResource("8_campfire")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 7)
+camp_name = "Campamento del patio"

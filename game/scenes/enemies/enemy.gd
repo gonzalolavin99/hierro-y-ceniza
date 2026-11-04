@@ -17,8 +17,9 @@ signal danger_warned(kind: int)
 @export var broken_duration: float = 3.0
 ## Tras cuántos bloqueos seguidos contraataca.
 @export var blocks_before_counter: int = 3
-## Solo para pruebas: reaparece tras morir. 0 = no reaparece.
-@export var respawn_delay: float = 5.0
+## Si es mayor que 0, reaparece solo tras estos segundos (para escenarios de práctica). Por defecto 0:
+## los muertos solo vuelven al descansar en un campamento o al morir Kael.
+@export var respawn_delay: float = 0.0
 
 @export_group("Tipo")
 ## Ataques normales de este tipo (vacío = los del soldado). Ver EnemyAttackState.PATTERNS.
@@ -383,6 +384,16 @@ func respawn() -> void:
 	awareness = 0.0
 	_lost_time = 0.0
 	set_vulnerable(true)
+
+
+## Al descansar en un campamento (o morir Kael): vuelve vivo y tranquilo a su puesto.
+func reset_to_post() -> void:
+	Squad.end_turn(self)
+	evading = false
+	respawn()
+	_mark_timer = 0.0
+	_mark.visible = false
+	state_machine.transition_to(&"Patrol" if starts_unaware else &"Idle")
 
 
 ## Pisotón: el jugador salta sobre él y se impulsa en su cabeza/hombros. Daña la postura;

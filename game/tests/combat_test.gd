@@ -86,7 +86,7 @@ func _run() -> void:
 	await _wait(0.3)
 	_player.receive_hit(HitData.create(_enemy, 1000.0, 0.0))
 	_check("El jugador muere", _player.is_dead())
-	await _wait(2.8)
+	await _wait(3.6)
 	_check("Reaparece con vida completa", not _player.is_dead() and _player.health.current == _player.health.max_health)
 
 	# 7. El soldado reaparece (solo en pruebas)

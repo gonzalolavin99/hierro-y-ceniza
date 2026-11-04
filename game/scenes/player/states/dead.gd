@@ -1,15 +1,19 @@
 extends PlayerState
-## Muerte (temporal): cae y reaparece en el punto de inicio.
-## En el Hito 3 aquí entrará el campamento, la pérdida de experiencia
-## y la voz del narrador: "No… no fue así".
+## Muerte: cae, el narrador se corrige ("No… no fue así"), la pantalla se funde a negro y Kael
+## reaparece en el último campamento donde descansó. Los enemigos vuelven todos a su puesto.
 
-const RESPAWN_AFTER: float = 2.5
+const FADE_FROM: float = 2.6
+const RESPAWN_AFTER: float = 3.4
+const FADE_IN: float = 0.9
+
+var _faded: bool
 
 var _elapsed: float
 
 
 func enter(_msg: Dictionary) -> void:
 	_elapsed = 0.0
+	_faded = false
 	player.hitbox.deactivate()
 	player.lock_target = null
 	player.body.set_blocking(false)
@@ -26,6 +30,11 @@ func physics_update(delta: float) -> void:
 	_elapsed += delta
 	player.move_horizontal(Vector3.ZERO, 0.0, player.ground_acceleration, delta)
 	player.apply_gravity(delta)
+	if not _faded and _elapsed >= FADE_FROM:
+		_faded = true
+		Camps.fade_to(1.0, RESPAWN_AFTER - FADE_FROM)
 	if _elapsed >= RESPAWN_AFTER:
 		player.respawn()
+		Camps.reset_world()
+		Camps.fade_to(0.0, FADE_IN)
 		machine.transition_to(&"Ground")

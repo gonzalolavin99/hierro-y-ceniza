@@ -255,6 +255,27 @@ def bandage(variant):
     return reverb(x, 0.3, 0.08)
 
 
+def fire(variant):
+    """Fogata (se repite en bucle): rumor grave de llama y chasquidos de leña al azar."""
+    seconds = 4.0
+    t = t_axis(seconds)
+    x = band(rng.standard_normal(len(t)), 80, 600) * 0.35
+    x *= 0.8 + 0.2 * np.sin(2 * np.pi * 0.7 * t)
+    for _ in range(38):
+        at = rng.uniform(0.02, seconds - 0.08)
+        size = rng.uniform(0.2, 1.0)
+        n = int(SR * rng.uniform(0.004, 0.02))
+        i = int(at * SR)
+        pop = band(rng.standard_normal(n), 1500, 9000) * np.exp(-np.linspace(0, 6, n)) * size
+        x[i:i + n] += pop[: len(x) - i]
+    # Bordes suaves para que el bucle no haga clic.
+    edge = int(SR * 0.05)
+    ramp = np.linspace(0, 1, edge)
+    x[:edge] *= ramp
+    x[-edge:] *= ramp[::-1]
+    return x
+
+
 SOUNDS = {
     "deflect": (deflect, 3),
     "block": (block, 3),
@@ -271,6 +292,7 @@ SOUNDS = {
     "smoke": (smoke, 1),
     "explosion": (explosion, 2),
     "bandage": (bandage, 1),
+    "fire": (fire, 1),
 }
 
 if __name__ == "__main__":

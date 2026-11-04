@@ -515,12 +515,34 @@ func respawn() -> void:
 	reset_physics_interpolation()
 	model.rotation = Vector3(0.0, deg_to_rad(start_facing_degrees), 0.0)
 	body.stop_action(0.1)
+	restore()
+	lock_target = null
+	camera_rig.recenter()
+
+
+## Recupera vida, postura, herramientas y vendajes (al reaparecer o al descansar).
+func restore() -> void:
 	health.heal(health.max_health)
 	posture.reset()
 	tools.refill()
 	bandages = max_bandages
-	lock_target = null
-	camera_rig.recenter()
+
+
+## Nuevo punto de reaparición (el último campamento donde descansó).
+func set_spawn(at: Vector3, facing_degrees: float) -> void:
+	_spawn_position = at
+	start_facing_degrees = facing_degrees
+
+
+## Fogata a su alcance donde puede descansar ahora (o null). Solo cuenta si pulsa Y / E.
+func wants_rest() -> Campfire:
+	if not Input.is_action_just_pressed("interact"):
+		return null
+	for node in get_tree().get_nodes_in_group("campfires"):
+		var fire := node as Campfire
+		if fire and fire.can_rest(self):
+			return fire
+	return null
 
 
 ## Ventana de desvío al estilo Sekiro: 0,2 s, que se achica (hasta ~7 fotogramas) si se pulsa

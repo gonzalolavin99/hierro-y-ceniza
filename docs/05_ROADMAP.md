@@ -105,6 +105,11 @@ de caminar agachado (Mixamo, las descarga el jugador).
       el vendaje; se reponen al reaparecer. Los enemigos alerta a ≤7 m que te ven empezar a vendarte se lanzan
       a castigarte (embestida o tajo rápido; el arquero dispara), salvo que otro ya esté atacando. Animación
       provisional (`idle_4`: mano al cuello); pendiente una de vendarse de Mixamo.
+      Paso 2 hecho y probado (OK del jugador): **campamento** (fogata con tienda, junto al inicio del patio).
+      Y / E junto al fuego = descansar (3,6 s, fundido a negro): repone vida, postura, vendajes y herramientas,
+      todos los enemigos vuelven vivos a su puesto, y pasa a ser el punto de reaparición. No se puede con un
+      enemigo que te tenga en la mira a ≤20 m (el aviso dice "Hay enemigos cerca"). Los enemigos muertos ya no
+      reaparecen solos: solo al descansar o al morir Kael (que reaparece en el último campamento, con fundido).
 - [ ] Experiencia: perderla al morir y recuperarla. Subir atributos.
 - [ ] Guardado/carga. Menú de pausa.
 - [ ] Muerte con la voz del narrador: "No… no fue así".

@@ -18,7 +18,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Pendiente menor: animaciones de caminar agachado (Mixamo) |
-| 6 · El loop souls | 🔨 Paso 1 (vendajes y castigo de la IA al curarse) hecho y probado (OK). Siguen: campamento, experiencia, guardado, menú de pausa |
+| 6 · El loop souls | 🔨 Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Siguen: experiencia, guardado, menú de pausa |
 | 7–9 | Pendientes (historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -52,6 +52,7 @@ cambiar de objetivo con el stick derecho.
 | B hacia el enemigo ante una estocada | Pisar la hoja (mucha postura, queda expuesto) |
 | LT / Q | Arma secundaria equipada |
 | X / R | Vendarse (cura 45 %; quieto y sin guardia 1,4 s; 3 vendajes) |
+| Y / E junto a la fogata | Descansar (sin enemigos que te vean cerca) |
 | L3 / C | Agacharse (alterna): sigilo; por la espalda sin que te vean, ataque = golpe mortal |
 | Cruceta ← → / 1, 2 | Cambiar de arma secundaria |
 
@@ -114,6 +115,14 @@ cambiar de objetivo con el stick derecho.
   Sonido `bandage` (gen_sounds.py). Castigo de la IA: `Enemy._watch_player_heal()` (≤7 m, alerta, no
   predecible, nadie más atacando): toma el turno y lanza `lunge`/`quick`, o `Shoot` si es arquero.
   Animación provisional `heal` = `idle_4` (0,9→2,3 s). Se prueba en `heal_test`.
+- **Campamento** (`scenes/props/campfire.gd`, `class_name Campfire`, grupo `campfires`; piezas en código:
+  piedras, leños, conos de llama, luz que titila, tienda, petate, sonido `fire` en bucle). Autoload `Camps`
+  (`scripts/systems/camps.gd`): `fade_to(alpha, s, texto)` y `reset_world()` (borra flechas, `Enemy.reset_to_post()`
+  en todos, `Squad.reset()`). Estado `player/states/rest.gd` (3,6 s: oscurece 0,5→1,3; repone a 1,4 con
+  `Campfire.rest()` = `Player.restore()` + `set_spawn()` + `reset_world()`; aclara 2,6→3,5). `Player.wants_rest()`
+  va antes de la patada en `ground.gd` (ambas en Y). Muerte (`player/states/dead.gd`): fundido 2,6→3,4,
+  `respawn()` + `reset_world()`. `Enemy.respawn_delay` ahora vale 0 por defecto (no reaparecen solos).
+  Se prueba en `campfire_test`; capturas con `campfire_shot`.
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
   caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
@@ -144,7 +153,7 @@ game/
 ├── scenes/enemies/      enemy.gd, training_soldier.tscn, states/ (Idle, Chase, Attack, Recoil, Broken, Dead)
 ├── scenes/ui/           hud (vida, postura, barras del enemigo, ◆ golpe mortal), debug_overlay (F3)
 ├── scripts/components/  health, posture, hitbox, hurtbox, hit_data
-├── scripts/systems/     input_setup (controles por código), combat_fx, sfx
+├── scripts/systems/     input_setup (controles por código), combat_fx, sfx, squad, camps
 ├── assets/audio/sfx/    sonidos generados
 ├── assets/animations/   mixamo/ (NO está en Git: licencia) + mixamo_library.res (generada)
 └── tests/               pruebas automáticas y herramientas (ver §4)
@@ -160,7 +169,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -215,10 +224,9 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 7. Siguiente paso recomendado
 
-1. **Hito 6 — el loop souls**, empezando por la **curación con vendajes** (es lo que más se nota al jugar y
-   permite que la IA castigue curarse a destiempo, lo único que quedó del Hito 5). Después: campamento
-   (descansar repone vendajes y hace reaparecer a los enemigos), experiencia que se pierde al morir y se
-   recupera, subir atributos, guardado/carga y menú de pausa.
+1. **Hito 6 — el loop souls**: hechos vendajes y campamento. Sigue la **experiencia** (los enemigos la dan,
+   se pierde al morir y queda donde caíste para recuperarla), luego subir atributos en el campamento,
+   guardado/carga y menú de pausa.
 2. Cuando el jugador descargue las animaciones de caminar agachado (`crouch_walk_fwd/back/left/right.fbx`):
    reconstruir la biblioteca y medir `CROUCH_SPEEDS` (ver § Caminar agachado).
 3. Pulido fino de audio y diálogo (volúmenes, mezcla, variedad), pedido por el jugador para más adelante.
