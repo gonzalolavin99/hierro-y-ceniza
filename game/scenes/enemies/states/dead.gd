@@ -18,4 +18,4 @@ func physics_update(delta: float) -> void:
 	enemy.move_horizontal(Vector3.ZERO, 0.0, delta)
 	if enemy.respawn_delay > 0.0 and _elapsed >= enemy.respawn_delay:
 		enemy.respawn()
-		machine.transition_to(&"Idle")
+		machine.transition_to(&"Patrol" if enemy.starts_unaware else &"Idle")

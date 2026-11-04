@@ -49,6 +49,20 @@ const MAP := {
 	"dodge_back": ["dodge_backward", false],
 	"dodge_left": ["dodge_left", false],
 	"dodge_right": ["dodge_right", false],
+	# Sigilo: agachado quieto y caminando agachado.
+	"crouch_idle": ["crouching_3", true],
+	"crouch_fwd": ["crouch_walk_fwd", true],
+	"crouch_back": ["crouch_walk_back", true],
+	"crouch_left": ["crouch_walk_left", true],
+	"crouch_right": ["crouch_walk_right", true],
+}
+
+## Si falta un archivo de Mixamo, se usa este otro mientras tanto (avisa al construir).
+const FALLBACK := {
+	"crouch_walk_fwd": "walk",
+	"crouch_walk_back": "walk_2",
+	"crouch_walk_left": "strafe",
+	"crouch_walk_right": "strafe_2",
 }
 
 ## Retoques del taller (AnimPolish) por animación. Postura más baja y firme (kenjutsu/Sekiro)
@@ -76,6 +90,9 @@ func _init() -> void:
 	var polisher := AnimPolish.new(bot.get_node("Skeleton3D"))
 	for key in MAP:
 		var file: String = MAP[key][0]
+		if not ResourceLoader.exists("res://assets/animations/mixamo/%s.fbx" % file) and FALLBACK.has(file):
+			print("  AVISO: falta %s.fbx; se usa %s.fbx de momento" % [file, FALLBACK[file]])
+			file = FALLBACK[file]
 		var s: Node = (load("res://assets/animations/mixamo/%s.fbx" % file) as PackedScene).instantiate()
 		var anim: Animation = (s.get_node("AnimationPlayer") as AnimationPlayer).get_animation("mixamo_com").duplicate(true)
 		s.free()

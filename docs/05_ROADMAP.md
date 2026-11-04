@@ -77,7 +77,13 @@ velocidades y tiempos hasta que digas OK.
       Paso 2 hecho (OK del jugador): pelea en grupo con turnos (`Squad`): ataca uno cada vez,
       con respiro entre uno y otro; los demás esperan a ~3,6 m con la guardia alta y te rodean hacia los
       costados y la espalda; no se hieren entre ellos; al caer el fijado, la cámara pasa al siguiente.
-- [ ] 3 tipos: bandido, soldado con lanza, arquero. Patrulla, alerta, sigilo y ataque sorpresa.
+- [~] Patrulla, alerta, sigilo y ataque sorpresa. Paso 3 hecho (OK del jugador): agacharse
+      (C / L3), los guardias desprevenidos hacen su ronda, te ven (cono de 120°, 15 m, se tapan con muros;
+      agachado cuesta más) y te oyen (correr hace ruido, agachado casi nada), sospechan ("?") y van a mirar,
+      te descubren ("!") y avisan a los cercanos; si te pierden 4 s, buscan y vuelven a la ronda. Golpe mortal
+      por sorpresa por la espalda. Patio de sigilo en el escenario. Pendiente: animaciones de caminar
+      agachado (Mixamo, las descarga el jugador; de momento se usan las de caminar de pie).
+- [ ] 3 tipos: bandido, soldado con lanza, arquero.
 
 **🧪 PRUEBA:** grupo de 3 enemigos mixtos. ¿Es difícil pero justo? ¿Se siente que piensan?
 

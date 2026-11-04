@@ -13,6 +13,9 @@ func enter(msg: Dictionary) -> void:
 
 func physics_update(delta: float) -> void:
 	enemy.move_horizontal(Vector3.ZERO, 0.0, delta)
+	if not enemy.alerted:
+		machine.transition_to(&"Patrol")
+		return
 	if not enemy.has_target():
 		return
 	enemy.face_target(delta)

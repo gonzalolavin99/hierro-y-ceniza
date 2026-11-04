@@ -37,6 +37,10 @@ var _loco_pos: Vector2 = Vector2.ZERO
 var _loco_target: Vector2 = Vector2.ZERO
 var _block: float = 0.0
 var _block_target: float = 0.0
+var _crouch: float = 0.0
+var _crouch_target: float = 0.0
+var _crouch_pos: Vector2 = Vector2.ZERO
+var _crouch_pos_target: Vector2 = Vector2.ZERO
 var _action: float = 0.0
 var _action_target: float = 0.0
 var _action_fade: float = 0.1
@@ -83,6 +87,10 @@ func _process(delta: float) -> void:
 		return
 	_loco_pos = _loco_pos.lerp(_loco_target, 1.0 - exp(-10.0 * delta))
 	_block = move_toward(_block, _block_target, block_blend_speed * delta)
+	_crouch = move_toward(_crouch, _crouch_target, delta / CROUCH_FADE)
+	_crouch_pos = _crouch_pos.lerp(_crouch_pos_target, 1.0 - exp(-10.0 * delta))
+	_tree.set("parameters/crouch_loco/blend_position", _crouch_pos)
+	_tree.set("parameters/crouch_blend/blend_amount", smoothstep(0.0, 1.0, _crouch))
 	_action = move_toward(_action, _action_target, delta / maxf(_action_fade, 0.01))
 	_mix = move_toward(_mix, _mix_target, delta / maxf(_action_fade, 0.01))
 	_tree.set("parameters/loco/blend_position", _loco_pos)
@@ -107,6 +115,11 @@ const GAIT_STRETCH_DOWN: float = 0.6
 const WALK_BLEND: float = 0.25
 ## Mezcla mínima al empezar una acción: más corta, el cuerpo "salta" de una pose a otra.
 const MIN_ACTION_FADE: float = 0.08
+## Caminar agachado: velocidad de pisada de cada dirección. Provisional (son las de caminar de pie
+## mientras no estén las animaciones de Mixamo de caminar agachado; medir con measure_locomotion).
+const CROUCH_SPEEDS: Dictionary = {"fwd": 0.99, "back": 0.90, "left": 1.00, "right": 1.11}
+## Segundos que tarda en agacharse o levantarse.
+const CROUCH_FADE: float = 0.3
 
 
 ## Locomoción. `local_velocity`: x = lateral (+ derecha), y = adelante; 1 = posición de las animaciones
@@ -119,6 +132,15 @@ func set_locomotion(local_velocity: Vector2, time_scale: float = 1.0) -> void:
 
 func set_blocking(enabled: bool) -> void:
 	_block_target = 1.0 if enabled else 0.0
+
+
+## Agachado (sigilo): cambia la locomoción a la de caminar agachado.
+func set_crouching(enabled: bool) -> void:
+	_crouch_target = 1.0 if enabled else 0.0
+
+
+func is_crouching() -> bool:
+	return _crouch_target > 0.5
 
 
 ## Reproduce una animación de acción (ataque, golpe recibido, salto…) sobre la locomoción.
@@ -236,8 +258,12 @@ func update_locomotion(velocity: Vector3, facing: Vector3) -> void:
 	var speed: float = local.length()
 	if speed < 0.05:
 		set_locomotion(Vector2.ZERO, 1.0)
+		_set_crouch_locomotion(Vector2.ZERO, 1.0)
 		return
 	var dir: Vector2 = local / speed
+	# Agachado: un solo paso (caminar agachado), que se acelera si hace falta.
+	var crouch_natural: float = _crouch_natural_speed(dir)
+	_set_crouch_locomotion(dir * minf(speed / crouch_natural, 1.0), maxf(speed / crouch_natural, 1.0))
 	var walk: float = natural_speed(dir, false)
 	var run: float = natural_speed(dir, true)
 	# Como un cuerpo real, elige un paso (caminar o correr) y ajusta su ritmo; solo mezcla los dos en
@@ -259,6 +285,20 @@ func update_locomotion(velocity: Vector3, facing: Vector3) -> void:
 		amount = 1.0
 		time_scale = speed / run
 	set_locomotion(dir * amount, minf(time_scale, 2.4))
+
+
+func _set_crouch_locomotion(position: Vector2, time_scale: float) -> void:
+	_crouch_pos_target = position
+	if _tree:
+		_tree.set("parameters/crouch_speed/scale", minf(time_scale, 2.4))
+
+
+static func _crouch_natural_speed(dir: Vector2) -> float:
+	var forward: float = CROUCH_SPEEDS["fwd"] if dir.y >= 0.0 else CROUCH_SPEEDS["back"]
+	var side: float = CROUCH_SPEEDS["right"] if dir.x >= 0.0 else CROUCH_SPEEDS["left"]
+	var wy: float = absf(dir.y)
+	var wx: float = absf(dir.x)
+	return (forward * wy + side * wx) / maxf(wx + wy, 0.001)
 
 
 ## Velocidad (m/s) a la que pisan las animaciones de caminar o correr en una dirección local
@@ -374,13 +414,30 @@ func _build_tree() -> void:
 	bt.add_node(&"loco_speed", AnimationNodeTimeScale.new(), Vector2(200, 0))
 	bt.connect_node(&"loco_speed", 0, &"loco")
 
+	# Locomoción agachado (sigilo), que se mezcla con la normal según _crouch.
+	var crouch := AnimationNodeBlendSpace2D.new()
+	crouch.min_space = Vector2(-1, -1)
+	crouch.max_space = Vector2(1, 1)
+	for point in [
+		[&"crouch_idle", Vector2.ZERO],
+		[&"crouch_fwd", Vector2(0, 1)], [&"crouch_back", Vector2(0, -1)],
+		[&"crouch_left", Vector2(-1, 0)], [&"crouch_right", Vector2(1, 0)],
+	]:
+		crouch.add_blend_point(_anim(point[0]), point[1], -1, point[0])
+	bt.add_node(&"crouch_loco", crouch, Vector2(0, -200))
+	bt.add_node(&"crouch_speed", AnimationNodeTimeScale.new(), Vector2(200, -200))
+	bt.connect_node(&"crouch_speed", 0, &"crouch_loco")
+	bt.add_node(&"crouch_blend", AnimationNodeBlend2.new(), Vector2(300, -100))
+	bt.connect_node(&"crouch_blend", 0, &"loco_speed")
+	bt.connect_node(&"crouch_blend", 1, &"crouch_speed")
+
 	bt.add_node(&"block_anim", _anim(&"block_hold"), Vector2(0, 200))
 	var block_blend := AnimationNodeBlend2.new()
 	block_blend.filter_enabled = true
 	for bone in UPPER_BODY:
 		block_blend.set_filter_path(NodePath("Skeleton3D:mixamorig_" + bone), true)
 	bt.add_node(&"block_blend", block_blend, Vector2(400, 100))
-	bt.connect_node(&"block_blend", 0, &"loco_speed")
+	bt.connect_node(&"block_blend", 0, &"crouch_blend")
 	bt.connect_node(&"block_blend", 1, &"block_anim")
 
 	for slot in ["a", "b"]:
@@ -411,6 +468,7 @@ func _build_tree() -> void:
 	_tree.tree_root = bt
 	_tree.active = true
 	_tree.set("parameters/loco_speed/scale", 1.0)
+	_tree.set("parameters/crouch_speed/scale", 1.0)
 	_tree.set("parameters/scale_a/scale", 1.0)
 	_tree.set("parameters/scale_b/scale", 1.0)
 

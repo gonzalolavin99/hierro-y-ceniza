@@ -20,6 +20,14 @@ signal danger_warned(kind: int)
 ## Solo para pruebas: reaparece tras morir. 0 = no reaparece.
 @export var respawn_delay: float = 5.0
 
+@export_group("Sigilo")
+## Empieza sin saber que estás ahí (patrulla o guardia). Si es false, está alerta desde el principio
+## (el soldado de práctica de la arena).
+@export var starts_unaware: bool = false
+## Puntos de su ronda (posiciones en el mundo). Vacío = vigila quieto en su puesto.
+@export var patrol_points: PackedVector3Array = PackedVector3Array()
+@export var patrol_speed: float = 1.1
+
 @onready var model: Node3D = $Model
 @onready var body: Mannequin = $Model/Mannequin
 @onready var hitbox: Hitbox = $Model/Hitbox
@@ -33,6 +41,32 @@ signal danger_warned(kind: int)
 ## Postura que sufre al recibir un pisotón.
 const STOMP_POSTURE: float = 30.0
 
+# --- Percepción (sigilo) ---
+## Vista: hasta dónde ve y su ángulo (a cada lado de hacia donde mira).
+const VIEW_RANGE: float = 15.0
+const VIEW_HALF_ANGLE: float = deg_to_rad(60.0)
+## Sospecha por segundo al verte (se multiplica: más cerca, más rápido).
+const SIGHT_RATE: float = 0.6
+## Agachado cuesta más verte.
+const CROUCH_SIGHT: float = 0.45
+## Sospecha por segundo al oírte (dentro del radio de ruido del jugador).
+const HEAR_BASE: float = 0.5
+const HEAR_RATE: float = 0.9
+## Solo con oírte no te descubre del todo (se acerca a mirar); hace falta verte, salvo muy de cerca.
+const HEARING_MAX: float = 0.8
+const HEARING_CLOSE: float = 2.0
+## Tras unos segundos sin verte ni oírte, la sospecha baja.
+const CALM_DELAY: float = 2.0
+const CALM_RATE: float = 0.2
+## Desde esta sospecha deja la ronda y va a mirar (signo "?").
+const SUSPICIOUS_AT: float = 0.35
+## Al descubrirte avisa a los compañeros que estén a esta distancia.
+const ALARM_RADIUS: float = 12.0
+## Si te pierde (lejos o escondido) durante este tiempo, se calma y vuelve a buscar y a patrullar.
+const LOSE_TIME: float = 4.0
+## Golpe mortal por sorpresa: distancia máxima.
+const STEALTH_KILL_RANGE: float = 2.4
+
 var target: Player
 ## Lo que ha aprendido de los hábitos del jugador (ver EnemyMind).
 var mind: EnemyMind = EnemyMind.new()
@@ -43,6 +77,19 @@ var has_spoken_to_target: bool = false
 var root_motion_velocity: Vector3 = Vector3.ZERO
 ## Empujón que se suma al movimiento y se desvanece (choques, golpes).
 var push: Vector3 = Vector3.ZERO
+## Sabe que estás ahí y pelea (si no, patrulla o sospecha).
+var alerted: bool = true
+## Sospecha: 0 = tranquilo, 1 = te ha descubierto.
+var awareness: float = 0.0
+## Dónde te vio u oyó por última vez.
+var last_known: Vector3 = Vector3.ZERO
+## Hacia dónde mira en su puesto (se toma al empezar; las pruebas pueden cambiarlo).
+var post_direction: Vector3 = Vector3.FORWARD
+var _calm_timer: float = 0.0
+var _lost_time: float = 0.0
+var _alarm_in: float = -1.0
+var _mark: Label3D
+var _mark_timer: float = 0.0
 var _spawn: Transform3D
 var _base_posture_regen: float
 
@@ -55,6 +102,11 @@ func _ready() -> void:
 	posture.broken.connect(_on_posture_broken)
 	health.died.connect(_on_health_depleted)
 	hitbox.hit_landed.connect(_on_hit_landed)
+	_build_mark()
+	post_direction = get_facing()
+	alerted = not starts_unaware
+	if starts_unaware:
+		state_machine.transition_to(&"Patrol")
 
 
 func _physics_process(delta: float) -> void:
@@ -65,7 +117,10 @@ func _physics_process(delta: float) -> void:
 			target.dashed.connect(mind.on_player_dash)
 	if target:
 		mind.observe_guard(target.state_machine.current.name == &"Block", delta)
-		DebugOverlay.watch("IA lee", mind.describe())
+		if alerted and distance_to_target() <= aggro_range:
+			DebugOverlay.watch("IA lee", mind.describe())
+	_update_awareness(delta)
+	_update_mark(delta)
 	# Con poca vida, la postura se recupera más lento (como en Sekiro).
 	posture.regen_multiplier = 0.25 + 0.75 * health.ratio()
 	velocity.y -= gravity * delta
@@ -82,7 +137,7 @@ func _physics_process(delta: float) -> void:
 # --- Utilidades para los estados ------------------------------------------------
 
 func has_target() -> bool:
-	return target != null and not target.is_dead() and distance_to_target() <= aggro_range
+	return alerted and target != null and not target.is_dead() and distance_to_target() <= aggro_range
 
 
 func distance_to_target() -> float:
@@ -100,9 +155,14 @@ func get_facing() -> Vector3:
 
 
 func face_target(delta: float, speed_multiplier: float = 1.0) -> void:
-	var dir: Vector3 = direction_to_target()
+	face_direction(direction_to_target(), delta, speed_multiplier)
+
+
+func face_direction(dir: Vector3, delta: float, speed_multiplier: float = 1.0) -> void:
+	dir.y = 0.0
 	if dir.length_squared() < 0.001:
 		return
+	dir = dir.normalized()
 	var yaw: float = atan2(-dir.x, -dir.z)
 	model.rotation.y = lerp_angle(model.rotation.y, yaw, 1.0 - exp(-turn_speed * speed_multiplier * delta))
 
@@ -158,11 +218,14 @@ func receive_hit(hit: HitData) -> int:
 	to_attacker = to_attacker.normalized()
 	var contact: Vector3 = global_position + Vector3.UP * 1.3 + to_attacker * 0.55
 	var facing_attacker: bool = get_facing().dot(to_attacker) > 0.0
+	# Desprevenido no se cubre; el golpe lo pone en alerta.
+	var unaware: bool = not alerted
+	alert()
 
 	# Fuera de sus ataques, bloquea todo lo que tenga de frente.
 	# La patada rompe la guardia: queda expuesto sin bloquear.
 	# Aturdido (humo) o retrocediendo: no puede bloquear.
-	var can_guard: bool = state != &"Attack" and state != &"Recoil" and state != &"Dazed" and facing_attacker
+	var can_guard: bool = not unaware and state != &"Attack" and state != &"Recoil" and state != &"Dazed" and facing_attacker
 	if hit.guard_break and can_guard:
 		posture.add(hit.posture_damage)
 		Sfx.play(&"block", contact, -4.0)
@@ -220,6 +283,7 @@ func receive_blast(origin: Vector3, damage: float, posture_damage: float) -> voi
 	var away: Vector3 = global_position - origin
 	away.y = 0.0
 	away = away.normalized() if away.length() > 0.01 else -get_facing()
+	alert()
 	health.take_damage(damage)
 	posture.add(posture_damage)
 	Voice.say(&"soldier", &"hurt", lock_point())
@@ -237,6 +301,7 @@ func receive_smoke() -> void:
 	if state == &"Dead" or state == &"Broken":
 		return
 	blocks_in_a_row = 0
+	alert()
 	state_machine.transition_to(&"Dazed")
 
 
@@ -268,6 +333,9 @@ func respawn() -> void:
 	posture.reset()
 	blocks_in_a_row = 0
 	has_spoken_to_target = false
+	alerted = not starts_unaware
+	awareness = 0.0
+	_lost_time = 0.0
 	set_vulnerable(true)
 
 
@@ -283,6 +351,7 @@ func receive_stomp(attacker: Node3D) -> void:
 	var to_attacker: Vector3 = attacker.global_position - global_position
 	to_attacker.y = 0.0
 	body.flinch(to_attacker.normalized(), 1.0)
+	alert()
 	var attack := state_machine.current as EnemyAttackState
 	var interrupted: bool = attack != null and attack.is_sweeping()
 	posture.add(STOMP_POSTURE)
@@ -309,3 +378,172 @@ func _on_posture_broken() -> void:
 func _on_health_depleted() -> void:
 	if not is_dead():
 		state_machine.transition_to(&"Broken")
+
+
+# --- Sigilo ----------------------------------------------------------------------
+
+## Te descubre: entra en combate y avisa a los compañeros cercanos.
+func alert() -> void:
+	if alerted or is_dead():
+		return
+	alerted = true
+	awareness = 1.0
+	_lost_time = 0.0
+	_alarm_in = -1.0
+	if target:
+		last_known = target.global_position
+	_show_mark("!", Color(1.0, 0.2, 0.15), 1.2)
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var other := node as Enemy
+		if other and other != self and not other.alerted and not other.is_dead() \
+				and other.global_position.distance_to(global_position) <= ALARM_RADIUS:
+			other.hear_alarm(0.4)
+	var state: StringName = state_name()
+	if state == &"Patrol" or state == &"Suspicious" or state == &"Idle":
+		state_machine.transition_to(&"Chase")
+
+
+## Un compañero dio la alarma: se pone en alerta tras un instante (lo que tarda en reaccionar).
+func hear_alarm(delay: float) -> void:
+	if not alerted and _alarm_in < 0.0:
+		_alarm_in = delay
+
+
+## Te pierde mucho rato: deja el combate, va a mirar dónde te vio y luego vuelve a su ronda.
+func calm_down() -> void:
+	alerted = false
+	awareness = 0.5
+	_calm_timer = 0.0
+	_lost_time = 0.0
+	Squad.end_turn(self)
+	state_machine.transition_to(&"Suspicious", {"at": last_known})
+
+
+## ¿Se le puede dar un golpe mortal por sorpresa? Desprevenido y con el jugador a su espalda o costado.
+func can_be_stealth_killed(by: Player) -> bool:
+	if alerted or is_dead() or state_name() == &"Broken":
+		return false
+	var to: Vector3 = by.global_position - global_position
+	to.y = 0.0
+	if to.length() > STEALTH_KILL_RANGE:
+		return false
+	return get_facing().dot(to.normalized()) < 0.3
+
+
+## Ronda: los puntos de patrulla, o su puesto si no tiene.
+func patrol_route() -> PackedVector3Array:
+	return patrol_points if not patrol_points.is_empty() else PackedVector3Array([_spawn.origin])
+
+
+## Hacia dónde mira en su puesto (para volver a esa orientación).
+func post_facing() -> Vector3:
+	return post_direction
+
+
+func _update_awareness(delta: float) -> void:
+	if not starts_unaware or is_dead():
+		return
+	if alerted:
+		if has_target():
+			_lost_time = 0.0
+			last_known = target.global_position
+		else:
+			_lost_time += delta
+			var state: StringName = state_name()
+			if _lost_time >= LOSE_TIME and (state == &"Idle" or state == &"Chase" or state == &"Circle"):
+				calm_down()
+		return
+	if _alarm_in >= 0.0:
+		_alarm_in -= delta
+		if _alarm_in < 0.0:
+			alert()
+			return
+	var sight: float = _sight_gain()
+	var hearing: float = _hearing_gain()
+	if sight + hearing > 0.0:
+		var before: float = awareness
+		awareness += (sight + hearing) * delta
+		if sight <= 0.0 and distance_to_target() > HEARING_CLOSE:
+			awareness = minf(awareness, maxf(before, HEARING_MAX))
+		_calm_timer = 0.0
+	else:
+		_calm_timer += delta
+		if _calm_timer >= CALM_DELAY:
+			awareness -= CALM_RATE * delta
+	awareness = clampf(awareness, 0.0, 1.0)
+	if awareness >= 1.0:
+		alert()
+	elif awareness >= SUSPICIOUS_AT and state_name() == &"Patrol":
+		state_machine.transition_to(&"Suspicious", {"at": last_known})
+
+
+## Sospecha por segundo por lo que ve ahora (cono de visión, distancia, obstáculos, agachado).
+func _sight_gain() -> float:
+	if target == null or target.is_dead():
+		return 0.0
+	var to: Vector3 = target.global_position - global_position
+	to.y = 0.0
+	var dist: float = to.length()
+	if dist > VIEW_RANGE or dist < 0.01 or get_facing().angle_to(to / dist) > VIEW_HALF_ANGLE or not _can_see_target():
+		return 0.0
+	last_known = target.global_position
+	var closeness: float = 1.0 - dist / VIEW_RANGE
+	return SIGHT_RATE * (0.35 + 1.65 * closeness) * (CROUCH_SIGHT if target.crouching else 1.0)
+
+
+## Sospecha por segundo por lo que oye ahora (dentro del radio de ruido del jugador).
+func _hearing_gain() -> float:
+	if target == null or target.is_dead():
+		return 0.0
+	var noise: float = target.noise_radius()
+	var dist: float = distance_to_target()
+	if noise <= 0.0 or dist > noise:
+		return 0.0
+	last_known = target.global_position
+	return HEAR_BASE + HEAR_RATE * (1.0 - dist / noise)
+
+
+## Línea de vista desde sus ojos al pecho del jugador (agachado, más bajo: se esconde tras muros bajos).
+func _can_see_target() -> bool:
+	var eyes: Vector3 = global_position + Vector3.UP * 1.6
+	var chest: Vector3 = target.global_position + Vector3.UP * (0.7 if target.crouching else 1.3)
+	var query := PhysicsRayQueryParameters3D.create(eyes, chest, 1, [get_rid()])
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+
+# --- Signo de sospecha / alerta sobre la cabeza ---
+
+func _build_mark() -> void:
+	_mark = Label3D.new()
+	_mark.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_mark.no_depth_test = true
+	_mark.fixed_size = true
+	_mark.pixel_size = 0.0018
+	_mark.font_size = 64
+	_mark.outline_size = 16
+	_mark.position = Vector3.UP * 2.35
+	_mark.visible = false
+	add_child(_mark)
+
+
+func _show_mark(text: String, color: Color, seconds: float) -> void:
+	_mark.text = text
+	_mark.modulate = color
+	_mark.visible = true
+	_mark_timer = seconds
+
+
+func _update_mark(delta: float) -> void:
+	if not starts_unaware:
+		return
+	if _mark_timer > 0.0:
+		_mark_timer -= delta
+		if _mark_timer <= 0.0:
+			_mark.visible = false
+		return
+	# "?" amarillo que se llena con la sospecha.
+	var show: bool = not alerted and not is_dead() and awareness > 0.05
+	_mark.visible = show
+	if show:
+		_mark.text = "?"
+		_mark.modulate = Color(1.0, 0.85, 0.2, clampf(0.35 + awareness, 0.0, 1.0))

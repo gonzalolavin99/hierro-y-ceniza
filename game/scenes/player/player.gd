@@ -17,6 +17,8 @@ signal dashed
 @export var lock_on_back_speed: float = 3.2
 @export var lock_on_side_speed: float = 3.6
 @export var block_move_speed: float = 2.2
+## Agachado (sigilo): más lento y silencioso.
+@export var crouch_speed: float = 1.8
 @export var ground_acceleration: float = 45.0
 @export var ground_deceleration: float = 60.0
 @export var air_acceleration: float = 12.0
@@ -106,6 +108,8 @@ var dash_direction: Vector3 = Vector3.ZERO
 var can_stomp: bool = true
 ## Último enemigo con el que hubo contacto (para mostrar sus barras).
 var engaged_enemy: Enemy
+## Agachado (L3 / C): cuesta más verte y casi no haces ruido.
+var crouching: bool = false
 
 var _last_block_press: float = -10.0
 var _spam_count: int = 0
@@ -142,6 +146,7 @@ func _physics_process(delta: float) -> void:
 		tools.cycle(-1)
 	if Input.is_action_just_pressed("art_next"):
 		arts.cycle()
+	_update_crouch()
 
 	_update_lock_on()
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
@@ -157,6 +162,37 @@ func _physics_process(delta: float) -> void:
 	DebugOverlay.watch("Estado", state_machine.current.name)
 	DebugOverlay.watch("Velocidad", "%.1f m/s" % Vector2(velocity.x, velocity.z).length())
 	DebugOverlay.watch("Objetivo", lock_target.display_name if lock_target else "—")
+	DebugOverlay.watch("Ruido", "%.1f m%s" % [noise_radius(), " (agachado)" if crouching else ""])
+
+
+## Agacharse se activa y desactiva con el botón (como en Sekiro). Se levanta al hacer cualquier otra
+## cosa que no sea caminar (correr, saltar, atacar, cubrirse…), salvo el golpe mortal por sorpresa.
+func _update_crouch() -> void:
+	var state: StringName = state_machine.current.name
+	if Input.is_action_just_pressed("crouch") and state == &"Ground":
+		crouching = not crouching
+	elif state != &"Ground" and state != &"Deathblow":
+		crouching = false
+	body.set_crouching(crouching)
+
+
+## Distancia (m) a la que los enemigos desprevenidos te oyen ahora. Quieto o agachado, casi nada.
+func noise_radius() -> float:
+	var speed: float = Vector2(velocity.x, velocity.z).length()
+	match state_machine.current.name:
+		&"Ground":
+			if speed < 0.3:
+				return 0.0
+			if crouching:
+				return 1.0
+			return 6.0 if speed > 3.5 else 3.0
+		&"Sprint":
+			return 10.0
+		&"Attack", &"Tool":
+			return 6.0
+		&"Dash", &"Air":
+			return 5.0
+	return 0.0
 
 
 # --- Movimiento -------------------------------------------------------------
@@ -333,7 +369,8 @@ func try_deathblow() -> bool:
 	var best_dist: float = 3.5
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
-		if enemy == null or not enemy.can_be_deathblowed():
+		# Expuesto (postura rota) o desprevenido por la espalda (golpe mortal por sorpresa).
+		if enemy == null or not (enemy.can_be_deathblowed() or enemy.can_be_stealth_killed(self)):
 			continue
 		var dist: float = global_position.distance_to(enemy.global_position)
 		if enemy == lock_target:

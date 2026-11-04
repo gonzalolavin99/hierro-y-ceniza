@@ -17,7 +17,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
-| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Siguen: patrulla/sigilo, 3 tipos de enemigo |
+| 5 · IA inteligente y enemigos | 🔨 Paso 1 (IA que lee al jugador) ✅ OK del jugador. Paso 2 (pelea en grupo) ✅ OK del jugador. Paso 3 (patrulla y sigilo) ✅ OK del jugador (faltan las animaciones de caminar agachado). Siguen: patrulla/sigilo, 3 tipos de enemigo |
 | 6–9 | Pendientes (loop souls, historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -50,6 +50,7 @@ cambiar de objetivo con el stick derecho.
 | A en el aire junto al enemigo | Pisotón (daña su postura; interrumpe el barrido) |
 | B hacia el enemigo ante una estocada | Pisar la hoja (mucha postura, queda expuesto) |
 | LT / Q | Arma secundaria equipada |
+| L3 / C | Agacharse (alterna): sigilo; por la espalda sin que te vean, ataque = golpe mortal |
 | Cruceta ← → / 1, 2 | Cambiar de arma secundaria |
 
 - **Ataques peligrosos** (aviso rojo: destello rojo en el filo, "!" rojo sobre la cabeza y sonido grave; no se
@@ -77,6 +78,17 @@ cambiar de objetivo con el stick derecho.
   esperan a 3,6 m con la guardia alta, se separan ≥75° entre ellos y rodean hacia tu espalda. Los tajos no
   hieren a compañeros. Si muere el fijado, se fija el siguiente. Arena de grupo en el escenario (x=32, 3 soldados).
   Con un solo enemigo nada cambia. Se prueba en `group_test`.
+- **Sigilo** (Enemy `starts_unaware`, `patrol_points`; estados `patrol.gd` y `suspicious.gd`): sospecha 0→1 por
+  vista (cono 120°, 15 m, rayo de ojos a pecho: agachado se esconde tras muros bajos; agachado cuesta más verte)
+  y oído (`Player.noise_radius()`: quieto 0, agachado 1 m, andar 3, correr 6, esprintar 10, atacar 6). Solo el
+  oído no pasa de 0,8 (hace falta verte, salvo a <2 m). 0,35 = "?" y va a mirar; 1 = "!" y alerta a los que
+  estén a 12 m. Si te pierde 4 s, busca y vuelve a la ronda. Desprevenido no se cubre. Golpe mortal por sorpresa
+  con el jugador a su espalda o costado (≤2,4 m). Agacharse: C / L3 (alterna). El soldado de práctica y los del
+  grupo siguen empezando alerta. Patio de sigilo en x=-34 con 2 guardias. Se prueba en `stealth_test`;
+  capturas con `tests/stealth_shot.tscn`.
+- **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
+  Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
+  caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
 - **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
   normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
@@ -120,7 +132,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |

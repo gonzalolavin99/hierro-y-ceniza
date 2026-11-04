@@ -163,6 +163,8 @@ func _reset() -> void:
 	_player.health.heal(_player.health.max_health)
 	_player.posture.reset()
 	_enemy.posture.reset()
+	# Si venía persiguiendo de lejos, al recolocarlo podía atacar solo: vuelve a la guardia.
+	_enemy.state_machine.transition_to(&"Idle", {"wait": 100.0})
 	_warnings.clear()
 	await _wait(0.3)
 
