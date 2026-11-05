@@ -78,6 +78,7 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_story_prologue.wav` | story_prologue | This is the story of a warrior who saved a kingdom. Or so the songs say. | Subtítulo: Esta es la historia de un guerrero que salvó un reino. O eso dicen las canciones. |
 | `narrator_story_camp_first.wav` | story_camp_first | The warrior rested by the fire. He never slept well. Not even then. | Subtítulo: El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces. |
 | `narrator_story_prologue_order.wav` | story_prologue_order | It began with an order, in a hall of cold stone. | Subtítulo: Todo empezó con una orden, en una sala de piedra fría. |
+| `narrator_story_prologue_summon.wav` | story_prologue_summon | They summoned the warrior at dawn. He had never stood so close to the Regent. | Subtítulo: Llamaron al guerrero al amanecer. Nunca había estado tan cerca del Regente. |
 | `narrator_story_prologue_ribbon.wav` | story_prologue_ribbon | The warrior did not ask a single question. He only looked at the ribbon on his wrist. | Subtítulo: El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca. |
 | `narrator_story_prologue_end.wav` | story_prologue_end | His sister's ribbon. And at dawn, he set out for the Iron Pass. | Subtítulo: La cinta de su hermana. Y al amanecer partió hacia el Paso de Hierro. |
 | `narrator_story_pass_village.wav` | story_pass_village | The village at the Iron Pass. The rebels had burned it. Everyone knew that. | Subtítulo: La aldea del Paso de Hierro. Los rebeldes la habían quemado. Todos lo sabían. |
@@ -105,4 +106,35 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
 |---|---|---|---|
 | `regent_prologue_order.wav` | prologue_order | Five names. Five cordons. When they fall, the fever ends. | Subtítulo: Cinco nombres. Cinco cordones. Cuando caigan, la fiebre se acaba. |
+| `regent_prologue_rebels.wav` | prologue_rebels | Traitors. They foul the wells and burn every village that will not feed them. | Subtítulo: Traidores. Ensucian los pozos y queman cada aldea que no los alimenta. |
+| `regent_prologue_names.wav` | prologue_names | Here are their names. Bring me their banners, one by one. | Subtítulo: Aquí tienes sus nombres. Tráeme sus estandartes, uno por uno. |
 | `regent_prologue_sister.wav` | prologue_sister | The fever took your sister, Kael. The rebels brought it to us. Make them pay. | Subtítulo: La fiebre se llevó a tu hermana, Kael. Nos la trajeron los rebeldes. Haz que paguen. |
+
+## Kael (`kael_scene`)
+
+*Voz:* Kael en las escenas (la misma voz que en combate, sin eco): sereno, obediente. Kokoro: `bm_daniel`.
+
+| Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
+|---|---|---|---|
+| `kael_scene_prologue_who.wav` | prologue_who | Who are they, my lord? | Subtítulo: ¿Quiénes son, mi señor? |
+| `kael_scene_prologue_answer.wav` | prologue_answer | It will be done. | Subtítulo: Así se hará. |
+
+## Varga (`varga`)
+
+*Voz:* La Capitana Varga: mujer de unos 40 años, duelista y soldado veterana. Voz firme y cortante, cansada de la guerra; nunca grita salvo en los ataques peligrosos. Kokoro: `bf_isabella`, algo más grave.
+
+| Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
+|---|---|---|---|
+| `varga_spot_1.wav` | spot | So the Regent finally sent his hound. Draw, then. | Subtítulo: Así que el Regente por fin envió a su perro. Desenvaina, entonces. |
+| `varga_spot_2.wav` | spot | You're far from the capital, soldier. You should have stayed there. | Subtítulo: Estás lejos de la capital, soldado. Deberías haberte quedado allí. |
+| `varga_attack_1.wav` | attack | Hah! | short sharp exhale, adult woman, swift sword strike |
+| `varga_attack_2.wav` | attack | Hup! | quick clipped grunt, adult woman, fencing lunge |
+| `varga_attack_3.wav` | attack | Hyah! | light fierce cry, adult woman, fast slash |
+| `varga_danger_1.wav` | danger | Haaah! | fierce battle shout, adult woman, before a powerful lunge |
+| `varga_hurt_1.wav` | hurt | Ugh! | pained grunt, adult woman, struck by a blade |
+| `varga_hurt_2.wav` | hurt | Ah! | sharp gasp of pain, adult woman |
+| `varga_broken_1.wav` | broken | Hah... hah... | out of breath, adult woman losing her balance |
+| `varga_phase_1.wav` | phase | Not yet. Look at the smoke, soldier. Ask yourself what we are burning. | Subtítulo: Todavía no. Mira el humo, soldado. Pregúntate qué estamos quemando. |
+| `varga_death_1.wav` | death | He told you we burned villages? Look at the smoke... look at what we burn. | Subtítulo: ¿Te dijo que quemábamos aldeas? Mira el humo… mira qué quemamos. |
+| `varga_victory_1.wav` | victory | Stay down. You don't know what you're doing. | Subtítulo: No te levantes. No sabes lo que haces. |
+| `varga_victory_2.wav` | victory | Go home. Tell him the Pass is closed. | Subtítulo: Vuelve a casa. Dile que el Paso está cerrado. |

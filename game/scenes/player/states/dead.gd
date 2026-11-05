@@ -23,7 +23,7 @@ func enter(_msg: Dictionary) -> void:
 	# El enemigo celebra y, al poco, el narrador (Kael anciano) se corrige: "No… no fue así."
 	var winner: Enemy = player.engaged_enemy
 	if winner and not winner.is_dead():
-		get_tree().create_timer(0.7, false).timeout.connect(Voice.say.bind(&"soldier", &"victory", winner.lock_point()))
+		get_tree().create_timer(0.7, false).timeout.connect(Voice.say.bind(winner.voice, &"victory", winner.lock_point()))
 	get_tree().create_timer(2.3, false).timeout.connect(Voice.say.bind(&"narrator", Story.death_event(), Vector3.ZERO))
 
 

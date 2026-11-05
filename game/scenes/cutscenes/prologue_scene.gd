@@ -1,7 +1,8 @@
 class_name PrologueScene
 extends CanvasLayer
-## Escena del prólogo (guion, docs/11_GUION.md): la fogata del anciano → la sala del Regente, que da la orden
-## → primer plano de la cinta de Lira → título → empieza el juego.
+## Escena del prólogo (guion, docs/11_GUION.md): la fogata del anciano → Kael entra en la sala del Regente,
+## se arrodilla, recibe la orden y el pergamino con los nombres (primeros planos al hablar) → primer plano
+## de la cinta de Lira → título → empieza el juego (~70 s).
 ## Tiene su propio mundo 3D (SubViewport con own_world_3d), así no toca el nivel. El juego queda en pausa
 ## mientras dura. Mantener A / Start / Esc 1 s la salta. Al terminar emite `finished`.
 ## Uso: Story.play_prologue() (al empezar una partida nueva).
@@ -14,6 +15,8 @@ const MANNEQUIN: PackedScene = preload("res://scenes/characters/mannequin.tscn")
 ## Dónde está cada decorado dentro del mundo de la escena.
 const FIRE_AT: Vector3 = Vector3.ZERO
 const HALL_AT: Vector3 = Vector3(200.0, 0.0, 0.0)
+## Dónde se detiene Kael ante el estrado (z dentro de la sala).
+const KAEL_STOP_Z: float = -2.2
 
 var _viewport: SubViewport
 var _world: Node3D
@@ -29,6 +32,15 @@ var _hold: float = 0.0
 var _done: bool = false
 var _time: float = 0.0
 var _overlay_was_visible: bool = false
+var _regent: Mannequin
+var _scroll: MeshInstance3D
+var _sub_tween: Tween
+## Personajes caminando ahora → su velocidad (para su animación de pasos).
+var _walkers: Dictionary = {}
+var _follow_target: Node3D
+var _follow_offset: Vector3
+var _follow_look: Vector3
+var _follow_smooth: float = 4.0
 ## Plano actual (para pruebas): fire, hall, regent, ribbon, title.
 var shot: StringName = &""
 
@@ -55,6 +67,12 @@ func _process(delta: float) -> void:
 	_time += delta
 	if _fire_light:
 		_fire_light.light_energy = 2.6 + sin(_time * 13.0) * 0.25 + sin(_time * 7.3) * 0.2
+	for body: Mannequin in _walkers:
+		body.update_locomotion(_walkers[body], -body.global_basis.z)
+	if _follow_target:
+		var want: Vector3 = _follow_target.global_position + _follow_offset
+		_camera.global_position = _camera.global_position.lerp(want, 1.0 - exp(-_follow_smooth * delta))
+		_camera.look_at(_follow_target.global_position + _follow_look)
 	if _done:
 		return
 	if Input.is_action_pressed("ui_accept") or Input.is_action_pressed("pause") or Input.is_action_pressed("jump"):
@@ -81,22 +99,53 @@ func _run() -> void:
 		return
 	if not await _line(&"narrator", &"story_prologue_order"):
 		return
-	# 2. La sala del Regente.
+	# 2. La sala: Kael entra caminando por la alfombra hasta el estrado (cámara de lado, siguiéndolo).
 	await _fade(1.0, 0.7)
 	if _done:
 		return
 	shot = &"hall"
-	_place_camera(HALL_AT + Vector3(1.6, 1.7, 9.5), HALL_AT + Vector3(0.0, 1.6, -4.0))
-	_push_camera(HALL_AT + Vector3(0.9, 1.6, 6.5), 6.0)
+	_follow(_kael, Vector3(2.6, 1.1, 1.2), Vector3(0.0, 1.3, -1.5))
+	var walk_time: float = _walk(_kael, HALL_AT + Vector3(0.0, 0.0, KAEL_STOP_Z), 1.25)
 	await _fade(0.0, 0.9)
+	Voice.say(&"narrator", &"story_prologue_summon")
+	await _wait(maxf(walk_time, Voice.last_seconds + 0.4))
+	if _done:
+		return
+	_kael.play_action(&"kneel", 0.0, 1.0, 0.35)
+	# 3. Plano abierto desde detrás de Kael: la orden.
+	_follow(null)
+	_place_camera(HALL_AT + Vector3(1.1, 1.4, KAEL_STOP_Z + 2.6), HALL_AT + Vector3(0.0, 1.6, -6.0))
+	_push_camera(HALL_AT + Vector3(0.8, 1.45, KAEL_STOP_Z + 1.9), 6.0)
+	await _wait(0.8)
 	if not await _line(&"regent", &"prologue_order"):
 		return
+	# 4. Primeros planos: Kael pregunta; el Regente baja del estrado mientras contesta.
+	shot = &"kael"
+	_close_up(_kael, 1.05, 1.15)
+	if not await _line(&"kael_scene", &"prologue_who"):
+		return
 	shot = &"regent"
-	_place_camera(HALL_AT + Vector3(-1.2, 0.9, 1.4), HALL_AT + Vector3(0.0, 2.3, -4.0))
-	_push_camera(HALL_AT + Vector3(-0.8, 1.0, 0.4), 6.0)
+	_walk(_regent, HALL_AT + Vector3(0.0, 0.0, -4.0), 0.9)
+	_follow(_regent, Vector3(-2.4, 0.3, 1.6), Vector3(0.0, 1.5, 0.0), 2.5)
+	if not await _line(&"regent", &"prologue_rebels"):
+		return
+	_follow(null)
+	_close_up(_regent, 1.6, 1.3)
 	if not await _line(&"regent", &"prologue_sister"):
 		return
-	# 3. La cinta en la muñeca de Kael.
+	# 5. Los nombres: el Regente le tiende el pergamino; Kael se levanta y lo toma.
+	_attach_scroll(_regent, "YBot/Skeleton3D/RightHand")
+	_kael.stop_action(0.5)
+	_place_camera(HALL_AT + Vector3(2.3, 1.5, -2.9), HALL_AT + Vector3(0.0, 1.3, -3.2))
+	_push_camera(HALL_AT + Vector3(1.9, 1.45, -3.0), 6.0)
+	if not await _line(&"regent", &"prologue_names"):
+		return
+	_attach_scroll(_kael, "YBot/Skeleton3D/LeftWrist")
+	shot = &"kael"
+	_close_up(_kael, 1.6, 1.45)
+	if not await _line(&"kael_scene", &"prologue_answer"):
+		return
+	# 6. La cinta en la muñeca de Kael.
 	shot = &"ribbon"
 	var wrist: Vector3 = _wrist_position()
 	_place_camera(wrist + Vector3(0.9, 0.4, 0.75), wrist)
@@ -105,7 +154,7 @@ func _run() -> void:
 		return
 	if not await _line(&"narrator", &"story_prologue_end"):
 		return
-	# 4. Título.
+	# 7. Título.
 	await _fade(1.0, 1.2)
 	if _done:
 		return
@@ -116,6 +165,71 @@ func _run() -> void:
 	tween.tween_property(_title, "modulate:a", 0.0, 1.2)
 	await tween.finished
 	_finish()
+
+
+## Hace caminar a `body` hasta `to` a `speed` m/s, mirando hacia donde va (con su paso de caminar).
+## Devuelve cuánto tarda.
+func _walk(body: Mannequin, to: Vector3, speed: float) -> float:
+	var from: Vector3 = body.global_position
+	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
+	var seconds: float = maxf(flat.length() / speed, 0.1)
+	if flat.length() > 0.01:
+		body.rotation.y = atan2(-flat.x, -flat.z)
+	_walkers[body] = flat / seconds
+	var tween := create_tween()
+	tween.tween_property(body, "global_position", to, seconds)
+	tween.tween_callback(_stop_walking.bind(body))
+	return seconds
+
+
+func _stop_walking(body: Mannequin) -> void:
+	_walkers.erase(body)
+	body.update_locomotion(Vector3.ZERO, -body.global_basis.z)
+
+
+## La cámara sigue a `target` desde `offset` (en el mundo), mirando a su `look` (relativo a él).
+## Con `null`, deja de seguir.
+func _follow(target: Node3D, offset: Vector3 = Vector3.ZERO, look: Vector3 = Vector3.ZERO, smooth: float = 4.0) -> void:
+	if _cam_tween:
+		_cam_tween.kill()
+	_follow_target = target
+	_follow_offset = offset
+	_follow_look = look
+	_follow_smooth = smooth
+	if target:
+		_camera.global_position = target.global_position + offset
+		_camera.look_at(target.global_position + look)
+
+
+## Primer plano de la cara de `body` (`height`: altura de la cabeza), desde delante y algo de lado.
+func _close_up(body: Mannequin, height: float, distance: float) -> void:
+	var head: Vector3 = body.global_position + Vector3.UP * height
+	var front: Vector3 = -body.global_basis.z
+	var side: Vector3 = front.cross(Vector3.UP)
+	_place_camera(head + front * distance + side * distance * 0.35 + Vector3.UP * 0.05, head)
+	_push_camera(head + front * distance * 0.8 + side * distance * 0.3 + Vector3.UP * 0.05, 6.0, head)
+
+
+## El pergamino con los cinco nombres, en la mano (hueso) indicada de `body`.
+func _attach_scroll(body: Mannequin, hand_path: String) -> void:
+	var hand: Node3D = body.get_node_or_null(hand_path)
+	if hand == null:
+		return
+	if _scroll == null:
+		_scroll = MeshInstance3D.new()
+		var mesh := CylinderMesh.new()
+		mesh.top_radius = 0.025
+		mesh.bottom_radius = 0.025
+		mesh.height = 0.32
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.86, 0.8, 0.64)
+		mesh.material = mat
+		_scroll.mesh = mesh
+	if _scroll.get_parent():
+		_scroll.get_parent().remove_child(_scroll)
+	hand.add_child(_scroll)
+	_scroll.position = Vector3(0.0, 0.08, 0.03)
+	_scroll.rotation = Vector3(0.0, 0.0, PI * 0.5)
 
 
 ## Dice una línea y espera a que termine (más un respiro). Devuelve false si se saltó la escena.
@@ -185,9 +299,12 @@ func _on_subtitle(text: String, speaker_name: String, seconds: float) -> void:
 		return
 	_subtitle.text = "%s:  %s" % [speaker_name, text]
 	_subtitle.modulate.a = 1.0
-	var tween := create_tween()
-	tween.tween_interval(seconds)
-	tween.tween_property(_subtitle, "modulate:a", 0.0, 0.4)
+	# Un solo desvanecido a la vez: si no, el de la frase anterior borraba la nueva a medias.
+	if _sub_tween:
+		_sub_tween.kill()
+	_sub_tween = create_tween()
+	_sub_tween.tween_interval(seconds)
+	_sub_tween.tween_property(_subtitle, "modulate:a", 0.0, 0.4)
 
 
 # --- Construcción ----------------------------------------------------------------------
@@ -342,12 +459,12 @@ func _build_hall_set() -> void:
 	torch.position = HALL_AT + Vector3(0.0, 3.0, -7.5)
 	_world.add_child(torch)
 	# El Regente en el estrado, dos guardias con lanza y Kael arrodillado ante él.
-	var regent := _person(HALL_AT + Vector3(0.0, 0.5, -6.0), HALL_AT + Vector3(0.0, 0.5, 2.0), Color(0.16, 0.12, 0.2), 1.0, false)
-	regent.name = "Regent"
+	_regent = _person(HALL_AT + Vector3(0.0, 0.5, -6.0), HALL_AT + Vector3(0.0, 0.5, 2.0), Color(0.16, 0.12, 0.2), 1.0, false)
+	_regent.name = "Regent"
 	for x in [-2.0, 2.0]:
 		var guard := _person(HALL_AT + Vector3(x, 0.5, -6.6), HALL_AT + Vector3(x, 0.5, 2.0), Color(0.3, 0.1, 0.1), 1.0, false, Mannequin.Weapon.SPEAR)
 		guard.name = "Guard"
-	_kael = _person(HALL_AT + Vector3(0.0, 0.0, -2.2), HALL_AT + Vector3(0.0, 0.0, -6.0), KAEL_COLOR, 1.0, true, Mannequin.Weapon.SWORD, true)
+	_kael = _person(HALL_AT + Vector3(0.0, 0.0, 7.0), HALL_AT + Vector3(0.0, 0.0, -6.0), KAEL_COLOR, 1.0, false, Mannequin.Weapon.SWORD, true)
 	_kael.name = "Kael"
 
 

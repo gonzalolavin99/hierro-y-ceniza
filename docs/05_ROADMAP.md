@@ -151,6 +151,9 @@ de caminar agachado (Mixamo, las descarga el jugador).
       mantener A la salta): la fogata del anciano con el niño → la sala del Regente, que da la orden ("Cinco
       nombres. Cinco cordones…") → primer plano de la cinta de Lira → título → el patio. Voz del Regente
       nueva (Kokoro `bm_george`). Kael lleva ahora la cinta azul en la muñeca también al jugar.
+      Ampliada tras la prueba (~70 s): Kael entra caminando y se arrodilla, pregunta "¿Quiénes son?", el
+      Regente baja del estrado y le da un pergamino con los nombres, primeros planos al hablar. Arreglados
+      los subtítulos que desaparecían a mitad de frase.
 
 **🧪 PRUEBA:** leer el guion y escuchar la primera narración. ¿Engancha?
 
@@ -160,9 +163,14 @@ de caminar agachado (Mixamo, las descarga el jugador).
       x = 84, con pasillo, niebla baja, braseros y "Campamento de la fortaleza" a la entrada). Al entrar, el
       **rastrillo** baja detrás de Kael y aparece la **barra de jefa** arriba (nombre, vida, postura y un punto
       rojo por golpe mortal). **2 golpes mortales**: el primero la tumba y se rehace con todo (fase 2). Si Kael
-      muere, el rastrillo sube y todo vuelve a empezar; vencida, no vuelve (se guarda). De momento pelea con
-      ataques de soldado más rápidos y fuertes; faltan su repertorio propio (paso 2), la fase 2 distinta
-      (paso 3) y música y voz (paso 4).
+      muere, el rastrillo sube y todo vuelve a empezar; vencida, no vuelve (se guarda).
+      Pasos 2 y 3 hechos y probados (OK del jugador), tras pedir el jugador más dificultad y movimiento
+      (inspiración: duelista acrobática al estilo de la Dama Mariposa de Sekiro, sin espíritus ni cuerdas):
+      **repertorio propio** (combo de cuatro con cambio de ritmo, torbellino, salto desde lejos con tajo al
+      caer, salto atrás lanzando 3 cuchillos, cuchillos a distancia; esquiva el 50 % y contraataca con
+      cuchillos o salto) y **fase 2** (más rápida, +daño, abanico de 3 cuchillos, combo largo de cinco).
+      **Voz propia** (Kokoro `bf_isabella`): frases al verte, al cambiar de fase, al vencerte y al caer.
+      Falta: música del duelo (paso 4).
 
 **🧪 PRUEBA:** ¿lo puedes vencer en 5–15 intentos aprendiendo patrones?
 

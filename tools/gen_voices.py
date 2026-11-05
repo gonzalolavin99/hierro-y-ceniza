@@ -26,6 +26,8 @@ LINES = os.path.join(ROOT, "tools", "voice_lines.json")
 SPEAKERS = {
     "kael": {"voice": "bm_daniel", "lang": "en-gb", "speed": 1.0, "pitch": 0.97, "grit": 0.0, "reverb": 0.0},
     "soldier": {"voice": "am_onyx", "lang": "en-us", "speed": 1.0, "pitch": 1.0, "grit": 0.35, "reverb": 0.0},
+    "kael_scene": {"voice": "bm_daniel", "lang": "en-gb", "speed": 0.95, "pitch": 0.97, "grit": 0.0, "reverb": 0.12},
+    "varga": {"voice": "bf_isabella", "lang": "en-gb", "speed": 1.0, "pitch": 0.95, "grit": 0.12, "reverb": 0.0},
     "regent": {"voice": "bm_george", "lang": "en-gb", "speed": 0.9, "pitch": 0.95, "grit": 0.0, "reverb": 0.3},
     "narrator": {"voice": "bm_lewis", "lang": "en-gb", "speed": 0.82, "pitch": 0.93, "grit": 0.1, "reverb": 0.22},
 }

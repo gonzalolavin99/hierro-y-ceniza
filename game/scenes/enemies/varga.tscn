@@ -6,16 +6,21 @@
 display_name = "Capitana Varga"
 boss = true
 deathblows = 2
+voice = &"varga"
 xp_reward = 600
-walk_speed = 3.6
-turn_speed = 10.0
+walk_speed = 4.2
+turn_speed = 12.0
 aggro_range = 0.0
 blocks_before_counter = 2
-moveset = Array[StringName]([&"double", &"quick", &"thrust_combo", &"flurry", &"double", &"slash_thrust", &"quick"])
+moveset = Array[StringName]([&"varga_combo", &"varga_spin", &"varga_combo", &"quick", &"varga_leap_combo", &"double"])
 danger_moveset = Array[StringName]([&"thrust", &"sweep", &"slash_thrust"])
-danger_ratio = 0.3
-idle_wait = Vector2(0.2, 0.6)
-evade_chance = 0.35
+danger_ratio = 0.28
+idle_wait = Vector2(0.15, 0.45)
+evade_chance = 0.5
+evade_counters = Array[StringName]([&"varga_knives", &"varga_leap", &"lunge"])
+counter_pattern = &"varga_spin"
+ranged_patterns = Array[StringName]([&"varga_knives_far", &"varga_leap"])
+ranged_cooldown = 3.0
 damage_scale = 1.3
 
 [node name="Mannequin" parent="Model"]

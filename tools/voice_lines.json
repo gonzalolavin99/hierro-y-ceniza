@@ -79,6 +79,20 @@
       "text": "Aaagh... ahh..."
     }
   ],
+  "kael_scene": [
+    {
+      "event": "prologue_who",
+      "id": "kael_scene_prologue_who",
+      "phrase": true,
+      "text": "Who are they, my lord?"
+    },
+    {
+      "event": "prologue_answer",
+      "id": "kael_scene_prologue_answer",
+      "phrase": true,
+      "text": "It will be done."
+    }
+  ],
   "narrator": [
     {
       "event": "player_death",
@@ -151,6 +165,12 @@
       "id": "narrator_story_prologue_order",
       "phrase": true,
       "text": "It began with an order, in a hall of cold stone."
+    },
+    {
+      "event": "story_prologue_summon",
+      "id": "narrator_story_prologue_summon",
+      "phrase": true,
+      "text": "They summoned the warrior at dawn. He had never stood so close to the Regent."
     },
     {
       "event": "story_prologue_ribbon",
@@ -275,6 +295,18 @@
       "text": "Five names. Five cordons. When they fall, the fever ends."
     },
     {
+      "event": "prologue_rebels",
+      "id": "regent_prologue_rebels",
+      "phrase": true,
+      "text": "Traitors. They foul the wells and burn every village that will not feed them."
+    },
+    {
+      "event": "prologue_names",
+      "id": "regent_prologue_names",
+      "phrase": true,
+      "text": "Here are their names. Bring me their banners, one by one."
+    },
+    {
       "event": "prologue_sister",
       "id": "regent_prologue_sister",
       "phrase": true,
@@ -359,6 +391,86 @@
       "id": "soldier_victory_2",
       "phrase": true,
       "text": "That's the end of you."
+    }
+  ],
+  "varga": [
+    {
+      "event": "spot",
+      "id": "varga_spot_1",
+      "phrase": true,
+      "text": "So the Regent finally sent his hound. Draw, then."
+    },
+    {
+      "event": "spot",
+      "id": "varga_spot_2",
+      "phrase": true,
+      "text": "You're far from the capital, soldier. You should have stayed there."
+    },
+    {
+      "event": "attack",
+      "id": "varga_attack_1",
+      "phrase": false,
+      "text": "Hah!"
+    },
+    {
+      "event": "attack",
+      "id": "varga_attack_2",
+      "phrase": false,
+      "text": "Hup!"
+    },
+    {
+      "event": "attack",
+      "id": "varga_attack_3",
+      "phrase": false,
+      "text": "Hyah!"
+    },
+    {
+      "event": "danger",
+      "id": "varga_danger_1",
+      "phrase": false,
+      "text": "Haaah!"
+    },
+    {
+      "event": "hurt",
+      "id": "varga_hurt_1",
+      "phrase": false,
+      "text": "Ugh!"
+    },
+    {
+      "event": "hurt",
+      "id": "varga_hurt_2",
+      "phrase": false,
+      "text": "Ah!"
+    },
+    {
+      "event": "broken",
+      "id": "varga_broken_1",
+      "phrase": false,
+      "text": "Hah... hah..."
+    },
+    {
+      "event": "phase",
+      "id": "varga_phase_1",
+      "phrase": true,
+      "text": "Not yet. Look at the smoke, soldier. Ask yourself what we are burning."
+    },
+    {
+      "event": "death",
+      "id": "varga_death_1",
+      "phrase": true,
+      "text": "He told you we burned villages? Look at the smoke... look at what we burn."
+    },
+    {
+      "event": "victory",
+      "id": "varga_victory_1",
+      "phrase": true,
+      "text": "Stay down. You don't know what you're doing."
+    },
+    {
+      "event": "victory",
+      "id": "varga_victory_2",
+      "phrase": true,
+      "text": "Go home. Tell him the Pass is closed."
     }
   ]
 }

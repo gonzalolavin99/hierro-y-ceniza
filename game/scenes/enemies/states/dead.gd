@@ -13,7 +13,7 @@ func enter(_msg: Dictionary) -> void:
 		player.gain_xp(enemy.xp_reward)
 	enemy.body.set_blocking(false)
 	enemy.body.play_action(&"death", 0.0, 1.1, 0.06)
-	Voice.say(&"soldier", &"death", enemy.lock_point())
+	Voice.say(enemy.voice, &"death", enemy.lock_point())
 
 
 func physics_update(delta: float) -> void:

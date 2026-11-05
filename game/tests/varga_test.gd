@@ -43,11 +43,16 @@ func _run() -> void:
 	_check("…y aparece su barra con 2 puntos", bar.is_showing() and bar.dots_left() == 2)
 	_check("El rastrillo cierra la salida", _blocked_exit())
 
+	_check("Habla con su propia voz", varga.voice == &"varga" and VoiceLines.LINES.has(&"varga"))
+	await _moves(varga)
+
 	# 2. Primer golpe mortal: se rehace (fase 2).
 	await _break_and_deathblow(varga)
 	_check("El primer golpe mortal no la vence (%s)" % varga.state_name(), not varga.is_dead() and varga.state_name() == &"Rally")
 	_check("…pasa a la fase 2 con 1 punto", varga.phase() == 2 and bar.dots_left() == 1)
 	_check("…con la vida y la postura llenas", varga.health.ratio() == 1.0 and varga.posture.current == 0.0)
+	_check("En la fase 2 cambia: más rápida, abanico de cuchillos y combo largo (%s)" % str(varga.moveset),
+		&"varga_fan" in varga.ranged_patterns and &"varga_combo_long" in varga.moveset and varga.walk_speed > 4.5)
 	await _wait(2.8)
 	_check("Se levanta y sigue peleando (%s)" % varga.state_name(), varga.state_name() != &"Rally" and not varga.is_dead())
 
@@ -57,6 +62,7 @@ func _run() -> void:
 	_check("Al morir Kael, el rastrillo sube", not _arena.gate_closed() and not _arena.is_active())
 	_check("Varga vuelve a su puesto, entera (2 puntos)", varga.deathblows_left == 2 and not varga.has_target())
 	_check("La barra se oculta", not bar.is_showing())
+	_check("Vuelve a la fase 1 (sin el abanico)", not &"varga_fan" in varga.ranged_patterns and varga.walk_speed < 4.5)
 
 	# 4. Revancha: dos golpes mortales la vencen.
 	_teleport(_arena.global_position + Vector3(-11.0, 0.0, 0.0))
@@ -74,6 +80,67 @@ func _run() -> void:
 	Camps.reset_world()
 	await _wait(0.5)
 	_check("Descansar no la devuelve", varga.is_dead())
+
+
+## Su repertorio propio: cada ataque termina bien; el salto acorta la distancia; los cuchillos hieren y se
+## pueden bloquear.
+func _moves(varga: Enemy) -> void:
+	var names: Array[StringName] = []
+	for key in EnemyAttackState.PATTERNS:
+		if String(key).begins_with("varga_"):
+			names.append(key)
+	_check("Tiene su repertorio propio (%d ataques)" % names.size(), names.size() >= 7)
+	for pattern in names:
+		await _face_off(varga, 3.0)
+		varga.state_machine.transition_to(&"Attack", {"pattern": pattern})
+		var ended: bool = false
+		for i in 60:
+			await _wait(0.1)
+			if varga.state_name() != &"Attack":
+				ended = true
+				break
+		_check("%s termina (%s)" % [pattern, varga.state_name()], ended and varga.is_on_floor())
+
+	# Salto: desde lejos cae junto a Kael.
+	await _face_off(varga, 8.0)
+	varga.state_machine.transition_to(&"Attack", {"pattern": &"varga_leap"})
+	await _wait(0.9)
+	_check("El salto la deja junto a Kael (%.1f m)" % varga.distance_to_target(), varga.distance_to_target() < 3.0)
+
+	# Cuchillos: hieren a Kael quieto; con la guardia, se bloquean.
+	await _face_off(varga, 6.0)
+	_player.health.heal(999.0)
+	var before: float = _player.health.current
+	varga.state_machine.transition_to(&"Attack", {"pattern": &"varga_knives_far"})
+	await _wait(1.4)
+	_check("Los cuchillos hieren (vida %.0f → %.0f)" % [before, _player.health.current], _player.health.current < before)
+	await _face_off(varga, 6.0)
+	_player.health.heal(999.0)
+	before = _player.health.current
+	_player.state_machine.transition_to(&"Block")
+	Input.action_press("block")
+	varga.state_machine.transition_to(&"Attack", {"pattern": &"varga_knives_far"})
+	await _wait(1.4)
+	Input.action_release("block")
+	_check("Con la guardia se bloquean (vida %.0f)" % _player.health.current, is_equal_approx(_player.health.current, before))
+	await _face_off(varga, 4.0)
+
+
+## Kael y Varga frente a frente a `distance` metros, en el centro del patio, sin que ella ataque sola.
+func _face_off(varga: Enemy, distance: float) -> void:
+	varga.state_machine.transition_to(&"Idle", {"wait": 100.0})
+	await _wait(0.2)
+	var center: Vector3 = _arena.global_position
+	varga.global_position = center + Vector3(distance * 0.5, 0.0, 0.0)
+	varga.velocity = Vector3.ZERO
+	varga.model.rotation.y = 0.0
+	varga.rotation.y = PI * 0.5
+	varga.reset_physics_interpolation()
+	_teleport(center - Vector3(distance * 0.5, 0.0, 0.0))
+	_player.model.rotation.y = -PI * 0.5
+	_player.health.heal(999.0)
+	_player.posture.reset()
+	await _wait(0.3)
 
 
 ## ¿Hay algo sólido entre el patio y el pasillo de salida, a la altura del pecho?

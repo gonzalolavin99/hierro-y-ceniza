@@ -16,6 +16,18 @@ const WALL_HEIGHT: float = 6.0
 const GATE_WIDTH: float = 4.0
 const GATE_OPEN_Y: float = 4.6
 const DEFEATED_FLAG: StringName = &"boss_varga"
+## Fase 2 (tras el primer golpe mortal): más rápida, más agresiva, con el abanico de cuchillos y el combo
+## largo. Al reiniciar el duelo vuelve a la fase 1 (sus valores de la escena).
+const PHASE_2: Dictionary = {
+	"moveset": [&"varga_combo_long", &"varga_combo", &"varga_leap_combo", &"varga_spin", &"varga_fan"],
+	"ranged_patterns": [&"varga_fan", &"varga_knives", &"varga_leap_combo"],
+	"idle_wait": Vector2(0.08, 0.3),
+	"damage_scale": 1.45,
+	"walk_speed": 4.8,
+	"evade_chance": 0.6,
+	"danger_ratio": 0.33,
+	"ranged_cooldown": 2.2,
+}
 
 var varga: Enemy
 var _gate: AnimatableBody3D
@@ -23,6 +35,8 @@ var _bar: BossBar
 var _active: bool = false
 var _fog: Array[MeshInstance3D] = []
 var _time: float = 0.0
+## Valores de la fase 1 (los de la escena), para volver a ellos al reiniciar.
+var _phase_1: Dictionary = {}
 
 
 func _ready() -> void:
@@ -56,6 +70,9 @@ func _ready() -> void:
 		varga.rotation.y = PI * 0.5  # Mira hacia la entrada (−X).
 		add_child(varga)
 		varga.died.connect(_on_varga_died)
+		varga.phase_changed.connect(_on_phase_changed)
+		for key in PHASE_2:
+			_phase_1[key] = varga.get(key)
 
 
 func is_active() -> bool:
@@ -94,11 +111,35 @@ func reset_arena() -> void:
 	_move_gate(GATE_OPEN_Y, 0.8)
 	if varga and not varga.is_dead():
 		varga.aggro_range = 0.0
+		_apply_phase(_phase_1)
 
 
 func _on_trigger(body: Node3D) -> void:
 	if body is Player:
 		start_fight()
+
+
+func _on_phase_changed(phase: int) -> void:
+	if phase >= 2:
+		_apply_phase(PHASE_2)
+		Voice.say(varga.voice, &"phase", varga.lock_point())
+
+
+func _apply_phase(values: Dictionary) -> void:
+	for key in values:
+		var value: Variant = values[key]
+		if value is Array:
+			var typed: Array[StringName] = []
+			typed.assign(value)
+			value = typed
+		varga.set(key, value)
+	varga.posture.regen_rate = 34.0 if values == PHASE_2 else 26.0
+	varga.mind.configure(varga.moveset, varga.danger_moveset, varga.danger_ratio)
+
+
+## Fase en la que está el duelo (1 o 2).
+func phase() -> int:
+	return varga.phase() if varga else 0
 
 
 func _on_varga_died() -> void:

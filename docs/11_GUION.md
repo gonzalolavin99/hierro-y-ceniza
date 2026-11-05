@@ -224,3 +224,46 @@ El jugador dejó la historia en manos de Claude. Se fijan así (D18–D21 en `07
 4. **La fiebre se queda** como centro de la historia: es natural, explica el título y da sentido a
    cada jefe. Se trata con respeto y sin mostrar nada desagradable: enfermos en camas, telas grises
    y humo a lo lejos; nunca cuerpos ni detalles de la enfermedad.
+
+---
+
+## 12. Frank, el tití (compañero) — propuesta 🔶
+
+Pedido del jugador: un compañero al estilo de Pepe Grillo, alivio cómico, tierno, sabio y bromista,
+que da consejos. Decidido (D22): **Frank no habla**; chilla y hace gestos de mono, y los subtítulos dicen
+lo que Kael entiende (y el anciano, al contarlo, recuerda). Es un animal de verdad, nada sobrenatural, y
+**no es un enemigo** (la regla "solo enemigos humanos" se mantiene).
+
+### Quién es
+- **Un tití** (monito pequeño de cola larga) **con el pelo lleno de rulos**. Nació en la *colección de
+  animales exóticos del palacio del Regente*, traída por mercaderes de tierras lejanas.
+- **Su familia lo apartó por sus rulos**: era el único del grupo con el pelo así, y lo dejaban comer el
+  último y dormir lejos. Un día se escapó en un carro de suministros… que iba hacia el Paso de Hierro.
+- **Kael lo encuentra al principio** (prólogo jugable, camino al Paso): Frank está atrapado en una red de
+  cazadores furtivos. Kael lo suelta (o no: si pasa de largo, Frank lo sigue igual, ofendido). Desde ese
+  momento va en su hombro.
+- **Por qué importa**: Frank conoce a la gente por cómo trata a los que son distintos. Es la única voz que
+  le hace a Kael las preguntas que Kael no se hace. Cada vez que el guerrero obedece sin pensar, Frank se
+  tapa los ojos o le tira de la oreja. Es el **Pepe Grillo** de verdad: la conciencia de Kael.
+- **El giro tierno**: en la aldea en cuarentena de Varga, los niños enfermos adoran a Frank (y él a ellos:
+  nadie le dice nada de sus rulos). Es la primera vez que Kael ve a "los rebeldes" sonreír.
+
+### Qué hace en el juego
+1. **Consejos y bromas**: al morir mucho en un sitio, al curarse, al entrar en zonas, al ver algo raro.
+   Ej.: al vendarse con un enemigo cerca, Frank se tapa la cara; subtítulo: *"Kael creyó entender: «¿Ahora?
+   ¿En serio?»"*. Nunca da la respuesta exacta de un jefe: da pistas ("salta cuando barre").
+2. **Avisa de peligros**: chilla y señala cuando un enemigo escondido o un arquero te apunta (útil en el
+   sigilo).
+3. **Encuentra cosas**: señala objetos escondidos y caminos secretos (se sube a muros, baja escaleras de
+   cuerda, abre pestillos desde el otro lado: atajos).
+4. **Distrae**: con un botón, le lanza una fruta o un trapo a un enemigo para que mire hacia otro lado
+   (abre un golpe por la espalda). Recarga lenta.
+5. **Historia**: es quien encuentra (y roba) la **carta del Regente** en la oficina de Orme y el
+   **registro de la capital** (objetos del final bueno, §6). Si Kael lo trató bien, Frank se los trae.
+6. **En los finales**: en el final principal, Frank se va al ver a Kael con la medalla. En el final bueno,
+   el niño de la fogata tiene un tití viejo y canoso en el hombro… con rulos.
+
+### Tono
+Gracioso, nunca payaso. Sus chistes nacen de la situación (Kael serio, Frank no). En los momentos tristes
+(los lazaretos, la verdad sobre Lira) no hace bromas: se queda quieto y acurrucado. Eso es lo que lo hace
+querible.

@@ -12,6 +12,9 @@ const MASK: int = 1 | (1 << 3)
 
 var shooter: Node3D
 var velocity: Vector3
+## Daño y postura que hace (los cuchillos de Varga usan otros valores).
+var damage: float = DAMAGE
+var posture_damage: float = POSTURE
 var _age: float = 0.0
 
 
@@ -28,6 +31,11 @@ static func spawn(parent: Node, from: Vector3, target: Vector3, owner_node: Node
 
 func _ready() -> void:
 	add_to_group("enemy_projectiles")
+	_build()
+
+
+## Forma de la flecha (los cuchillos la cambian).
+func _build() -> void:
 	var wood := StandardMaterial3D.new()
 	wood.albedo_color = Color(0.42, 0.3, 0.18)
 	var shaft := MeshInstance3D.new()
@@ -66,7 +74,7 @@ func _physics_process(delta: float) -> void:
 		return
 	var hurtbox := hit["collider"] as Hurtbox
 	if hurtbox and is_instance_valid(shooter) and hurtbox.target != shooter:
-		var data := HitData.create(shooter, DAMAGE, POSTURE, 0.0)
+		var data := HitData.create(shooter, damage, posture_damage, 0.0)
 		data.ranged = true
 		var result: int = hurtbox.receive(data)
 		if result == HitData.Result.IGNORED:

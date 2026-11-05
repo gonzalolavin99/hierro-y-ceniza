@@ -52,6 +52,57 @@ const PATTERNS: Dictionary[StringName, Array] = {
 	&"lunge": [
 		{"windup": 0.5, "active": 0.14, "after": 0.7, "anim": &"slash_b", "from": 0.0, "impact": 0.33, "lunge": true},
 	],
+	# --- Capitana Varga (duelista acrobática) ---
+	# leap: salta hacia ti y cae con el tajo · hop: salto hacia atrás (sin golpe) · throw: lanza N cuchillos
+	# (en abanico) en vez de tajar · no_hit: tramo sin golpe.
+	# Combo de cuatro: tres tajos muy seguidos y un cuarto que se hace esperar y se lanza hacia ti.
+	&"varga_combo": [
+		{"windup": 0.3, "active": 0.12, "after": 0.08, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},
+		{"windup": 0.2, "active": 0.12, "after": 0.08, "anim": &"combo_one_hand", "from": 1.7, "impact": 1.95},
+		{"windup": 0.22, "active": 0.12, "after": 0.1, "anim": &"combo_one_hand", "from": 2.7, "impact": 2.98},
+		{"windup": 0.55, "active": 0.14, "after": 0.6, "anim": &"slash_b", "from": 0.0, "impact": 0.33, "lunge": true},
+	],
+	# Torbellino: giro completo con dos tajos.
+	&"varga_spin": [
+		{"windup": 0.34, "active": 0.12, "after": 0.05, "anim": &"spin", "from": 0.25, "impact": 0.52},
+		{"windup": 0.42, "active": 0.14, "after": 0.65, "anim": &"spin", "from": 0.6, "impact": 1.12},
+	],
+	# Salto desde lejos: vuela hacia ti y cae con un tajo vertical.
+	&"varga_leap": [
+		{"windup": 0.7, "active": 0.14, "after": 0.65, "anim": &"leap", "from": 0.3, "impact": 1.23, "leap": true},
+	],
+	# Salto y, al caer, dos tajos rápidos.
+	&"varga_leap_combo": [
+		{"windup": 0.7, "active": 0.14, "after": 0.08, "anim": &"leap", "from": 0.3, "impact": 1.23, "leap": true},
+		{"windup": 0.24, "active": 0.12, "after": 0.08, "anim": &"combo_one_hand", "from": 1.7, "impact": 1.95},
+		{"windup": 0.26, "active": 0.12, "after": 0.65, "anim": &"combo_one_hand", "from": 2.7, "impact": 2.98},
+	],
+	# Salta hacia atrás y lanza tres cuchillos seguidos (se desvían como un tajo).
+	&"varga_knives": [
+		{"windup": 0.42, "active": 0.02, "after": 0.05, "anim": &"dodge_back", "from": 0.15, "impact": 0.85, "hop": true, "no_hit": true},
+		{"windup": 0.3, "active": 0.04, "after": 0.08, "anim": &"slash_d", "from": 0.2, "impact": 0.47, "throw": 1},
+		{"windup": 0.2, "active": 0.04, "after": 0.08, "anim": &"slash_d", "from": 0.2, "impact": 0.47, "throw": 1},
+		{"windup": 0.24, "active": 0.04, "after": 0.6, "anim": &"slash_d", "from": 0.2, "impact": 0.47, "throw": 1},
+	],
+	# A distancia: dos cuchillos sin saltar.
+	&"varga_knives_far": [
+		{"windup": 0.36, "active": 0.04, "after": 0.1, "anim": &"slash_d", "from": 0.2, "impact": 0.47, "throw": 1},
+		{"windup": 0.24, "active": 0.04, "after": 0.55, "anim": &"slash_d", "from": 0.2, "impact": 0.47, "throw": 1},
+	],
+	# Fase 2: abanico de tres cuchillos a la vez (hay que desviar o rodar a un lado), y luego salta.
+	&"varga_fan": [
+		{"windup": 0.42, "active": 0.02, "after": 0.05, "anim": &"dodge_back", "from": 0.15, "impact": 0.85, "hop": true, "no_hit": true},
+		{"windup": 0.34, "active": 0.04, "after": 0.1, "anim": &"slash_d", "from": 0.2, "impact": 0.47, "throw": 3},
+		{"windup": 0.65, "active": 0.14, "after": 0.65, "anim": &"leap", "from": 0.3, "impact": 1.23, "leap": true},
+	],
+	# Fase 2: combo largo (cinco tajos y torbellino).
+	&"varga_combo_long": [
+		{"windup": 0.28, "active": 0.12, "after": 0.06, "anim": &"combo_one_hand", "from": 0.75, "impact": 1.00},
+		{"windup": 0.18, "active": 0.12, "after": 0.06, "anim": &"combo_one_hand", "from": 1.7, "impact": 1.95},
+		{"windup": 0.2, "active": 0.12, "after": 0.06, "anim": &"combo_one_hand", "from": 2.7, "impact": 2.98},
+		{"windup": 0.3, "active": 0.12, "after": 0.05, "anim": &"spin", "from": 0.25, "impact": 0.52},
+		{"windup": 0.4, "active": 0.14, "after": 0.65, "anim": &"spin", "from": 0.6, "impact": 1.12},
+	],
 	# --- Lancero (golpes con la lanza; se para más lejos, ver Enemy.strike_distance) ---
 	# Estocada larga y directa (normal: se desvía).
 	&"spear_thrust": [
@@ -107,6 +158,9 @@ var _held: bool
 var _hold_left: float
 var _forced_delay: float = -1.0
 var _forced_feint: bool = false
+## En el aire por un salto (leap/hop): la velocidad la manda el salto, no la animación.
+var _airborne: bool = false
+var _air_time: float = 0.0
 
 
 func enter(msg: Dictionary) -> void:
@@ -114,6 +168,7 @@ func enter(msg: Dictionary) -> void:
 	_forced_delay = msg.get("delay", -1.0)
 	_forced_feint = msg.get("feint", false)
 	_swings = PATTERNS[msg.get("pattern", &"single")]
+	_airborne = false
 	Squad.take_turn(enemy)
 	_index = 0
 	_set_phase(Phase.WINDUP)
@@ -131,11 +186,19 @@ func physics_update(delta: float) -> void:
 	_timer += delta
 
 	_update_spear_thrust(swing)
+	if _airborne:
+		_air_time += delta
+		if _air_time > 0.15 and enemy.is_on_floor():
+			_airborne = false
+			enemy.velocity.x = 0.0
+			enemy.velocity.z = 0.0
 	match _phase:
 		Phase.WINDUP:
 			# Sigue al jugador mientras se prepara; se lanza al final de la preparación.
 			enemy.face_target(delta, 1.5)
-			if swing.get("lunge", false) and _timer >= swing["windup"] * LUNGE_FROM:
+			if _airborne:
+				pass  # En pleno salto: sigue la trayectoria.
+			elif swing.get("lunge", false) and _timer >= swing["windup"] * LUNGE_FROM:
 				_lunge(swing["windup"] + _delay - _timer + swing["active"] * 0.5)
 			else:
 				enemy.apply_root_motion()
@@ -145,7 +208,9 @@ func physics_update(delta: float) -> void:
 			elif _timer >= swing["windup"] + _delay:
 				_set_phase(Phase.ACTIVE)
 		Phase.ACTIVE:
-			if swing.get("lunge", false):
+			if _airborne:
+				pass
+			elif swing.get("lunge", false):
 				_lunge(swing["active"] * 0.5 - _timer)
 			else:
 				enemy.apply_root_motion()
@@ -205,6 +270,35 @@ func _update_spear_thrust(swing: Dictionary) -> void:
 	enemy.body.set_spear_thrust(amount, enemy.get_facing())
 
 
+## Salto hacia el jugador: cae a distancia de golpe justo al llegar el impacto (`seconds`).
+func _leap_at_target(seconds: float) -> void:
+	var to: Vector3 = enemy.direction_to_target()
+	var dist: float = enemy.distance_to_target()
+	_jump(seconds, to * clampf((dist - 1.3) / maxf(seconds, 0.1), 0.0, 14.0))
+	Sfx.play(&"swing", enemy.lock_point(), -4.0)
+
+
+## Salto que dura `seconds` en el aire, con esa velocidad horizontal.
+func _jump(seconds: float, horizontal: Vector3) -> void:
+	enemy.velocity = Vector3(horizontal.x, enemy.gravity * seconds * 0.5, horizontal.z)
+	_airborne = true
+	_air_time = 0.0
+
+
+## Lanza `count` cuchillos al pecho del jugador (si son varios, en abanico).
+func _throw_knives(count: int) -> void:
+	if enemy.target == null:
+		return
+	var from: Vector3 = enemy.global_position + Vector3.UP * 1.4 + enemy.get_facing() * 0.5
+	var chest: Vector3 = enemy.target.global_position + Vector3.UP * 1.1
+	var spread: float = deg_to_rad(9.0)
+	for i in count:
+		var angle: float = (i - (count - 1) * 0.5) * spread
+		var aim: Vector3 = from + (chest - from).rotated(Vector3.UP, angle)
+		ThrowingKnife.throw(enemy.get_parent(), from, aim, enemy)
+	Sfx.play(&"swing", enemy.lock_point(), -1.0, 0.2)
+
+
 ## Embestida: avanza lo justo para llegar a distancia de golpe en `time_left` segundos.
 func _lunge(time_left: float) -> void:
 	var dist: float = enemy.distance_to_target()
@@ -261,8 +355,9 @@ func _set_phase(phase: Phase) -> void:
 			_holding = false
 			_held = false
 			var danger: bool = swing.get("danger", HitData.Kind.NORMAL) != HitData.Kind.NORMAL
-			# Los ataques peligrosos nunca se retrasan: su aviso rojo tiene que ser fiable.
-			if danger:
+			# Los ataques peligrosos nunca se retrasan: su aviso rojo tiene que ser fiable. Los saltos y
+			# lanzamientos tampoco (la trayectoria ya está calculada).
+			if danger or swing.has("leap") or swing.has("hop") or swing.has("throw"):
 				_delay = 0.0
 			elif _forced_delay >= 0.0:
 				_delay = _forced_delay
@@ -271,6 +366,10 @@ func _set_phase(phase: Phase) -> void:
 			_feint = _forced_feint if _forced_delay >= 0.0 else (_delay > 0.0 and enemy.mind.choose_feint())
 			enemy.body.set_blocking(false)
 			enemy.body.play_shaped(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
+			if swing.get("leap", false):
+				_leap_at_target(swing["windup"] + swing["active"] * 0.5)
+			elif swing.get("hop", false):
+				_jump(0.42, -enemy.get_facing() * 6.0)
 			var kind: HitData.Kind = swing.get("danger", HitData.Kind.NORMAL)
 			if kind == HitData.Kind.NORMAL:
 				enemy.body.glint()
@@ -278,11 +377,16 @@ func _set_phase(phase: Phase) -> void:
 			else:
 				enemy.body.danger_flash()
 				Sfx.play(&"danger", enemy.lock_point())
-				Voice.say(&"soldier", &"danger", enemy.lock_point())
+				Voice.say(enemy.voice, &"danger", enemy.lock_point())
 				enemy.danger_warned.emit(kind)
 			if kind == HitData.Kind.NORMAL and _index == 0:
-				Voice.say(&"soldier", &"attack", enemy.lock_point())
+				Voice.say(enemy.voice, &"attack", enemy.lock_point())
 		Phase.ACTIVE:
+			if swing.get("no_hit", false):
+				return
+			if swing.has("throw"):
+				_throw_knives(int(swing["throw"]))
+				return
 			var hit := HitData.create(enemy, DAMAGE, POSTURE_DAMAGE, DEFLECT_POSTURE)
 			hit.kind = swing.get("danger", HitData.Kind.NORMAL)
 			if hit.is_perilous():

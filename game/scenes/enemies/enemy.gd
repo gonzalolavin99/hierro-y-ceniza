@@ -14,6 +14,8 @@ signal danger_warned(kind: int)
 @export var boss: bool = false
 ## Golpes mortales que hacen falta para vencerlo (los jefes, más de uno: uno por fase).
 @export var deathblows: int = 1
+## Voz (personaje de VoiceLines): "soldier" para la tropa; los jefes tienen la suya.
+@export var voice: StringName = &"soldier"
 ## Experiencia que da al morir.
 @export var xp_reward: int = 40
 @export var walk_speed: float = 3.0
@@ -40,6 +42,14 @@ signal danger_warned(kind: int)
 @export var idle_wait: Vector2 = Vector2(0.5, 1.3)
 ## Probabilidad de apartarse de un salto al ver empezar tu ataque (en vez de bloquear).
 @export var evade_chance: float = 0.0
+## Qué puede hacer al terminar una esquiva (se elige uno al azar).
+@export var evade_counters: Array[StringName] = [&"lunge"]
+## Ataque con el que responde tras bloquear varios golpes seguidos.
+@export var counter_pattern: StringName = &"counter"
+## Ataques a distancia (cuchillos, saltos): los usa a veces mientras se acerca, si estás entre
+## RANGED_MIN y RANGED_MAX metros.
+@export var ranged_patterns: Array[StringName] = []
+@export var ranged_cooldown: float = 3.0
 ## Multiplicador del daño de sus golpes.
 @export var damage_scale: float = 1.0
 ## ¿Puede bloquear con su arma? (el arquero no).
@@ -139,6 +149,11 @@ var _evade_in: float = -1.0
 ## Momento (reloj de Squad) del último salto para recuperar distancia.
 var last_keep_away: float = -100.0
 var _spawn: Transform3D
+## Distancias para los ataques a distancia (ranged_patterns).
+const RANGED_MIN: float = 4.5
+const RANGED_MAX: float = 14.0
+## Momento (reloj de Squad) del último ataque a distancia.
+var last_ranged: float = -100.0
 ## Golpes mortales que aún le faltan para caer.
 var deathblows_left: int = 1
 var _base_posture_regen: float
@@ -314,12 +329,12 @@ func receive_hit(hit: HitData) -> int:
 		mind.on_attack_blocked()
 		if blocks_in_a_row >= mind.blocks_before_counter(blocks_before_counter) and not posture.is_broken:
 			blocks_in_a_row = 0
-			state_machine.transition_to(&"Attack", {"pattern": &"counter"})
+			state_machine.transition_to(&"Attack", {"pattern": counter_pattern})
 		return HitData.Result.BLOCKED
 
 	# Golpe directo (atacando, retrocediendo o de espaldas).
 	health.take_damage(hit.damage)
-	Voice.say(&"soldier", &"hurt", lock_point())
+	Voice.say(voice, &"hurt", lock_point())
 	var exposed: bool = state == &"Recoil" or state == &"Dazed"
 	posture.add(hit.posture_damage * (1.0 if exposed else 0.5))
 	Sfx.play(&"bolt_hit" if hit.ranged else &"hit", contact)
@@ -344,7 +359,7 @@ func receive_blast(origin: Vector3, damage: float, posture_damage: float) -> voi
 	alert()
 	health.take_damage(damage)
 	posture.add(posture_damage)
-	Voice.say(&"soldier", &"hurt", lock_point())
+	Voice.say(voice, &"hurt", lock_point())
 	CombatFX.blood(global_position + Vector3.UP * 1.2)
 	body.flinch(-away, 1.2)
 	push = away * 5.0
@@ -643,7 +658,7 @@ func _watch_player_attack(delta: float) -> void:
 	if _evade_in >= 0.0:
 		_evade_in -= delta
 		if _evade_in < 0.0 and _can_evade_now():
-			state_machine.transition_to(&"Evade")
+			state_machine.transition_to(&"Evade", {"counter": evade_counters.pick_random()})
 		return
 	if target == null or evade_chance <= 0.0:
 		return
@@ -660,6 +675,14 @@ func _can_evade_now() -> bool:
 
 
 ## ¿Está demasiado cerca el jugador para su gusto (lancero, arquero)?
+## ¿Toca un ataque a distancia? (tiene alguno, estás a media distancia y pasó su pausa)
+func wants_ranged_attack() -> bool:
+	if ranged_patterns.is_empty() or not has_target():
+		return false
+	var d: float = distance_to_target()
+	return d >= RANGED_MIN and d <= RANGED_MAX and Squad.clock() - last_ranged >= ranged_cooldown
+
+
 func too_close() -> bool:
 	return keep_away_range > 0.0 and distance_to_target() < keep_away_range
 

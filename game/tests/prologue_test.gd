@@ -1,6 +1,6 @@
 extends Node
 ## Prueba automática de la escena del prólogo: solo sale en partida nueva de la escena principal, pausa el
-## juego, recorre sus planos (fogata, sala, Regente, cinta, título), se puede saltar manteniendo A, no deja
+## juego, recorre sus planos (fogata, sala, primeros planos de Kael y del Regente, cinta, título), se puede saltar manteniendo A, no deja
 ## abrir el menú de pausa, y al terminar queda marcada como vista (y guardada).
 ## Ejecutar: Godot --headless --path game res://tests/prologue_test.tscn
 
@@ -65,7 +65,7 @@ func _run() -> void:
 		if scene.is_done():
 			break
 	Engine.time_scale = 1.0
-	_check("Recorre los planos en orden %s" % str(shots), shots == [&"fire", &"hall", &"regent", &"ribbon", &"title"])
+	_check("Recorre los planos en orden %s" % str(shots), shots == [&"fire", &"hall", &"kael", &"regent", &"ribbon", &"title"])
 	_check("Termina sola y devuelve el juego", scene.is_done() and not get_tree().paused)
 	await _wait(1.6)
 

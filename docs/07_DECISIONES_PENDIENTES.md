@@ -30,5 +30,6 @@
 | D19 | El niño que escucha, en el final bueno, es nieto del desertor que Kael perdonó | 2026-11-05 |
 | D20 | Final bueno: 4 de 6 acciones discretas (perdonar, escuchar, guardar pruebas), sin avisos | 2026-11-05 |
 | D21 | La enfermedad se muestra con respeto: nada de cuerpos ni detalles desagradables | 2026-11-05 |
+| D22 | Compañero **Frank, el tití** (Pepe Grillo, alivio cómico, la conciencia de Kael). No habla: chilla; los subtítulos dicen lo que Kael entiende. No es enemigo. Primero se pule a Varga, luego Frank | 2026-11-05 |
 | — | Motor: Godot 4 | 2026-10-06 |
 | — | Sin magia, demonios, brujería ni ocultismo ([guía](04_GUIA_DE_CONTENIDO.md)) | 2026-10-06 |

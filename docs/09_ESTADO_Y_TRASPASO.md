@@ -20,7 +20,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Caminar agachado fabricado a partir de caminar (sin descargas) |
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
-| 8 · Primer jefe | 🔨 Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Sigue: repertorio propio de Varga |
+| 8 · Primer jefe | 🔨 Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Sigue: pulir reacciones a los golpes, historia y escena antes del duelo, música |
 | 9 | Pendiente (vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -159,7 +159,13 @@ cambiar de objetivo con el stick derecho.
   `DuelTrigger` → `start_fight()` (baja el rastrillo `AnimatableBody3D`, `aggro_range` 60, barra, narración
   `story_varga_before`). `Camps.reset_world()` llama a `reset_arena()`. Al caer: `Story` "boss_varga" (se
   guarda), rastrillo arriba, narración `story_varga_after`. Varga: `scenes/enemies/varga.tscn` (hereda del
-  soldado). Prueba `varga_test`; capturas `tests/arena_shot`.
+  soldado). Prueba `varga_test`; capturas `tests/arena_shot` y `tests/varga_shot`.
+- **Varga, repertorio y fases**: patrones `varga_*` en `EnemyAttackState.PATTERNS` con claves nuevas:
+  `leap` (salta hacia ti y cae en el impacto), `hop` (salto atrás), `throw: N` (lanza N cuchillos en abanico
+  en vez de tajar; `ThrowingKnife`, `scenes/weapons/knife.gd`, hereda de `Arrow`), `no_hit`. En `Enemy`:
+  `voice` (personaje de voz), `evade_counters`, `counter_pattern`, `ranged_patterns` + `ranged_cooldown`
+  (los usa `Chase` a 4,5–14 m). La fase 2 la aplica la arena (`VargaArena.PHASE_2`) al recibir
+  `phase_changed`, y vuelve a la fase 1 en `reset_arena()`.
 - **Escena del prólogo** (`scenes/cutscenes/prologue_scene.gd`, `PrologueScene`, CanvasLayer capa 70, grupo
   "cutscene"): mundo 3D propio (SubViewport `own_world_3d`) con dos decorados hechos en código (fogata en el
   origen, sala del Regente en x = 200), maniquíes quietos (`Mannequin.Weapon.NONE`, `ribbon`), cámara con
@@ -283,7 +289,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 ## 7. Siguiente paso recomendado
 
 1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Escena del prólogo hecha (OK). **Hito 7 cerrado.**
-   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Siguen su repertorio propio, la fase 2 y música/voz.
+   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Hechos repertorio, fase 2 y voz (OK). Sigue: pulir reacciones, escena previa y música; después, Frank (guion §12).
 2. **Ajustes tras la prueba del jugador (2026-11-05)**, con su OK: A / B del mando en los menús
    (`InputSetup._pad`: Godot no los trae en `ui_accept` / `ui_cancel`), pisotón más exigente (1,6 m, de cara
    al enemigo), la guardia corta los tajos ligeros en cualquier momento salvo en el impacto

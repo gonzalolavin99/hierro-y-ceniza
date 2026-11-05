@@ -9,10 +9,10 @@ extends RefCounted
 ## el generador de voz local (tools/gen_voices.py) y `effort` la descripción del sonido buscado.
 
 ## Nombre que aparece en los subtítulos.
-const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente"}
+const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga"}
 ## Voces que no salen de un personaje del nivel (el narrador; el Regente en las escenas): suenan igual en
 ## todas partes (no posicionales) y mandan sobre las demás.
-const NARRATORS: Array[StringName] = [&"narrator", &"regent"]
+const NARRATORS: Array[StringName] = [&"narrator", &"regent", &"kael_scene"]
 ## Importancia de cada evento cuando varias voces coinciden: la más importante interrumpe a la menos
 ## importante del mismo personaje o, si ya suenan demasiadas, a la menos importante de la escena.
 ## Los eventos que no aparecen valen 1 (esfuerzos de ataque, lanzar…).
@@ -112,6 +112,9 @@ const LINES: Dictionary = {
 		&"story_prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_prologue_order", "en": "It began with an order, in a hall of cold stone.", "es": "Todo empezó con una orden, en una sala de piedra fría."},
 		]},
+		&"story_prologue_summon": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_prologue_summon", "en": "They summoned the warrior at dawn. He had never stood so close to the Regent.", "es": "Llamaron al guerrero al amanecer. Nunca había estado tan cerca del Regente."},
+		]},
 		&"story_prologue_ribbon": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_prologue_ribbon", "en": "The warrior did not ask a single question. He only looked at the ribbon on his wrist.", "es": "El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca."},
 		]},
@@ -180,8 +183,55 @@ const LINES: Dictionary = {
 		&"prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "regent_prologue_order", "en": "Five names. Five cordons. When they fall, the fever ends.", "es": "Cinco nombres. Cinco cordones. Cuando caigan, la fiebre se acaba."},
 		]},
+		&"prologue_rebels": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_rebels", "en": "Traitors. They foul the wells and burn every village that will not feed them.", "es": "Traidores. Ensucian los pozos y queman cada aldea que no los alimenta."},
+		]},
+		&"prologue_names": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_names", "en": "Here are their names. Bring me their banners, one by one.", "es": "Aquí tienes sus nombres. Tráeme sus estandartes, uno por uno."},
+		]},
 		&"prologue_sister": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "regent_prologue_sister", "en": "The fever took your sister, Kael. The rebels brought it to us. Make them pay.", "es": "La fiebre se llevó a tu hermana, Kael. Nos la trajeron los rebeldes. Haz que paguen."},
+		]},
+	},
+	# Kael en las escenas (voz no posicional, como el narrador).
+	&"kael_scene": {
+		&"prologue_who": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_prologue_who", "en": "Who are they, my lord?", "es": "¿Quiénes son, mi señor?"},
+		]},
+		&"prologue_answer": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_prologue_answer", "en": "It will be done.", "es": "Así se hará."},
+		]},
+	},
+	# La Capitana Varga (jefa del Paso de Hierro). Duelista: segura, cortante, cansada de la guerra.
+	&"varga": {
+		&"spot": {"chance": 1.0, "cooldown": 5.0, "lines": [
+			{"id": "varga_spot_1", "en": "So the Regent finally sent his hound. Draw, then.", "es": "Así que el Regente por fin envió a su perro. Desenvaina, entonces."},
+			{"id": "varga_spot_2", "en": "You're far from the capital, soldier. You should have stayed there.", "es": "Estás lejos de la capital, soldado. Deberías haberte quedado allí."},
+		]},
+		&"attack": {"chance": 0.5, "cooldown": 0.7, "lines": [
+			{"id": "varga_attack_1", "say": "Hah!", "effort": "short sharp exhale, adult woman, swift sword strike"},
+			{"id": "varga_attack_2", "say": "Hup!", "effort": "quick clipped grunt, adult woman, fencing lunge"},
+			{"id": "varga_attack_3", "say": "Hyah!", "effort": "light fierce cry, adult woman, fast slash"},
+		]},
+		&"danger": {"chance": 1.0, "cooldown": 1.0, "lines": [
+			{"id": "varga_danger_1", "say": "Haaah!", "effort": "fierce battle shout, adult woman, before a powerful lunge"},
+		]},
+		&"hurt": {"chance": 0.7, "cooldown": 0.6, "lines": [
+			{"id": "varga_hurt_1", "say": "Ugh!", "effort": "pained grunt, adult woman, struck by a blade"},
+			{"id": "varga_hurt_2", "say": "Ah!", "effort": "sharp gasp of pain, adult woman"},
+		]},
+		&"broken": {"chance": 1.0, "cooldown": 1.0, "lines": [
+			{"id": "varga_broken_1", "say": "Hah... hah...", "effort": "out of breath, adult woman losing her balance"},
+		]},
+		&"phase": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_phase_1", "en": "Not yet. Look at the smoke, soldier. Ask yourself what we are burning.", "es": "Todavía no. Mira el humo, soldado. Pregúntate qué estamos quemando."},
+		]},
+		&"death": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_death_1", "en": "He told you we burned villages? Look at the smoke... look at what we burn.", "es": "¿Te dijo que quemábamos aldeas? Mira el humo… mira qué quemamos."},
+		]},
+		&"victory": {"chance": 1.0, "cooldown": 10.0, "lines": [
+			{"id": "varga_victory_1", "en": "Stay down. You don't know what you're doing.", "es": "No te levantes. No sabes lo que haces."},
+			{"id": "varga_victory_2", "en": "Go home. Tell him the Pass is closed.", "es": "Vuelve a casa. Dile que el Paso está cerrado."},
 		]},
 	},
 }
