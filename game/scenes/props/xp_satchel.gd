@@ -38,8 +38,8 @@ func _physics_process(delta: float) -> void:
 	var flat: float = Vector2(d.x, d.z).length()
 	_label.visible = flat < 8.0
 	if flat <= PICKUP_RANGE and absf(d.y) < 1.6:
+		queue_free()  # antes de avisar: así el guardado ya no lo cuenta
 		player.recover_xp(amount, global_position)
-		queue_free()
 
 
 func _build() -> void:

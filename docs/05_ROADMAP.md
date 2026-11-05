@@ -120,7 +120,12 @@ de caminar agachado (Mixamo, las descarga el jugador).
       (arriba/abajo elige, A / Intro sube, B / Esc se levanta). Vigor +10 vida, Temple +8 postura, Fuerza
       +6 % daño, Destreza +6 % daño a la postura, por punto; tope 10 cada uno. Nivel = suma − 3; cada punto
       cuesta 60 + 20 × (nivel − 1) de experiencia.
-- [ ] Guardado/carga. Menú de pausa.
+- [~] Guardado/carga. Menú de pausa.
+      Paso 5 hecho y probado (OK del jugador): **guardado automático** en `user://save.json`
+      (`%APPDATA%\Godot\app_userdata\Hierro y Ceniza\save.json`). Se guarda al descansar, al subir atributos,
+      al morir y al recoger el morral; al abrir el juego Kael aparece en su último campamento con atributos,
+      experiencia y morral. Archivo roto = empieza de cero. Las pruebas usan otro archivo. Falta: menú de pausa
+      (con "Empezar de nuevo", que borra la partida).
 - [ ] Muerte con la voz del narrador: "No… no fue así".
 
 **🧪 PRUEBA:** ciclo completo: explorar → morir → recuperar → subir nivel.

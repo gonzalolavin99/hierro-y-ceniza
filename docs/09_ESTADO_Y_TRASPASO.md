@@ -18,7 +18,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Pendiente menor: animaciones de caminar agachado (Mixamo) |
-| 6 · El loop souls | 🔨 Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Siguen: guardado, menú de pausa |
+| 6 · El loop souls | 🔨 Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Sigue: menú de pausa |
 | 7–9 | Pendientes (historia, primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -135,6 +135,12 @@ cambiar de objetivo con el stick derecho.
   botones con foco (ui_up/ui_down/ui_accept), `ui_cancel` cierra. `rest.gd` lo abre al aclararse la pantalla y
   no termina hasta que se cierra; la cámara no gira con el menú abierto. Las pruebas que descansan cierran el
   menú con `Camps.level_menu.close()`. Se prueba en `attributes_test`; captura `level_menu_shot`.
+- **Guardado** (autoload `SaveGame`, `scripts/systems/save_game.gd`; JSON en `user://save.json`): guarda xp,
+  atributos, `spawn` [x, y, z, grados] y el morral. Llamadas a `SaveGame.save(player)` en `Campfire.rest()`,
+  `Player.raise_attribute()`, `Player.drop_xp()` (al morir) y `Player.recover_xp()`. Carga en
+  `SaveGame.on_player_ready()` (diferido desde `Player._ready`). Solo actúa si la escena actual es la
+  principal (`active()`), así las pruebas que cargan el nivel no tocan la partida; `save_test` usa
+  `path = "user://save_test.json"` y `force_active = true`. Para empezar de cero: borrar ese archivo.
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
   Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
   caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
@@ -181,7 +187,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -236,8 +242,8 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 7. Siguiente paso recomendado
 
-1. **Hito 6 — el loop souls**: hechos vendajes, campamento, experiencia y atributos. Sigue **guardado/carga**
-   (atributos, experiencia y morral, último campamento, vendajes) y el **menú de pausa** (Start / Esc).
+1. **Hito 6 — el loop souls**: hechos vendajes, campamento, experiencia, atributos y guardado. Sigue el
+   **menú de pausa** (Start / Esc): continuar, controles, "Empezar de nuevo" (borra la partida) y salir.
 2. Cuando el jugador descargue las animaciones de caminar agachado (`crouch_walk_fwd/back/left/right.fbx`):
    reconstruir la biblioteca y medir `CROUCH_SPEEDS` (ver § Caminar agachado).
 3. Pulido fino de audio y diálogo (volúmenes, mezcla, variedad), pedido por el jugador para más adelante.

@@ -157,6 +157,7 @@ func _ready() -> void:
 	bandages = max_bandages
 	state_machine.setup(self)
 	posture.broken.connect(_on_posture_broken)
+	SaveGame.on_player_ready.call_deferred(self)
 	if start_with_all_arts:
 		arts.unlock_all()
 
@@ -548,6 +549,10 @@ func restore() -> void:
 	bandages = max_bandages
 
 
+func spawn_position() -> Vector3:
+	return _spawn_position
+
+
 ## Nuevo punto de reaparición (el último campamento donde descansó).
 func set_spawn(at: Vector3, facing_degrees: float) -> void:
 	_spawn_position = at
@@ -675,17 +680,18 @@ func gain_xp(amount: int) -> void:
 func drop_xp() -> void:
 	for node in get_tree().get_nodes_in_group("xp_satchels"):
 		node.queue_free()
-	if xp <= 0:
-		return
-	var at: Vector3 = global_position if is_on_floor() else _last_floor_position
-	XpSatchel.spawn(get_parent(), at, xp)
-	xp = 0
+	if xp > 0:
+		var at: Vector3 = global_position if is_on_floor() else _last_floor_position
+		XpSatchel.spawn(get_parent(), at, xp)
+		xp = 0
+	SaveGame.save(self)
 
 
 ## Recogió su morral.
 func recover_xp(amount: int, at: Vector3) -> void:
 	Sfx.play(&"pickup", at + Vector3.UP * 0.3)
 	gain_xp(amount)
+	SaveGame.save(self)
 
 
 # --- Atributos ---------------------------------------------------------------------
@@ -697,6 +703,7 @@ func raise_attribute(attribute: StringName) -> bool:
 	xp -= attributes.next_cost()
 	attributes.raise(attribute)
 	apply_attributes()
+	SaveGame.save(self)
 	return true
 
 
