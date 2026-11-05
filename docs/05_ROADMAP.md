@@ -133,7 +133,8 @@ de caminar agachado (Mixamo, las descarga el jugador).
 **🧪 PRUEBA:** ciclo completo: explorar → morir → recuperar → subir nivel.
 
 ## Hito 7 — Historia (2–4 semanas, en paralelo con lo anterior)
-- [ ] Guion completo: actos, personajes, cada jefe y su verdad oculta, pistas, los dos finales.
+- [~] Guion completo: actos, personajes, cada jefe y su verdad oculta, pistas, los dos finales.
+      Paso 1 hecho y revisado (OK del jugador): borrador en `docs/11_GUION.md` (decisiones del §11 aún abiertas).
 - [ ] Textos del narrador (Kael anciano) por zona, por jefe y por muerte.
 - [ ] Descripciones de objetos que cuentan la historia.
 - [ ] Sistema de narración: voz en inglés + subtítulos en español, primera cinemática.
