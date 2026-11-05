@@ -149,6 +149,9 @@ var _evade_in: float = -1.0
 ## Momento (reloj de Squad) del último salto para recuperar distancia.
 var last_keep_away: float = -100.0
 var _spawn: Transform3D
+var _body_layer: int = 4
+## Si cae más que esto por debajo de su puesto (se salió del mapa), vuelve a él.
+const FALL_LIMIT: float = 20.0
 ## Distancias para los ataques a distancia (ranged_patterns).
 const RANGED_MIN: float = 4.5
 const RANGED_MAX: float = 14.0
@@ -162,6 +165,7 @@ var _base_posture_regen: float
 func _ready() -> void:
 	add_to_group("enemies")
 	deathblows_left = deathblows
+	_body_layer = collision_layer
 	_spawn = global_transform
 	_base_posture_regen = posture.regen_rate
 	state_machine.setup(self)
@@ -193,6 +197,11 @@ func _physics_process(delta: float) -> void:
 	# Con poca vida, la postura se recupera más lento (como en Sekiro).
 	posture.regen_multiplier = 0.25 + 0.75 * health.ratio()
 	velocity.y -= gravity * delta
+	# Red de seguridad: si se sale del mapa, vuelve a su puesto (sin perder lo demás).
+	if global_position.y < _spawn.origin.y - FALL_LIMIT:
+		global_position = _spawn.origin
+		velocity = Vector3.ZERO
+		reset_physics_interpolation()
 	root_motion_velocity = body.consume_root_motion() / maxf(delta, 0.0001)
 	state_machine.physics_update(delta)
 	# El empujón se suma solo durante este movimiento: no se acumula en la velocidad.
@@ -414,9 +423,11 @@ func phase() -> int:
 	return deathblows - deathblows_left + 1
 
 
+## Vulnerable o no (muerto, o un jefe rehaciéndose). Sin vulnerabilidad no recibe golpes y Kael lo
+## atraviesa, pero su cuerpo SIGUE apoyado en el suelo (antes se apagaba entero y caía a través del piso).
 func set_vulnerable(enabled: bool) -> void:
 	hurtbox.set_deferred("monitorable", enabled)
-	_body_collision.set_deferred("disabled", not enabled)
+	set_deferred("collision_layer", _body_layer if enabled else 0)
 
 
 func respawn() -> void:

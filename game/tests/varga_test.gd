@@ -70,8 +70,11 @@ func _run() -> void:
 	_check("…con la vida y la postura llenas", varga.health.ratio() == 1.0 and varga.posture.current == 0.0)
 	_check("En la fase 2 cambia: más rápida, abanico de cuchillos y combo largo (%s)" % str(varga.moveset),
 		&"varga_fan" in varga.ranged_patterns and &"varga_combo_long" in varga.moveset and varga.walk_speed > 4.5)
-	await _wait(2.8)
+	await _wait(1.2)
+	_check("Mientras se rehace sigue sobre el suelo (altura %.2f)" % _height(varga), absf(_height(varga)) < 0.3)
+	await _wait(1.6)
 	_check("Se levanta y sigue peleando (%s)" % varga.state_name(), varga.state_name() != &"Rally" and not varga.is_dead())
+	_check("…en el patio, no bajo el suelo (altura %.2f)" % _height(varga), absf(_height(varga)) < 0.3)
 
 	# 3. Kael muere en el duelo: todo vuelve a empezar.
 	_player.state_machine.transition_to(&"Dead")
@@ -94,6 +97,7 @@ func _run() -> void:
 	await _wait(0.5)
 	_check("El segundo golpe mortal la vence", varga.is_dead())
 	await _wait(2.5)
+	_check("Su cuerpo queda en el suelo (altura %.2f)" % _height(varga), absf(_height(varga)) < 0.3)
 	_check("El rastrillo sube", not _arena.gate_closed())
 	_check("…y la salida queda libre", not _blocked_exit())
 	_check("Queda vencida en la historia y en la partida", Story.heard(VargaArena.DEFEATED_FLAG) and "boss_varga" in SaveGame.read().get("story", {}).get("heard", []))
@@ -162,6 +166,11 @@ func _face_off(varga: Enemy, distance: float) -> void:
 	_player.health.heal(999.0)
 	_player.posture.reset()
 	await _wait(0.3)
+
+
+## Altura de Varga respecto al suelo del patio (0 = de pie en el suelo).
+func _height(varga: Enemy) -> float:
+	return varga.global_position.y - _arena.global_position.y
 
 
 ## ¿Hay algo sólido entre el patio y el pasillo de salida, a la altura del pecho?

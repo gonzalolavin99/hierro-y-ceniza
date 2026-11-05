@@ -157,8 +157,8 @@ de caminar agachado (Mixamo, las descarga el jugador).
 
 **🧪 PRUEBA:** leer el guion y escuchar la primera narración. ¿Engancha?
 
-## Hito 8 — Primer jefe (2–3 semanas)
-- [~] Capitana Varga: duelo de 2 fases, varias barras de golpe mortal, música, arena con niebla.
+## Hito 8 — Primer jefe (2–3 semanas) ✅ OK del jugador: hito cerrado
+- [x] Capitana Varga: duelo de 2 fases, varias barras de golpe mortal, música, arena con niebla.
       Paso 1 hecho y probado (OK del jugador): **arena** (patio de la fortaleza al este del nivel de pruebas,
       x = 84, con pasillo, niebla baja, braseros y "Campamento de la fortaleza" a la entrada). Al entrar, el
       **rastrillo** baja detrás de Kael y aparece la **barra de jefa** arriba (nombre, vida, postura y un punto
@@ -178,6 +178,9 @@ de caminar agachado (Mixamo, las descarga el jugador).
       humo no es una aldea ardiendo…", Kael: "Tengo mis órdenes"); **música del duelo** propia
       (tools/gen_music.py: taikos, bordón y cuerda pulsada en frigio; la fase 2 dobla los tambores); al caer
       deja su **estandarte** (objeto clave) y enseña la **Ráfaga**.
+      Prueba del jugador: "bastante difícil, así que está bueno". Arreglado: al rehacerse (y al morir) los
+      enemigos apagaban su cuerpo y caían a través del suelo; ahora solo dejan de recibir golpes y de chocar
+      con Kael. Red de seguridad: un enemigo que cae del mapa vuelve a su puesto.
 
 **🧪 PRUEBA:** ¿lo puedes vencer en 5–15 intentos aprendiendo patrones?
 
