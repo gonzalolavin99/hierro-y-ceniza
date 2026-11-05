@@ -1,7 +1,7 @@
-# 11 · Guion (borrador para revisar)
+# 11 · Guion
 
 Propuesta completa de la historia de *Hierro y Ceniza*. Parte del borrador del GDD (§10) y de las
-decisiones D1, D9 y D10. Lo marcado con 🔶 está pendiente de tu OK. Todo cumple la
+decisiones D1, D9 y D10. Las propuestas marcadas con 🔶 quedaron decididas como están (ver §11). Todo cumple la
 [guía de contenido](04_GUIA_DE_CONTENIDO.md): solo personas y causas humanas o naturales (guerra,
 ambición, enfermedad). Sin magia, dioses ni nada sobrenatural.
 
@@ -210,10 +210,17 @@ El resto del guion sirve de guía para que todo lo que construyamos ahora apunte
 
 ---
 
-## 11. Decisiones para ti 🔶
+## 11. Decisiones (tomadas, 2026-11-05)
 
-1. **Nombres:** Vaelmar, la Ceniza, Regente Malcor, Lira, sargento Dov, Bram, Ilse, Tobías Orme.
-2. **Quién es el niño** en el final bueno: nieto del desertor perdonado, o nieto de Varga.
-3. **Cuántas cosas** hacen falta para el final bueno (propuesta: 4 de 6).
-4. **Tono**: ¿te parece bien que la fiebre sea el centro de la historia, o prefieres algo menos
-   duro (por ejemplo, hambre por una sequía)?
+El jugador dejó la historia en manos de Claude. Se fijan así (D18–D21 en `07_DECISIONES_PENDIENTES.md`):
+
+1. **Nombres:** se quedan los propuestos: reino de Vaelmar, la Ceniza, Regente Malcor, Lira, sargento
+   Dov, Bram el Carcelero, Ilse la Cazadora, Tobías Orme el Ingeniero, General Aren.
+2. **El niño** del final bueno es **nieto del desertor que Kael perdonó** en el Acto I. Así el final
+   nace de una decisión del propio jugador: ese niño existe porque Kael bajó la espada una vez. En el
+   final principal el niño es un niño cualquiera de la aldea (no se revela nada).
+3. **Final bueno:** hacen falta **4 de las 6** cosas del §6. Es lo bastante exigente para que haya
+   que jugar con atención, pero deja margen para perderse un par.
+4. **La fiebre se queda** como centro de la historia: es natural, explica el título y da sentido a
+   cada jefe. Se trata con respeto y sin mostrar nada desagradable: enfermos en camas, telas grises
+   y humo a lo lejos; nunca cuerpos ni detalles de la enfermedad.

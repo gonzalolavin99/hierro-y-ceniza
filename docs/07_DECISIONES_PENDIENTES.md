@@ -26,5 +26,9 @@
 | D15 | Voces (narrador, gritos, esfuerzos) con **ElevenLabs** | 2026-10-06 |
 | D16 | Repositorio **público** en GitHub | 2026-10-06 |
 | D17 | Enemigos comunes simples; **jefes muy completos**, cada uno con estilo y repertorio propio | 2026-10-06 |
+| D18 | Historia ([11_GUION](11_GUION.md)): reino de Vaelmar, la fiebre "la Ceniza" (natural) como centro; nombres del guion fijados | 2026-11-05 |
+| D19 | El niño que escucha, en el final bueno, es nieto del desertor que Kael perdonó | 2026-11-05 |
+| D20 | Final bueno: 4 de 6 acciones discretas (perdonar, escuchar, guardar pruebas), sin avisos | 2026-11-05 |
+| D21 | La enfermedad se muestra con respeto: nada de cuerpos ni detalles desagradables | 2026-11-05 |
 | — | Motor: Godot 4 | 2026-10-06 |
 | — | Sin magia, demonios, brujería ni ocultismo ([guía](04_GUIA_DE_CONTENIDO.md)) | 2026-10-06 |
