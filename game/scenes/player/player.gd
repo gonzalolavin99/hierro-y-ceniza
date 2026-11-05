@@ -47,14 +47,22 @@ signal dashed
 ## Segundos de invulnerabilidad desde el inicio del paso.
 @export var dash_invulnerable_time: float = 0.2
 @export var dash_cooldown: float = 0.15
+@export_group("Voltereta")
+## Distancia y duración de la voltereta (esquiva con dirección).
+@export var roll_distance: float = 3.6
+@export var roll_duration: float = 0.68
+## Segundos de invulnerabilidad desde el inicio de la voltereta.
+@export var roll_invulnerable_time: float = 0.36
+## Pausa breve tras levantarse (la animación ya trae el levantarse).
+@export var roll_recovery: float = 0.12
 
 @export_group("Respuestas a ataques peligrosos")
 ## Pisar la hoja: segundos desde el inicio de un paso HACIA el enemigo en que una estocada queda contrarrestada.
 @export var counter_window: float = 0.3
 ## Pisotón: distancia horizontal máxima al enemigo para impulsarse sobre él en el aire.
-@export var stomp_range: float = 2.2
+@export var stomp_range: float = 1.6
 ## Pisotón: altura mínima de los pies sobre el suelo del enemigo.
-@export var stomp_min_height: float = 0.3
+@export var stomp_min_height: float = 0.45
 
 @export_group("Guardia y desvío")
 ## Ventana de desvío (segundos tras pulsar LB).
@@ -282,6 +290,16 @@ func dash_speed_for_interval(previous_elapsed: float, elapsed: float, delta: flo
 	return distance / maxf(delta, 0.0001)
 
 
+## Velocidad media de este fotograma en la voltereta: arranca con impulso y frena suave al levantarse.
+## Recorrido acumulado: roll_distance · 1,5 · (p − p³/3), con p = progreso 0–1 (total = roll_distance).
+func roll_speed_for_interval(previous_elapsed: float, elapsed: float, delta: float) -> float:
+	var duration: float = maxf(roll_duration, 0.01)
+	var a: float = clampf(previous_elapsed / duration, 0.0, 1.0)
+	var b: float = clampf(elapsed / duration, 0.0, 1.0)
+	var distance: float = roll_distance * 1.5 * ((b - b * b * b / 3.0) - (a - a * a * a / 3.0))
+	return distance / maxf(delta, 0.0001)
+
+
 ## Acelera la velocidad horizontal hacia `direction * speed`.
 func move_horizontal(direction: Vector3, speed: float, acceleration: float, delta: float) -> void:
 	var target := direction * speed
@@ -383,7 +401,9 @@ func try_stomp() -> bool:
 		var to: Vector3 = enemy.global_position - global_position
 		var height: float = -to.y
 		to.y = 0.0
-		if to.length() <= stomp_range and height >= stomp_min_height:
+		# Hay que estar encima y de cara a él (no basta con saltar cerca).
+		var facing_it: bool = to.length() < 0.3 or get_facing().dot(to.normalized()) > 0.3
+		if to.length() <= stomp_range and height >= stomp_min_height and facing_it:
 			can_stomp = false
 			jump_buffer_timer = 0.0
 			velocity.y = jump_velocity() * 0.85

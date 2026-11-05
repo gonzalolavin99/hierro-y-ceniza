@@ -97,6 +97,156 @@
       "id": "narrator_death_3",
       "phrase": true,
       "text": "No... I'm getting ahead of myself."
+    },
+    {
+      "event": "player_death_2",
+      "id": "narrator_player_death_2_1",
+      "phrase": true,
+      "text": "No... he did not fall there. That much I remember. I think."
+    },
+    {
+      "event": "player_death_2",
+      "id": "narrator_player_death_2_2",
+      "phrase": true,
+      "text": "Hm. My memory is not what it was."
+    },
+    {
+      "event": "player_death_3",
+      "id": "narrator_player_death_3_1",
+      "phrase": true,
+      "text": "No. Let me tell it right, at least this once."
+    },
+    {
+      "event": "player_death_3",
+      "id": "narrator_player_death_3_2",
+      "phrase": true,
+      "text": "That is not how... no. Again."
+    },
+    {
+      "event": "player_death_4",
+      "id": "narrator_player_death_4_1",
+      "phrase": true,
+      "text": "I wish he had fallen there. No... that's not how it happened."
+    },
+    {
+      "event": "player_death_4",
+      "id": "narrator_player_death_4_2",
+      "phrase": true,
+      "text": "Let me rest a moment. Then I'll go on."
+    },
+    {
+      "event": "story_prologue",
+      "id": "narrator_story_prologue",
+      "phrase": true,
+      "text": "This is the story of a warrior who saved a kingdom. Or so the songs say."
+    },
+    {
+      "event": "story_camp_first",
+      "id": "narrator_story_camp_first",
+      "phrase": true,
+      "text": "The warrior rested by the fire. He never slept well. Not even then."
+    },
+    {
+      "event": "story_pass_village",
+      "id": "narrator_story_pass_village",
+      "phrase": true,
+      "text": "The village at the Iron Pass. The rebels had burned it. Everyone knew that."
+    },
+    {
+      "event": "story_pass_forest",
+      "id": "narrator_story_pass_forest",
+      "phrase": true,
+      "text": "Smoke rose above the trees. The warrior thought of his sister, and walked faster."
+    },
+    {
+      "event": "story_pass_fortress",
+      "id": "narrator_story_pass_fortress",
+      "phrase": true,
+      "text": "The fortress gate. Behind it waited the Jailer and his chain."
+    },
+    {
+      "event": "story_bram_before",
+      "id": "narrator_story_bram_before",
+      "phrase": true,
+      "text": "They said the Jailer kept prisoners in the dark. They said a lot of things."
+    },
+    {
+      "event": "story_bram_after",
+      "id": "narrator_story_bram_after",
+      "phrase": true,
+      "text": "The gate opened. People came out. He did not ask who they were."
+    },
+    {
+      "event": "story_varga_before",
+      "id": "narrator_story_varga_before",
+      "phrase": true,
+      "text": "Captain Varga. The finest blade of the rebellion. And the cruelest, they said."
+    },
+    {
+      "event": "story_varga_after",
+      "id": "narrator_story_varga_after",
+      "phrase": true,
+      "text": "The Pass was free. The Regent's wagons rolled in the next morning. Free... yes."
+    },
+    {
+      "event": "story_mountain",
+      "id": "narrator_story_mountain",
+      "phrase": true,
+      "text": "The High Mountain. The villagers ran when they saw him. Fear of the war, I suppose."
+    },
+    {
+      "event": "story_ilse_before",
+      "id": "narrator_story_ilse_before",
+      "phrase": true,
+      "text": "Ilse the Huntress guarded the mountain road. Against whom, he never asked."
+    },
+    {
+      "event": "story_ilse_after",
+      "id": "narrator_story_ilse_after",
+      "phrase": true,
+      "text": "The road was open. Others climbed it after him. Many others."
+    },
+    {
+      "event": "story_river",
+      "id": "narrator_story_river",
+      "phrase": true,
+      "text": "The River City. Its wells were sealed, with signs he did not stop to read."
+    },
+    {
+      "event": "story_orme_before",
+      "id": "narrator_story_orme_before",
+      "phrase": true,
+      "text": "The Engineer and his great machine. A weapon against the capital. That is what they told him."
+    },
+    {
+      "event": "story_orme_after",
+      "id": "narrator_story_orme_after",
+      "phrase": true,
+      "text": "He did not read the letter on the Engineer's desk. No... he read it. He kept it."
+    },
+    {
+      "event": "story_frontier",
+      "id": "narrator_story_frontier",
+      "phrase": true,
+      "text": "The last cordon. I no longer know which part is mine and which part is the song."
+    },
+    {
+      "event": "story_aren_before",
+      "id": "narrator_story_aren_before",
+      "phrase": true,
+      "text": "General Aren did not draw his sword. He was waiting for him. He only wanted to talk."
+    },
+    {
+      "event": "story_ending_legend",
+      "id": "narrator_story_ending_legend",
+      "phrase": true,
+      "text": "The warrior saved the kingdom. That is what the songs say. I was that warrior. And I saved no one."
+    },
+    {
+      "event": "story_ending_trial",
+      "id": "narrator_story_ending_trial",
+      "phrase": true,
+      "text": "I was that warrior. And at the end, I did the only thing left to me. I stopped obeying."
     }
   ],
   "soldier": [

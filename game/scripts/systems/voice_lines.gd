@@ -16,7 +16,7 @@ const NARRATORS: Array[StringName] = [&"narrator"]
 ## importante del mismo personaje o, si ya suenan demasiadas, a la menos importante de la escena.
 ## Los eventos que no aparecen valen 1 (esfuerzos de ataque, lanzar…).
 const EVENT_PRIORITY: Dictionary = {
-	&"player_death": 4,
+	&"player_death": 4, &"player_death_2": 4, &"player_death_3": 4, &"player_death_4": 4,
 	&"death": 3, &"spot": 3, &"victory": 3,
 	&"danger": 2, &"broken": 2, &"hurt": 2, &"deathblow": 2,
 }
@@ -81,10 +81,87 @@ const LINES: Dictionary = {
 		]},
 	},
 	&"narrator": {
+		# Al morir Kael: el anciano se corrige. Una lista por acto (Story.death_event()); envejecen con la historia.
 		&"player_death": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_death_1", "en": "No... no, that's not how it happened.", "es": "No… no fue así."},
 			{"id": "narrator_death_2", "en": "Wait. Let me start again.", "es": "Espera. Déjame empezar de nuevo."},
 			{"id": "narrator_death_3", "en": "No... I'm getting ahead of myself.", "es": "No… me estoy adelantando."},
+		]},
+		&"player_death_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_player_death_2_1", "en": "No... he did not fall there. That much I remember. I think.", "es": "No… él no cayó ahí. Eso lo recuerdo bien. Creo."},
+			{"id": "narrator_player_death_2_2", "en": "Hm. My memory is not what it was.", "es": "Mm. Mi memoria ya no es lo que era."},
+		]},
+		&"player_death_3": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_player_death_3_1", "en": "No. Let me tell it right, at least this once.", "es": "No. Deja que lo cuente bien, al menos esta vez."},
+			{"id": "narrator_player_death_3_2", "en": "That is not how... no. Again.", "es": "No fue así… no. Otra vez."},
+		]},
+		&"player_death_4": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_player_death_4_1", "en": "I wish he had fallen there. No... that's not how it happened.", "es": "Ojalá hubiera caído ahí. No… no fue así."},
+			{"id": "narrator_player_death_4_2", "en": "Let me rest a moment. Then I'll go on.", "es": "Déjame descansar un momento. Luego sigo."},
+		]},
+		# Narraciones de historia (Story.narrate): suenan una sola vez por partida. Ver docs/11_GUION.md.
+		# Prólogo y campamento.
+		&"story_prologue": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_prologue", "en": "This is the story of a warrior who saved a kingdom. Or so the songs say.", "es": "Esta es la historia de un guerrero que salvó un reino. O eso dicen las canciones."},
+		]},
+		&"story_camp_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_camp_first", "en": "The warrior rested by the fire. He never slept well. Not even then.", "es": "El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces."},
+		]},
+		# Acto I: el Paso de Hierro.
+		&"story_pass_village": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_pass_village", "en": "The village at the Iron Pass. The rebels had burned it. Everyone knew that.", "es": "La aldea del Paso de Hierro. Los rebeldes la habían quemado. Todos lo sabían."},
+		]},
+		&"story_pass_forest": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_pass_forest", "en": "Smoke rose above the trees. The warrior thought of his sister, and walked faster.", "es": "Sobre los árboles subía humo. El guerrero pensó en su hermana y apuró el paso."},
+		]},
+		&"story_pass_fortress": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_pass_fortress", "en": "The fortress gate. Behind it waited the Jailer and his chain.", "es": "La puerta de la fortaleza. Tras ella esperaban el Carcelero y su cadena."},
+		]},
+		&"story_bram_before": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_bram_before", "en": "They said the Jailer kept prisoners in the dark. They said a lot of things.", "es": "Decían que el Carcelero tenía prisioneros a oscuras. Decían muchas cosas."},
+		]},
+		&"story_bram_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_bram_after", "en": "The gate opened. People came out. He did not ask who they were.", "es": "El portón se abrió. Salió gente. Él no preguntó quiénes eran."},
+		]},
+		&"story_varga_before": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_varga_before", "en": "Captain Varga. The finest blade of the rebellion. And the cruelest, they said.", "es": "La capitana Varga. La mejor espada de la rebelión. Y la más cruel, decían."},
+		]},
+		&"story_varga_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_varga_after", "en": "The Pass was free. The Regent's wagons rolled in the next morning. Free... yes.", "es": "El Paso quedó libre. Las caravanas del Regente entraron a la mañana siguiente. Libre… sí."},
+		]},
+		# Acto II: la Montaña Alta.
+		&"story_mountain": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_mountain", "en": "The High Mountain. The villagers ran when they saw him. Fear of the war, I suppose.", "es": "La Montaña Alta. Los aldeanos huían al verlo. Miedo a la guerra, supongo."},
+		]},
+		&"story_ilse_before": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_ilse_before", "en": "Ilse the Huntress guarded the mountain road. Against whom, he never asked.", "es": "Ilse, la Cazadora, vigilaba el camino de la montaña. Contra quién, él nunca lo preguntó."},
+		]},
+		&"story_ilse_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_ilse_after", "en": "The road was open. Others climbed it after him. Many others.", "es": "El camino quedó abierto. Otros subieron detrás de él. Muchos otros."},
+		]},
+		# Acto III: la Ciudad del Río.
+		&"story_river": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_river", "en": "The River City. Its wells were sealed, with signs he did not stop to read.", "es": "La Ciudad del Río. Sus pozos estaban tapiados, con carteles que no se paró a leer."},
+		]},
+		&"story_orme_before": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_orme_before", "en": "The Engineer and his great machine. A weapon against the capital. That is what they told him.", "es": "El Ingeniero y su gran máquina. Un arma contra la capital. Eso le dijeron."},
+		]},
+		&"story_orme_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_orme_after", "en": "He did not read the letter on the Engineer's desk. No... he read it. He kept it.", "es": "No leyó la carta de la mesa del Ingeniero. No… sí la leyó. La guardó."},
+		]},
+		# Acto IV: la Frontera.
+		&"story_frontier": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_frontier", "en": "The last cordon. I no longer know which part is mine and which part is the song.", "es": "El último cordón. Ya no sé qué parte es mía y qué parte es la canción."},
+		]},
+		&"story_aren_before": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_aren_before", "en": "General Aren did not draw his sword. He was waiting for him. He only wanted to talk.", "es": "El general Aren no desenvainó. Lo estaba esperando. Solo quería hablar."},
+		]},
+		# Los dos finales (epílogo junto a la fogata).
+		&"story_ending_legend": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_ending_legend", "en": "The warrior saved the kingdom. That is what the songs say. I was that warrior. And I saved no one.", "es": "El guerrero salvó el reino. Eso dicen las canciones. Yo fui ese guerrero. Y no salvé a nadie."},
+		]},
+		&"story_ending_trial": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_ending_trial", "en": "I was that warrior. And at the end, I did the only thing left to me. I stopped obeying.", "es": "Yo fui ese guerrero. Y al final hice lo único que me quedaba: dejé de obedecer."},
 		]},
 	},
 }

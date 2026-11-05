@@ -3,6 +3,11 @@ extends PlayerState
 ## Todo se sincroniza con el reloj de la animación: el arma hace daño justo cuando la animación golpea.
 ## Pulsar RB tras el primer impacto encadena el siguiente golpe del combo.
 ## Desde el segundo `cancel` se puede salir con guardia (LB) o paso rápido (B), como en Sekiro.
+## Los tajos ligeros (combo, a la carrera, tras el paso) se cortan con la guardia en cualquier momento
+## salvo en el instante en que la hoja golpea: así se puede desviar aunque se esté atacando.
+
+## Movimientos que la guardia puede cortar en cualquier momento (fuera del instante del impacto).
+const FREE_GUARD: Array[StringName] = [&"light_1", &"light_2", &"light_3", &"run_attack", &"dodge_attack"]
 
 var _name: StringName
 var _move: Dictionary
@@ -27,6 +32,13 @@ func enter(msg: Dictionary) -> void:
 	player.body.set_trail(true)
 	var effort: StringName = &"heavy" if _name == &"heavy" else (&"art" if String(_name).begins_with("art_") else &"attack")
 	Voice.say(&"kael", effort, player.global_position + Vector3.UP * 1.6)
+
+
+## ¿Puede cortarse ya este movimiento con la guardia?
+func _can_guard(t: float) -> bool:
+	if t >= _move["cancel"]:
+		return true
+	return _name in FREE_GUARD and not _hit_active
 
 
 func exit() -> void:
@@ -78,7 +90,7 @@ func physics_update(delta: float) -> void:
 	var done_hitting: bool = _hit_index >= hits.size()
 	if done_hitting and _queued:
 		machine.transition_to(&"Attack", {"move": _move["next"]})
-	elif t >= _move["cancel"] and Input.is_action_pressed("block"):
+	elif player.wants_block() and _can_guard(t):
 		machine.transition_to(&"Block")
 	elif t >= _move["cancel"] and Input.is_action_just_pressed("dodge"):
 		machine.transition_to(&"Dash")

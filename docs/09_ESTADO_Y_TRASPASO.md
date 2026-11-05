@@ -17,9 +17,9 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 2 · Combate básico | ✅ OK del jugador |
 | 3 · Pulido del combate I (sensación) | ✅ OK del jugador (incluye cámara al fijar con vista por encima del hombro) |
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
-| 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Pendiente menor: animaciones de caminar agachado (Mixamo) |
+| 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Caminar agachado fabricado a partir de caminar (sin descargas) |
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
-| 7 · Historia | 🔨 Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Sigue: textos del narrador |
+| 7 · Historia | 🔨 Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK) |
 | 8–9 | Pendientes (primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -143,6 +143,12 @@ cambiar de objetivo con el stick derecho.
   `SaveGame.on_player_ready()` (diferido desde `Player._ready`). Solo actúa si la escena actual es la
   principal (`active()`), así las pruebas que cargan el nivel no tocan la partida; `save_test` usa
   `path = "user://save_test.json"` y `force_active = true`. Para empezar de cero: borrar ese archivo.
+- **Historia** (`scripts/systems/story.gd`, autoload `Story`): `act` (1–4) y narraciones ya oídas.
+  `Story.narrate(&"story_x")` hace hablar al anciano una sola vez por partida; `Story.death_event()` da las
+  frases de muerte del acto. Se guarda en `save.json` ("story") y se reinicia en `on_player_ready`. Zonas
+  `NarrationZone` (`scenes/props/narration_zone.gd`, Area3D con `event`, `size` y `act` opcional) en el
+  nivel bajo el nodo `Narration`. Frases en `VoiceLines` (narrador, eventos `story_*` y `player_death_N`);
+  tras cambiarlas: exportar el guion y `gen_voices.py`. Prueba `story_test`.
 - **Menú de pausa** (`scenes/ui/pause_menu.gd`, `PauseMenu`, lo crea `Camps` en `Camps.pause_menu`, capa 58,
   `PROCESS_MODE_ALWAYS`): `get_tree().paused`; páginas main/controls/confirm con botones con foco. Esc es
   "pause" y "ui_cancel" a la vez: primero vuelve atrás, en la principal cierra. Al cerrar, la pausa se quita
@@ -151,8 +157,10 @@ cambiar de objetivo con el stick derecho.
   controles está en `PauseMenu.CONTROLS`: **actualizarla al añadir controles**. Prueba `pause_test`;
   capturas `pause_shot`.
 - **Caminar agachado**: la mezcla `crouch_loco` del maniquí usa `crouch_idle` (crouching_3) y `crouch_fwd/back/left/right`.
-  Faltan los FBX `crouch_walk_fwd/back/left/right` de Mixamo: hasta tenerlos, `build_anim_library.gd` usa los de
-  caminar de pie (`FALLBACK`). Al añadirlos: reconstruir la biblioteca y medir `CROUCH_SPEEDS`.
+  No hay FBX de caminar agachado: `build_anim_library.gd` los fabrica a partir de los de caminar de pie
+  (`FALLBACK`) con el taller `AnimPolish` (`hips_drop` 0,36 m + `spine_pitch` 20°: rodillas dobladas con los
+  pies en su sitio y tronco inclinado). Capturas: `tests/crouch_shot`. Si algún día se descargan los de Mixamo,
+  quitar esos retoques de `POLISH` y medir `CROUCH_SPEEDS`.
 - **Soldado de práctica:** se acerca en guardia, avisa con un destello en el filo y un "ting", 4 patrones
   normales y ~1 de cada 3 ataques peligroso,
   bloquea fuera de sus ataques, contraataca tras 3 bloqueos, retrocede si le desvían el último tajo, se
@@ -196,7 +204,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -251,8 +259,16 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 7. Siguiente paso recomendado
 
-1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Después: textos del narrador, descripciones de objetos y sistema de narración (ver
+1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Después: descripciones de objetos y sistema de narración (ver
    `05_ROADMAP.md`). El Hito 6 (el loop souls) está cerrado con OK del jugador.
-2. Cuando el jugador descargue las animaciones de caminar agachado (`crouch_walk_fwd/back/left/right.fbx`):
-   reconstruir la biblioteca y medir `CROUCH_SPEEDS` (ver § Caminar agachado).
+2. **Ajustes tras la prueba del jugador (2026-11-05)**, con su OK: A / B del mando en los menús
+   (`InputSetup._pad`: Godot no los trae en `ui_accept` / `ui_cancel`), pisotón más exigente (1,6 m, de cara
+   al enemigo), la guardia corta los tajos ligeros en cualquier momento salvo en el impacto
+   (`Attack.FREE_GUARD`), estocada del lancero apuntada y estirada a mano (`Mannequin.set_spear_thrust`,
+   alcance 2,8 m = su zona de daño; captura `tests/spear_shot`), recuperación de 0,36 s tras el paso rápido
+   (encadenar pasos ya no supera el trote; correr = mantener B sin soltar) y caminar agachado de verdad.
+   Esquiva = **voltereta** (pedido del jugador): con dirección rueda hacia allí (se gira, también fijado),
+   3,6 m en 0,68 s, invulnerable 0,36 s, recuperación 0,12 s; si venía corriendo usa la de carrera. Sin
+   dirección, paso atrás. FBX descargados por el jugador: `roll_stand.fbx` ("Stand To Roll", tramo 0,85–2,0 s)
+   y `roll_sprint.fbx` ("Sprinting Forward Roll", 0,45–1,17 s). Capturas: `tests/roll_shot`.
 3. Pulido fino de audio y diálogo (volúmenes, mezcla, variedad), pedido por el jugador para más adelante.

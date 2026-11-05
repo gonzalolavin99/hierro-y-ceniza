@@ -12,7 +12,7 @@ const CONTROLS: Array = [
 	["Stick izq. / WASD", "Moverse"],
 	["Stick der. / Flechas", "Cámara"],
 	["A / Espacio", "Saltar (en el aire junto al enemigo: pisotón)"],
-	["B / Shift", "Tocar: paso rápido · Mantener: correr"],
+	["B / Shift", "Con dirección: rodar · Sin dirección: paso atrás · Mantener: correr"],
 	["RB / J", "Ataque (×3 combo) · al enemigo expuesto: golpe mortal"],
 	["RT / L", "Golpe pesado"],
 	["LB / K", "Mantener: guardia · Tocar a tiempo: desviar"],

@@ -77,6 +77,7 @@ func rest(player: Player) -> void:
 	player.restore()
 	player.set_spawn(rest_position(), rest_facing_degrees())
 	Camps.reset_world()
+	Story.narrate(&"story_camp_first")
 	SaveGame.save(player)
 
 

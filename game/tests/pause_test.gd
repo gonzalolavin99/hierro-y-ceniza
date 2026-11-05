@@ -47,6 +47,17 @@ func _run() -> void:
 	_check("Continuar cierra el menú", not _menu.is_open())
 	_check("…y el juego sigue", not get_tree().paused)
 
+	# 2b. Con el mando de verdad: A en "Continuar" reanuda, y B cierra el menú.
+	await _press_pad(JOY_BUTTON_START)
+	_check("Start del mando abre el menú", _menu.is_open())
+	await _press_pad(JOY_BUTTON_A)
+	await _wait(0.3)
+	_check("A del mando en Continuar reanuda el juego", not _menu.is_open() and not get_tree().paused)
+	await _press_pad(JOY_BUTTON_START)
+	await _press_pad(JOY_BUTTON_B)
+	await _wait(0.3)
+	_check("B del mando cierra el menú", not _menu.is_open() and not get_tree().paused)
+
 	# 3. Start otra vez también cierra; B / Esc también.
 	await _press("pause")
 	await _press("pause")
@@ -111,6 +122,16 @@ func _press(action: StringName) -> void:
 	Input.parse_input_event(release)
 	await get_tree().process_frame
 	await get_tree().process_frame
+
+
+func _press_pad(button: JoyButton) -> void:
+	for pressed in [true, false]:
+		var event := InputEventJoypadButton.new()
+		event.button_index = button
+		event.pressed = pressed
+		Input.parse_input_event(event)
+		await get_tree().process_frame
+		await get_tree().process_frame
 
 
 func _wait(seconds: float) -> void:

@@ -18,6 +18,7 @@ func _ready() -> void:
 	await _wait(0.3)
 	for move in PlayerMoves.MOVES:
 		await _try(move)
+	await _guard_cancel()
 	print("RESULTADO: %s" % ("TODO OK" if _failures == 0 else "%d FALLOS" % _failures))
 	get_tree().quit(_failures)
 
@@ -51,6 +52,29 @@ func _try(move: StringName) -> void:
 		_check("la patada rompe la guardia", _enemy.state_name() == &"Recoil" or _enemy.state_name() == &"Idle" and _enemy.posture.current > posture0)
 		var pushed: float = Vector2(_enemy.global_position.x, _enemy.global_position.z - 17.0).length()
 		_check("la patada empuja poco (%.2f m)" % pushed, pushed < 3.0)
+
+
+## Atacando a toda prisa, LB corta el tajo ligero y pone la guardia (como en Sekiro); el pesado no.
+func _guard_cancel() -> void:
+	_player.global_position = Vector3(0, 0, 10)
+	_player.reset_physics_interpolation()
+	_player.lock_target = null
+	for move in [&"light_1", &"light_2", &"heavy"]:
+		_player.state_machine.transition_to(&"Ground")
+		await _wait(0.4)
+		_player.state_machine.transition_to(&"Attack", {"move": move})
+		await _wait(0.06)
+		Input.action_press("block")
+		var guarded: bool = false
+		for i in 12:
+			await get_tree().physics_frame
+			guarded = guarded or _player.state_machine.current.name == &"Block"
+		Input.action_release("block")
+		if move == &"heavy":
+			_check("LB no corta el golpe pesado al empezar", not guarded)
+		else:
+			_check("LB corta %s al momento y pone la guardia" % move, guarded)
+		await _wait(1.6)
 
 
 func _wait(s: float) -> void:

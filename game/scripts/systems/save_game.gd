@@ -1,7 +1,8 @@
 extends Node
 ## Guardado automático de la partida, en un archivo JSON pequeño (user://save.json, en la carpeta de datos
 ## del juego). Se guarda al descansar, al subir atributos, al morir y al recoger el morral; se carga al abrir
-## el juego (cuando aparece Kael). Qué se guarda: atributos, experiencia, último campamento y el morral.
+## el juego (cuando aparece Kael). Qué se guarda: atributos, experiencia, último campamento, el morral
+## y la historia (acto y narraciones ya oídas).
 ## Solo actúa en la partida real (la escena principal); las pruebas usan otro archivo con `force_active`.
 
 const VERSION: int = 1
@@ -37,6 +38,7 @@ func save(player: Player) -> void:
 		"xp": player.xp,
 		"attributes": player.attributes.to_dict(),
 		"spawn": _vec(player.spawn_position()) + [player.start_facing_degrees],
+		"story": Story.to_dict(),
 	}
 	for node in get_tree().get_nodes_in_group("xp_satchels"):
 		var bag := node as XpSatchel
@@ -65,11 +67,13 @@ func read() -> Dictionary:
 ## Al aparecer Kael: si hay partida guardada, la carga.
 func on_player_ready(player: Player) -> void:
 	Squad.reset()
+	Story.reset()
 	if not active():
 		return
 	var data: Dictionary = read()
 	if data.is_empty():
 		return
+	Story.from_dict(data.get("story", {}))
 	player.attributes.from_dict(data.get("attributes", {}))
 	player.apply_attributes()
 	player.xp = int(data.get("xp", 0))

@@ -85,6 +85,17 @@ func _run() -> void:
 	_check("Pisotón: daña la postura (%.0f → %.0f)" % [posture_before, _enemy.posture.current], _enemy.posture.current - posture_before >= 25.0)
 	_check("Pisotón: sin daño al jugador", not _hurt())
 
+	# De espaldas al enemigo, dos saltos seguidos no son un pisotón (no hay "doble salto").
+	await _reset()
+	var away: Vector3 = _player.global_position - _enemy.global_position
+	away.y = 0.0
+	_player.snap_facing(away.normalized())
+	await _tap("jump")
+	await _wait(0.2)
+	await _tap("jump")
+	await get_tree().physics_frame
+	_check("De espaldas al enemigo no hay pisotón", _player.can_stomp)
+
 	# 4. Estocada: atraviesa la guardia; pisar la hoja (paso hacia él) la contrarresta.
 	await _reset()
 	Input.action_press("block")

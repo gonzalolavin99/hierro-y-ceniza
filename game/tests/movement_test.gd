@@ -56,12 +56,40 @@ func _run() -> void:
 	await _tap("dodge")
 	_check("Entra en Dash", _state() == &"Dash")
 	_check("Invulnerable al inicio", _player.invulnerable)
-	await _wait(0.45)
+	await _wait(0.75)
 	var dist: float = start.distance_to(_player.global_position)
 	_check("Paso atrás de ~3,6 m (%.2f)" % dist, absf(dist - _player.dash_distance) < 0.1)
 	_check("Paso hacia atrás (+Z)", _player.global_position.z > start.z)
 	_check("Ya no es invulnerable", not _player.invulnerable)
 	_check("Termina la esquiva en Ground", _state() == &"Ground")
+
+	# Con dirección = voltereta hacia allí (Kael se gira hacia donde rueda).
+	await _wait(0.3)
+	start = _player.global_position
+	Input.action_press("move_right")
+	await _tap("dodge")
+	_check("Con dirección, la esquiva es una voltereta", _state() == &"Dash" and _player.state_machine.current.call("is_roll"))
+	_check("Rueda invulnerable al inicio", _player.invulnerable)
+	_check("Mira hacia donde rueda (%.2f)" % _player.get_facing().dot(Vector3.RIGHT), _player.get_facing().dot(Vector3.RIGHT) > 0.9)
+	Input.action_release("move_right")
+	await _wait(_player.roll_duration + _player.roll_recovery + 0.1)
+	var roll_dist: float = start.distance_to(_player.global_position)
+	_check("Voltereta de ~%.1f m (%.2f)" % [_player.roll_distance, roll_dist], absf(roll_dist - _player.roll_distance) < 0.25)
+	_check("Se levanta y vuelve a Ground", _state() == &"Ground")
+
+	# Abusar del paso rápido no es más rápido que correr ni que trotar.
+	start = _player.global_position
+	Input.action_press("move_left")
+	for i in 30:
+		await _tap("dodge")
+		await _wait(0.06)
+	Input.action_release("move_left")
+	var spam_speed: float = start.distance_to(_player.global_position) / (30 * 0.06 + 60.0 / Engine.physics_ticks_per_second)
+	_check("Encadenar pasos rápidos no supera el trote (%.1f < %.1f m/s)" % [spam_speed, _player.run_speed], spam_speed < _player.run_speed)
+	await _wait(0.5)
+	_player.global_position = start
+	_player.reset_physics_interpolation()
+	await _wait(0.3)
 
 	# Una pulsación breve de guardia cerca del final no debería perderse.
 	await _tap("dodge")
@@ -94,6 +122,19 @@ func _run() -> void:
 		peak = maxf(peak, _player.global_position.y)
 	_check("Salta ~1,5 m (%.2f)" % (peak - floor_y), absf(peak - floor_y - _player.jump_height) < 0.2)
 	_check("Aterriza", _player.is_on_floor() and _state() == &"Ground")
+
+	# Dos pulsaciones muy seguidas no hacen un doble salto.
+	await _wait(0.3)
+	floor_y = _player.global_position.y
+	peak = floor_y
+	await _tap("jump")
+	await _tap("jump")
+	await _tap("jump")
+	for i in 70:
+		await get_tree().physics_frame
+		peak = maxf(peak, _player.global_position.y)
+	_check("Saltar 3 veces seguidas = un solo salto (%.2f m)" % (peak - floor_y), peak - floor_y < _player.jump_height + 0.15)
+	await _wait(0.4)
 
 	# El combo avanza con el paso real de la animación (root motion)
 	await _wait(0.5)

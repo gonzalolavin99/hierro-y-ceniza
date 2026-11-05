@@ -69,3 +69,28 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_death_1.wav` | player_death | No... no, that's not how it happened. | Subtítulo: No… no fue así. |
 | `narrator_death_2.wav` | player_death | Wait. Let me start again. | Subtítulo: Espera. Déjame empezar de nuevo. |
 | `narrator_death_3.wav` | player_death | No... I'm getting ahead of myself. | Subtítulo: No… me estoy adelantando. |
+| `narrator_player_death_2_1.wav` | player_death_2 | No... he did not fall there. That much I remember. I think. | Subtítulo: No… él no cayó ahí. Eso lo recuerdo bien. Creo. |
+| `narrator_player_death_2_2.wav` | player_death_2 | Hm. My memory is not what it was. | Subtítulo: Mm. Mi memoria ya no es lo que era. |
+| `narrator_player_death_3_1.wav` | player_death_3 | No. Let me tell it right, at least this once. | Subtítulo: No. Deja que lo cuente bien, al menos esta vez. |
+| `narrator_player_death_3_2.wav` | player_death_3 | That is not how... no. Again. | Subtítulo: No fue así… no. Otra vez. |
+| `narrator_player_death_4_1.wav` | player_death_4 | I wish he had fallen there. No... that's not how it happened. | Subtítulo: Ojalá hubiera caído ahí. No… no fue así. |
+| `narrator_player_death_4_2.wav` | player_death_4 | Let me rest a moment. Then I'll go on. | Subtítulo: Déjame descansar un momento. Luego sigo. |
+| `narrator_story_prologue.wav` | story_prologue | This is the story of a warrior who saved a kingdom. Or so the songs say. | Subtítulo: Esta es la historia de un guerrero que salvó un reino. O eso dicen las canciones. |
+| `narrator_story_camp_first.wav` | story_camp_first | The warrior rested by the fire. He never slept well. Not even then. | Subtítulo: El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces. |
+| `narrator_story_pass_village.wav` | story_pass_village | The village at the Iron Pass. The rebels had burned it. Everyone knew that. | Subtítulo: La aldea del Paso de Hierro. Los rebeldes la habían quemado. Todos lo sabían. |
+| `narrator_story_pass_forest.wav` | story_pass_forest | Smoke rose above the trees. The warrior thought of his sister, and walked faster. | Subtítulo: Sobre los árboles subía humo. El guerrero pensó en su hermana y apuró el paso. |
+| `narrator_story_pass_fortress.wav` | story_pass_fortress | The fortress gate. Behind it waited the Jailer and his chain. | Subtítulo: La puerta de la fortaleza. Tras ella esperaban el Carcelero y su cadena. |
+| `narrator_story_bram_before.wav` | story_bram_before | They said the Jailer kept prisoners in the dark. They said a lot of things. | Subtítulo: Decían que el Carcelero tenía prisioneros a oscuras. Decían muchas cosas. |
+| `narrator_story_bram_after.wav` | story_bram_after | The gate opened. People came out. He did not ask who they were. | Subtítulo: El portón se abrió. Salió gente. Él no preguntó quiénes eran. |
+| `narrator_story_varga_before.wav` | story_varga_before | Captain Varga. The finest blade of the rebellion. And the cruelest, they said. | Subtítulo: La capitana Varga. La mejor espada de la rebelión. Y la más cruel, decían. |
+| `narrator_story_varga_after.wav` | story_varga_after | The Pass was free. The Regent's wagons rolled in the next morning. Free... yes. | Subtítulo: El Paso quedó libre. Las caravanas del Regente entraron a la mañana siguiente. Libre… sí. |
+| `narrator_story_mountain.wav` | story_mountain | The High Mountain. The villagers ran when they saw him. Fear of the war, I suppose. | Subtítulo: La Montaña Alta. Los aldeanos huían al verlo. Miedo a la guerra, supongo. |
+| `narrator_story_ilse_before.wav` | story_ilse_before | Ilse the Huntress guarded the mountain road. Against whom, he never asked. | Subtítulo: Ilse, la Cazadora, vigilaba el camino de la montaña. Contra quién, él nunca lo preguntó. |
+| `narrator_story_ilse_after.wav` | story_ilse_after | The road was open. Others climbed it after him. Many others. | Subtítulo: El camino quedó abierto. Otros subieron detrás de él. Muchos otros. |
+| `narrator_story_river.wav` | story_river | The River City. Its wells were sealed, with signs he did not stop to read. | Subtítulo: La Ciudad del Río. Sus pozos estaban tapiados, con carteles que no se paró a leer. |
+| `narrator_story_orme_before.wav` | story_orme_before | The Engineer and his great machine. A weapon against the capital. That is what they told him. | Subtítulo: El Ingeniero y su gran máquina. Un arma contra la capital. Eso le dijeron. |
+| `narrator_story_orme_after.wav` | story_orme_after | He did not read the letter on the Engineer's desk. No... he read it. He kept it. | Subtítulo: No leyó la carta de la mesa del Ingeniero. No… sí la leyó. La guardó. |
+| `narrator_story_frontier.wav` | story_frontier | The last cordon. I no longer know which part is mine and which part is the song. | Subtítulo: El último cordón. Ya no sé qué parte es mía y qué parte es la canción. |
+| `narrator_story_aren_before.wav` | story_aren_before | General Aren did not draw his sword. He was waiting for him. He only wanted to talk. | Subtítulo: El general Aren no desenvainó. Lo estaba esperando. Solo quería hablar. |
+| `narrator_story_ending_legend.wav` | story_ending_legend | The warrior saved the kingdom. That is what the songs say. I was that warrior. And I saved no one. | Subtítulo: El guerrero salvó el reino. Eso dicen las canciones. Yo fui ese guerrero. Y no salvé a nadie. |
+| `narrator_story_ending_trial.wav` | story_ending_trial | I was that warrior. And at the end, I did the only thing left to me. I stopped obeying. | Subtítulo: Yo fui ese guerrero. Y al final hice lo único que me quedaba: dejé de obedecer. |

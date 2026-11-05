@@ -23,7 +23,7 @@
 
 | De… | Tomamos |
 |---|---|
-| **Sekiro** (base principal) | Movimiento ágil (paso rápido en vez de rodar, salto, agacharse), **postura**, **desvío**, golpe mortal, ataques peligrosos con aviso, sigilo y ataque sorpresa, sangre mínima |
+| **Sekiro** (base principal) | Movimiento ágil (voltereta y paso atrás, salto, agacharse), **postura**, **desvío**, golpe mortal, ataques peligrosos con aviso, sigilo y ataque sorpresa, sangre mínima |
 | **Dark Souls** | Campamentos, pérdida y recuperación de experiencia, atajos que conectan el mapa, enemigos que reaparecen al descansar |
 | **Elden Ring** | Jefes opcionales y algún camino secundario. **No** mundo abierto |
 
@@ -46,7 +46,7 @@
 | Bloquear / **Desviar** | LB | Mantener = guardia. Pulsar justo antes del golpe = **desvío** (0,2 s; se achica si se pulsa seguido) |
 | **Técnica** equipada | LB + RB · cruceta ↑ cambia | Torbellino (giro con dos tajos), Golpe de Martillo (salto y tajo vertical: mucha postura), Ráfaga (tres tajos: mucho daño, arriesgada) |
 | Patada | Y | Rompe la guardia del rival y lo deja expuesto |
-| Paso rápido | B | Esquiva corta con animación según la dirección. Mantener = correr |
+| Esquivar | B | Con dirección: voltereta hacia allí (pedido del jugador). Sin dirección: paso atrás. Mantener = correr |
 | Ataque a la carrera | B mantenido + RB | Estocada aprovechando el impulso |
 | Contraataque tras esquiva | RB al final del paso | |
 | Salto / ataque en salto | A / A + RB | |

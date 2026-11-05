@@ -120,6 +120,7 @@ func enter(msg: Dictionary) -> void:
 
 
 func exit() -> void:
+	enemy.body.set_spear_thrust(0.0, Vector3.ZERO)
 	Squad.end_turn(enemy)
 	enemy.hitbox.deactivate()
 	enemy.body.set_trail(false)
@@ -129,6 +130,7 @@ func physics_update(delta: float) -> void:
 	var swing: Dictionary = _swings[_index]
 	_timer += delta
 
+	_update_spear_thrust(swing)
 	match _phase:
 		Phase.WINDUP:
 			# Sigue al jugador mientras se prepara; se lanza al final de la preparación.
@@ -184,6 +186,23 @@ func on_deflected() -> void:
 		enemy.body.play_action(&"block_impact", 0.0, 1.6, 0.04)
 		enemy.push = -enemy.get_facing() * 2.2  # Choque de espadas: retrocede
 		_deflected_last = _index == _swings.size() - 1
+
+
+## Lancero: las estocadas usan una animación de espada, así que la lanza se apunta al frente durante la
+## preparación y se estira de golpe en el instante del impacto (la punta llega a donde hace daño).
+func _update_spear_thrust(swing: Dictionary) -> void:
+	if enemy.body.weapon != Mannequin.Weapon.SPEAR or swing["anim"] != &"slash_d":
+		enemy.body.set_spear_thrust(0.0, Vector3.ZERO)
+		return
+	var amount: float = 0.0
+	match _phase:
+		Phase.WINDUP:
+			amount = smoothstep(0.3, 1.0, _timer / maxf(swing["windup"] + _delay, 0.01)) * 0.6
+		Phase.ACTIVE:
+			amount = 1.0
+		Phase.AFTER:
+			amount = 1.0 - clampf(_timer / 0.35, 0.0, 1.0)
+	enemy.body.set_spear_thrust(amount, enemy.get_facing())
 
 
 ## Embestida: avanza lo justo para llegar a distancia de golpe en `time_left` segundos.

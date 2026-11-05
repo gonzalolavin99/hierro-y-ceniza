@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="1_base"]
 
 [sub_resource type="BoxShape3D" id="spear_reach"]
-size = Vector3(1.4, 1.4, 2.9)
+size = Vector3(1.4, 1.4, 2.55)
 
 [node name="Spearman" instance=ExtResource("1_base")]
 display_name = "Lancero"
 xp_reward = 55
 walk_speed = 2.8
-attack_range = 3.3
+attack_range = 3.1
 blocks_before_counter = 3
 moveset = Array[StringName]([&"spear_thrust", &"spear_thrust", &"thrust_combo", &"spear_swing", &"spear_thrust"])
 danger_moveset = Array[StringName]([&"thrust", &"sweep"])
@@ -23,7 +23,7 @@ weapon = 1
 body_color = Color(0.26, 0.32, 0.42, 1)
 
 [node name="Hitbox" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.575)
 
 [node name="Shape" parent="Model/Hitbox"]
 shape = SubResource("spear_reach")

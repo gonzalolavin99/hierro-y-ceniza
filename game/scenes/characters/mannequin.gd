@@ -35,6 +35,7 @@ enum Weapon { SWORD, SPEAR, BOW }
 @onready var _skeleton: Skeleton3D = $YBot/Skeleton3D
 @onready var _foot_grounding: FootGroundingModifier = $YBot/Skeleton3D/FootGrounding
 @onready var _glint: Node3D = $YBot/Skeleton3D/RightHand/Sword/Glint
+@onready var _sword: Node3D = $YBot/Skeleton3D/RightHand/Sword
 
 var _tree: AnimationTree
 ## Orientación base del modelo de Mixamo (girado 180°), guardada al iniciar.
@@ -71,7 +72,17 @@ var _danger_tween: Tween
 var _root_motion: Vector3 = Vector3.ZERO
 
 
+## Estocada con lanza en curso: 0 = la animación manda; 1 = lanza apuntada y estirada hacia `_thrust_dir`.
+var _thrust: float = 0.0
+var _thrust_dir: Vector3 = Vector3.FORWARD
+var _sword_rest: Transform3D
+var _hand_bone: int = -1
+
+
 func _ready() -> void:
+	_sword_rest = _sword.transform
+	_hand_bone = _skeleton.find_bone("mixamorig_RightHand")
+	_skeleton.skeleton_updated.connect(_apply_spear_thrust)
 	_bot_facing = _bot.basis
 	_paint()
 	_glint.visible = false
@@ -122,6 +133,9 @@ const GAIT_STRETCH_DOWN: float = 0.6
 const WALK_BLEND: float = 0.25
 ## Lanza: dónde queda el centro del asta respecto a la mano (se sujeta por un tercio).
 const SPEAR_SHAFT_CENTER: float = 0.35
+## Estocada con lanza: cuánto se estira la lanza hacia delante (m) en el momento del golpe. Las animaciones
+## son de espada, así que la lanza se apunta y se empuja a mano (set_spear_thrust).
+const SPEAR_THRUST_REACH: float = 0.45
 ## Colocación del arco en la mano izquierda (ajustada mirando capturas del arquero apuntando).
 ## Medido con tests/bow_probe.gd: apuntando, el "arriba" del mundo es -X de la mano y "adelante" es +Y.
 ## El arco queda vertical, con la cuerda hacia el arquero.
@@ -150,6 +164,18 @@ func set_blocking(enabled: bool) -> void:
 
 
 ## Agachado (sigilo): cambia la locomoción a la de caminar agachado.
+## Estocada con lanza: `amount` 0–1 (apuntar y estirar) hacia `direction` (en el mundo).
+func set_spear_thrust(amount: float, direction: Vector3) -> void:
+	_thrust = clampf(amount, 0.0, 1.0)
+	if direction.length_squared() > 0.0001:
+		_thrust_dir = direction.normalized()
+
+
+## Punta del arma en el mundo (pruebas y estela).
+func weapon_tip() -> Vector3:
+	return _glint.global_position
+
+
 func set_crouching(enabled: bool) -> void:
 	_crouch_target = 1.0 if enabled else 0.0
 
@@ -521,6 +547,27 @@ func _setup_weapon() -> void:
 			_build_spear(sword)
 		Weapon.BOW:
 			_build_bow(sword)
+
+
+## Tras posar el esqueleto: si hay estocada, la lanza deja de seguir el giro de la muñeca y apunta al
+## frente, estirándose al golpear (la mano sigue siendo el punto de agarre).
+func _apply_spear_thrust() -> void:
+	if weapon != Weapon.SPEAR or _hand_bone < 0:
+		return
+	if _thrust <= 0.001:
+		_sword.transform = _sword_rest
+		return
+	var hand: Transform3D = _skeleton.global_transform * _skeleton.get_bone_global_pose(_hand_bone)
+	var rest: Transform3D = hand * _sword_rest
+	var aim: float = smoothstep(0.0, 1.0, clampf(_thrust * 1.6, 0.0, 1.0))
+	var reach: float = smoothstep(0.55, 1.0, _thrust) * SPEAR_THRUST_REACH
+	var y: Vector3 = (_thrust_dir + Vector3.DOWN * 0.06).normalized()
+	var x: Vector3 = y.cross(Vector3.UP).normalized()
+	var target := Basis(x, y, x.cross(y))
+	var scale_now: Vector3 = rest.basis.get_scale()
+	var basis_now: Basis = rest.basis.orthonormalized().slerp(target, aim).scaled_local(scale_now)
+	var wanted := Transform3D(basis_now, rest.origin + y * reach)
+	_sword.transform = hand.affine_inverse() * wanted
 
 
 ## Lanza: asta larga sujeta por un tercio, con la punta de hierro hacia delante.

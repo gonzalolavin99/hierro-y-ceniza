@@ -27,6 +27,9 @@ func _ready() -> void:
 	_button("lock_on", JOY_BUTTON_RIGHT_STICK, KEY_TAB) # Sin objetivo: recentra la cámara
 	_button("crouch", JOY_BUTTON_LEFT_STICK, KEY_C)
 	_button("pause", JOY_BUTTON_START, KEY_ESCAPE)
+	# Menús: Godot no trae A / B del mando en "aceptar" / "volver"; se añaden aquí.
+	_pad("ui_accept", JOY_BUTTON_A)
+	_pad("ui_cancel", JOY_BUTTON_B)
 	_axis("heavy_attack", JOY_AXIS_TRIGGER_RIGHT, 1.0, KEY_L)  # Golpe pesado
 	_axis("item", JOY_AXIS_TRIGGER_LEFT, 1.0, KEY_Q)           # Usar el arma secundaria
 	_button("item_next", JOY_BUTTON_DPAD_RIGHT, KEY_2)        # Cambiar de arma secundaria
@@ -54,6 +57,13 @@ func _button(action: StringName, button: JoyButton, key: Key) -> void:
 	pad.button_index = button
 	InputMap.action_add_event(action, pad)
 	_add_key(action, key)
+
+
+func _pad(action: StringName, button: JoyButton) -> void:
+	_ensure(action)
+	var pad := InputEventJoypadButton.new()
+	pad.button_index = button
+	InputMap.action_add_event(action, pad)
 
 
 func _add_key(action: StringName, key: Key) -> void:

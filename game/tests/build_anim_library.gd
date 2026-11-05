@@ -49,6 +49,8 @@ const MAP := {
 	"dodge_back": ["dodge_backward", false],
 	"dodge_left": ["dodge_left", false],
 	"dodge_right": ["dodge_right", false],
+	"roll": ["roll_stand", false],        # "Stand To Roll": la voltereta va de 0,85 a 2,0 s
+	"roll_run": ["roll_sprint", false],   # "Sprinting Forward Roll": de 0,45 a 1,17 s
 	# Curarse (provisional: se lleva la mano al cuello y al hombro, como apretando un vendaje).
 	"heal": ["idle_4", false],
 	# Arquero (Longbow de Mixamo).
@@ -82,6 +84,10 @@ const POLISH := {
 	"walk_left": {"hips_drop": 0.04}, "walk_right": {"hips_drop": 0.04},
 	"run_fwd": {"hips_drop": 0.03}, "run_back": {"hips_drop": 0.03},
 	"run_left": {"hips_drop": 0.03}, "run_right": {"hips_drop": 0.03},
+	# Caminar agachado hecho a partir de caminar: cadera muy baja (rodillas dobladas, pies en su sitio)
+	# y tronco inclinado. Si algún día se descargan los de Mixamo, quitar estas líneas.
+	"crouch_fwd": {"hips_drop": 0.36, "spine_pitch": 20.0}, "crouch_back": {"hips_drop": 0.36, "spine_pitch": 20.0},
+	"crouch_left": {"hips_drop": 0.36, "spine_pitch": 20.0}, "crouch_right": {"hips_drop": 0.36, "spine_pitch": 20.0},
 	"combo_one_hand": {"hips_drop": 0.04, "cut_emphasis": {"impacts": [1.00, 1.95, 2.98], "hips": 12.0, "spine": 10.0}},
 	"combo_two_hand": {"hips_drop": 0.04, "cut_emphasis": {"impacts": [0.63, 1.33, 2.25], "hips": 10.0, "spine": 8.0}},
 	"slash_a": {"cut_emphasis": {"impacts": [0.53], "hips": 10.0, "spine": 8.0}},

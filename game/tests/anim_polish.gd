@@ -11,6 +11,7 @@ extends RefCounted
 ##   hips_drop: float           metros que baja la cadera (postura más baja y firme).
 ##   hips_yaw:  [[seg, grados]] giro EXTRA de cadera en el tiempo (koshi-mawari).
 ##   spine_yaw: [[seg, grados]] giro EXTRA del pecho (Spine2) en el tiempo.
+##   spine_pitch: float         grados que se inclina hacia delante el tronco (Spine), p. ej. al agacharse.
 ##   cut_emphasis: {"impacts": [seg...], "hips": grados, "spine": grados}
 ##       Genera hips_yaw/spine_yaw automáticamente: en cada impacto la cadera y el pecho giran
 ##       MÁS en la dirección del tajo, con un pequeño contragiro antes (anticipación).
@@ -44,6 +45,12 @@ func polish(anim: Animation, cfg: Dictionary) -> Dictionary:
 		hips.origin.y -= drop
 		hips.basis = Basis(Vector3.UP, deg_to_rad(_curve(cfg.get("hips_yaw", []), t))) * hips.basis
 		L["Hips"] = hips
+		var pitch: float = deg_to_rad(cfg.get("spine_pitch", 0.0))
+		if pitch != 0.0:
+			var Gp := _globals(L)
+			var spine: Transform3D = Gp["Spine"]
+			var spine_parent: Transform3D = Gp["Hips"]
+			L["Spine"] = Transform3D(spine_parent.basis.inverse() * (Basis(Vector3.RIGHT, pitch) * spine.basis), L["Spine"].origin)
 		var spine_yaw: float = deg_to_rad(_curve(cfg.get("spine_yaw", []), t))
 		if spine_yaw != 0.0:
 			var G1 := _globals(L)
@@ -57,7 +64,7 @@ func polish(anim: Animation, cfg: Dictionary) -> Dictionary:
 		var G2 := _globals(L)
 		for leg in LEGS:
 			foot_err = maxf(foot_err, G2[leg[2]].origin.distance_to(G0[leg[2]].origin))
-		for b in ["Hips", "Spine2", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "RightLeg", "RightFoot"]:
+		for b in ["Hips", "Spine", "Spine2", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "RightLeg", "RightFoot"]:
 			_push(new_keys, b + "/rot", t, L[b].basis.get_rotation_quaternion())
 		_push(new_keys, "Hips/pos", t, L["Hips"].origin)
 	_write(anim, new_keys)
