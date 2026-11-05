@@ -98,8 +98,8 @@ apunta solo cuando nadie más ataca y suelta el turno al disparar. ✅ OK del ju
 Quedan para más adelante: castigar curarse a destiempo (cuando exista la curación, Hito 6) y las animaciones
 de caminar agachado (Mixamo, las descarga el jugador).
 
-## Hito 6 — El loop souls (2 semanas)
-- [~] Curación con vendajes, campamento, reaparición de enemigos al descansar.
+## Hito 6 — El loop souls (2 semanas) ✅ OK del jugador: hito cerrado
+- [x] Curación con vendajes, campamento, reaparición de enemigos al descansar.
       Paso 1 hecho y probado (OK del jugador): **vendajes** (X / R): 3 cargas, cada una cura el 45 % de la vida;
       vendarse dura 1,4 s quieto y sin guardia (se aprieta a los 0,9 s); un golpe antes lo interrumpe sin gastar
       el vendaje; se reponen al reaparecer. Los enemigos alerta a ≤7 m que te ven empezar a vendarte se lanzan
@@ -110,7 +110,7 @@ de caminar agachado (Mixamo, las descarga el jugador).
       todos los enemigos vuelven vivos a su puesto, y pasa a ser el punto de reaparición. No se puede con un
       enemigo que te tenga en la mira a ≤20 m (el aviso dice "Hay enemigos cerca"). Los enemigos muertos ya no
       reaparecen solos: solo al descansar o al morir Kael (que reaparece en el último campamento, con fundido).
-- [~] Experiencia: perderla al morir y recuperarla. Subir atributos.
+- [x] Experiencia: perderla al morir y recuperarla. Subir atributos.
       Paso 3 hecho y probado (OK del jugador): **experiencia**. Cada enemigo da la suya al morir (soldado 40,
       bandido 35, arquero 45, lancero 55); HUD abajo a la derecha con "+N" al ganarla. Al morir, Kael la pierde
       y queda en su **morral** donde cayó (bolsa de cuero con un jirón rojo en una estaca, se ve de lejos, con
@@ -120,13 +120,15 @@ de caminar agachado (Mixamo, las descarga el jugador).
       (arriba/abajo elige, A / Intro sube, B / Esc se levanta). Vigor +10 vida, Temple +8 postura, Fuerza
       +6 % daño, Destreza +6 % daño a la postura, por punto; tope 10 cada uno. Nivel = suma − 3; cada punto
       cuesta 60 + 20 × (nivel − 1) de experiencia.
-- [~] Guardado/carga. Menú de pausa.
+- [x] Guardado/carga. Menú de pausa.
       Paso 5 hecho y probado (OK del jugador): **guardado automático** en `user://save.json`
       (`%APPDATA%\Godot\app_userdata\Hierro y Ceniza\save.json`). Se guarda al descansar, al subir atributos,
       al morir y al recoger el morral; al abrir el juego Kael aparece en su último campamento con atributos,
-      experiencia y morral. Archivo roto = empieza de cero. Las pruebas usan otro archivo. Falta: menú de pausa
-      (con "Empezar de nuevo", que borra la partida).
-- [ ] Muerte con la voz del narrador: "No… no fue así".
+      experiencia y morral. Archivo roto = empieza de cero. Las pruebas usan otro archivo.
+      Paso 6 hecho y probado (OK del jugador): **menú de pausa** (Start / Esc, congela el juego): Continuar,
+      Controles (lista de botones), Empezar de nuevo (confirmación con "No" señalado; borra la partida y
+      recarga el nivel) y Salir. B / Esc vuelve atrás. No se abre con el menú de atributos abierto.
+- [x] Muerte con la voz del narrador: "No… no fue así" (hecho en el Hito 4 con el sistema de voces).
 
 **🧪 PRUEBA:** ciclo completo: explorar → morir → recuperar → subir nivel.
 

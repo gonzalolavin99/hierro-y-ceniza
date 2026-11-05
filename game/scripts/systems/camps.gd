@@ -11,6 +11,8 @@ var _caption: Label
 var _tween: Tween
 ## Menú para subir atributos (se abre al descansar).
 var level_menu: LevelMenu
+## Menú de pausa (Start / Esc).
+var pause_menu: PauseMenu
 
 
 func _ready() -> void:
@@ -33,6 +35,8 @@ func _ready() -> void:
 	_black.add_child(_caption)
 	level_menu = LevelMenu.new()
 	add_child(level_menu)
+	pause_menu = PauseMenu.new()
+	add_child(pause_menu)
 
 
 ## Oscurece (1) o aclara (0) la pantalla en `seconds`, con un texto opcional en el centro.

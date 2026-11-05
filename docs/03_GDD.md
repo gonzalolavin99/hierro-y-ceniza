@@ -54,6 +54,7 @@
 | Curarse | X (teclado: R) | Vendarse: cura 45 %, 1,4 s quieto y sin guardia, 3 vendajes |
 | Armas secundarias | LT · cruceta ←/→ cambia | Ballesta de muñeca (interrumpe ataques), bomba de humo (aturde), bomba de pólvora (atraviesa la guardia) |
 | Descansar | Y junto a la fogata (teclado: E) | Repone vida y vendajes; los enemigos vuelven; punto de reaparición |
+| Pausa | Start (teclado: Esc) | Continuar, controles, empezar de nuevo, salir |
 | Agacharse / sigilo | L3 (teclado: C) | Alterna agachado: más lento, casi sin ruido, cuesta más verte |
 
 El repertorio está en `game/scenes/player/moves.gd` (datos): añadir un movimiento es añadir una línea.
