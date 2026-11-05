@@ -65,6 +65,286 @@
       "text": ""
     },
     {
+      "chars": 20,
+      "chirp": "indignant",
+      "event": "heal_danger",
+      "id": "frank_heal_danger_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 23,
+      "chirp": "alarm_talk",
+      "event": "heal_danger",
+      "id": "frank_heal_danger_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 44,
+      "chirp": "chatter",
+      "event": "heal_danger",
+      "id": "frank_heal_danger_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 22,
+      "chirp": "chatter",
+      "event": "heal",
+      "id": "frank_heal_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 28,
+      "chirp": "twitter",
+      "event": "heal",
+      "id": "frank_heal_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 48,
+      "chirp": "chatter",
+      "event": "bandages_out",
+      "id": "frank_bandages_out_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 39,
+      "chirp": "chatter",
+      "event": "death_first",
+      "id": "frank_death_first_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 34,
+      "chirp": "twitter",
+      "event": "death_first",
+      "id": "frank_death_first_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 37,
+      "chirp": "chatter",
+      "event": "death_first",
+      "id": "frank_death_first_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 35,
+      "chirp": "chatter",
+      "event": "death_again",
+      "id": "frank_death_again_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 43,
+      "chirp": "happy",
+      "event": "death_again",
+      "id": "frank_death_again_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 59,
+      "chirp": "chatter",
+      "event": "hint_soldier",
+      "id": "frank_hint_soldier_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 49,
+      "chirp": "chatter",
+      "event": "hint_soldier",
+      "id": "frank_hint_soldier_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 36,
+      "chirp": "chatter",
+      "event": "hint_spear",
+      "id": "frank_hint_spear_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 54,
+      "chirp": "chatter",
+      "event": "hint_spear",
+      "id": "frank_hint_spear_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 54,
+      "chirp": "chatter",
+      "event": "hint_archer",
+      "id": "frank_hint_archer_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 52,
+      "chirp": "chatter",
+      "event": "hint_bandit",
+      "id": "frank_hint_bandit_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 46,
+      "chirp": "chatter",
+      "event": "hint_varga",
+      "id": "frank_hint_varga_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 58,
+      "chirp": "chatter",
+      "event": "hint_varga",
+      "id": "frank_hint_varga_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 38,
+      "chirp": "chatter",
+      "event": "hint_varga",
+      "id": "frank_hint_varga_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 66,
+      "chirp": "chatter",
+      "event": "hint_danger",
+      "id": "frank_hint_danger_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 36,
+      "chirp": "twitter",
+      "event": "zone_village",
+      "id": "frank_zone_village_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 57,
+      "chirp": "happy",
+      "event": "zone_forest",
+      "id": "frank_zone_forest_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 44,
+      "chirp": "sad",
+      "event": "zone_fortress",
+      "id": "frank_zone_fortress_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 50,
+      "chirp": "happy",
+      "event": "rest_first",
+      "id": "frank_rest_first_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 30,
+      "chirp": "twitter",
+      "event": "rest",
+      "id": "frank_rest_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 38,
+      "chirp": "chatter",
+      "event": "rest",
+      "id": "frank_rest_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 23,
+      "chirp": "alarm_talk",
+      "event": "stagger",
+      "id": "frank_stagger_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 28,
+      "chirp": "alarm_talk",
+      "event": "stagger",
+      "id": "frank_stagger_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 50,
+      "chirp": "sad",
+      "event": "kill",
+      "id": "frank_kill_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 28,
+      "chirp": "sad",
+      "event": "kill",
+      "id": "frank_kill_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 60,
+      "chirp": "chatter",
+      "event": "kill",
+      "id": "frank_kill_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 29,
+      "chirp": "chatter",
+      "event": "idle_long",
+      "id": "frank_idle_long_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 38,
+      "chirp": "chatter",
+      "event": "idle_long",
+      "id": "frank_idle_long_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 29,
+      "chirp": "twitter",
+      "event": "idle_long",
+      "id": "frank_idle_long_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
       "chars": 0,
       "chirp": "happy",
       "event": "happy",

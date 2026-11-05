@@ -69,6 +69,9 @@ var _trap_anchor: Node3D
 var _run_then_hop: bool = true
 var _next_idle_chatter: float = 40.0
 var _last_health: float = -1.0
+var _gesture_until: float = 0.0
+## Quién decide cuándo habla (consejos, bromas, pistas).
+var advisor: FrankAdvisor
 
 
 func setup(player: Player) -> void:
@@ -86,6 +89,10 @@ func _ready() -> void:
 		_neck = _player.body.bone_attachment("mixamorig_Neck")
 		_player.health.changed.connect(_on_health_changed)
 		_last_health = _player.health.current
+		advisor = FrankAdvisor.new()
+		advisor.name = "Advisor"
+		advisor.setup(self, _player)
+		add_child(advisor)
 	sync_with_story.call_deferred()
 
 
@@ -120,6 +127,7 @@ func trap(anchor: Node3D) -> void:
 func perch() -> void:
 	mode = Mode.PERCHED
 	pose = Pose.IDLE
+	_gesture_until = 0.0
 	look_target = null
 	visible = true
 	if _shoulder:
@@ -158,6 +166,12 @@ func run_to_kael(from: Vector3) -> void:
 	visible = true
 
 
+## Gesto durante unos segundos (taparse los ojos, cabizbajo…); luego vuelve a estar tranquilo.
+func gesture(which: Pose, seconds: float) -> void:
+	pose = which
+	_gesture_until = _time + seconds
+
+
 ## Sacudida de "perro mojado" (al caer de la red).
 func shake(seconds: float = 0.7) -> void:
 	_shake_until = _time + seconds
@@ -189,6 +203,10 @@ func perch_transform() -> Transform3D:
 
 func _process(delta: float) -> void:
 	_time += delta
+	if _gesture_until > 0.0 and _time >= _gesture_until:
+		_gesture_until = 0.0
+		if mode == Mode.PERCHED:
+			pose = Pose.IDLE
 	match mode:
 		Mode.TRAPPED:
 			if _trap_anchor:
@@ -237,6 +255,8 @@ func _idle_chatter() -> void:
 	if _time < _next_idle_chatter:
 		return
 	_next_idle_chatter = _time + randf_range(IDLE_CHATTER_EVERY.x, IDLE_CHATTER_EVERY.y)
+	if advisor and advisor.is_quiet():
+		return
 	if _player and _player.lock_target == null and _player.state_machine.current.name == &"Ground":
 		say(&"idle")
 

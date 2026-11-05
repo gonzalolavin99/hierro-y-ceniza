@@ -23,6 +23,8 @@ const EVENT_PRIORITY: Dictionary = {
 	&"death": 3, &"spot": 3, &"victory": 3,
 	&"danger": 2, &"broken": 2, &"hurt": 2, &"deathblow": 2,
 	&"offended": 3, &"offended_2": 3, &"meet_1": 3, &"meet_2": 3, &"meet_3": 3, &"scared": 2,
+	&"hint_soldier": 3, &"hint_spear": 3, &"hint_archer": 3, &"hint_bandit": 3, &"hint_varga": 3, &"hint_danger": 3,
+	&"death_first": 3, &"death_again": 3, &"heal_danger": 2, &"bandages_out": 2,
 }
 
 const LINES: Dictionary = {
@@ -290,6 +292,88 @@ const LINES: Dictionary = {
 		]},
 		&"offended_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "frank_offended_2", "chirp": "chatter", "es": "«Bueno. Te sigo igual. Alguien tiene que cuidarte.»"},
+		]},
+		# --- Consejos y bromas (FrankAdvisor). Nunca da la respuesta exacta: da pistas. ---
+		# Se venda con un enemigo alerta cerca: se tapa la cara.
+		&"heal_danger": {"chance": 1.0, "cooldown": 25.0, "lines": [
+			{"id": "frank_heal_danger_1", "chirp": "indignant", "es": "«¿Ahora? ¿En serio?»"},
+			{"id": "frank_heal_danger_2", "chirp": "alarm_talk", "es": "«¡Que te está mirando!»"},
+			{"id": "frank_heal_danger_3", "chirp": "chatter", "es": "«Vendarse delante de él… Valiente. O tonto.»"},
+		]},
+		&"heal": {"chance": 0.35, "cooldown": 60.0, "lines": [
+			{"id": "frank_heal_1", "chirp": "chatter", "es": "«Aprieta fuerte. Así.»"},
+			{"id": "frank_heal_2", "chirp": "twitter", "es": "«Ya está. Como nuevo. Casi.»"},
+		]},
+		&"bandages_out": {"chance": 1.0, "cooldown": 90.0, "lines": [
+			{"id": "frank_bandages_out_1", "chirp": "chatter", "es": "«No quedan vendas. En un campamento te dan más.»"},
+		]},
+		# Al reaparecer tras morir.
+		&"death_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_death_first_1", "chirp": "chatter", "es": "«Bueno. Otra vez. Yo no he visto nada.»"},
+			{"id": "frank_death_first_2", "chirp": "twitter", "es": "«Te guardé el sitio en el hombro.»"},
+			{"id": "frank_death_first_3", "chirp": "chatter", "es": "«Eso dolió de mirar. Vamos otra vez.»"},
+		]},
+		&"death_again": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_death_again_1", "chirp": "chatter", "es": "«Respira. Míralo antes de pegarle.»"},
+			{"id": "frank_death_again_2", "chirp": "happy", "es": "«Cada vez aguantas más. Lo estoy contando.»"},
+		]},
+		# Pistas según quién lo venció (a partir de la segunda vez).
+		&"hint_soldier": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_hint_soldier_1", "chirp": "chatter", "es": "«Para el golpe justo cuando llega. Se cansan antes que tú.»"},
+			{"id": "frank_hint_soldier_2", "chirp": "chatter", "es": "«Cuando se tambalea, ¡ahí! No lo dejes respirar.»"},
+		]},
+		&"hint_spear": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_hint_spear_1", "chirp": "chatter", "es": "«La lanza llega lejos. Pégate a él.»"},
+			{"id": "frank_hint_spear_2", "chirp": "chatter", "es": "«Si pincha en rojo, no te apartes: ve hacia la punta.»"},
+		]},
+		&"hint_archer": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_hint_archer_1", "chirp": "chatter", "es": "«El del arco no sabe pelear de cerca. Corre hacia él.»"},
+		]},
+		&"hint_bandit": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_hint_bandit_1", "chirp": "chatter", "es": "«Ese es rápido. Espera a que falle, y entonces, tú.»"},
+		]},
+		&"hint_varga": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_hint_varga_1", "chirp": "chatter", "es": "«Cuando salta, apártate. Cuando cae, ¡pégale!»"},
+			{"id": "frank_hint_varga_2", "chirp": "chatter", "es": "«Sus cuchillos se paran con la espada. Como un golpe más.»"},
+			{"id": "frank_hint_varga_3", "chirp": "chatter", "es": "«Cuando gira y barre en rojo… ¡salta!»"},
+		]},
+		&"hint_danger": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_hint_danger_1", "chirp": "chatter", "es": "«Rojo es que no se para. Si barre, salta; si pincha, ve hacia él.»"},
+		]},
+		# Lugares (después del anciano).
+		&"zone_village": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_zone_village_1", "chirp": "twitter", "es": "«Huele a pan… y a humo. Más a humo.»"},
+		]},
+		&"zone_forest": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_zone_forest_1", "chirp": "happy", "es": "«¡Árboles! Por fin algo de mi tamaño. Bueno, más grande.»"},
+		]},
+		&"zone_fortress": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_zone_fortress_1", "chirp": "sad", "es": "«Muros altos. No me gustan los muros altos.»"},
+		]},
+		# Campamento.
+		&"rest_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_rest_first_1", "chirp": "happy", "es": "«Fuego, comida y nadie persiguiéndonos. Me gusta.»"},
+		]},
+		&"rest": {"chance": 0.35, "cooldown": 120.0, "lines": [
+			{"id": "frank_rest_1", "chirp": "twitter", "es": "«Duerme. Yo vigilo. …Un rato.»"},
+			{"id": "frank_rest_2", "chirp": "chatter", "es": "«¿Has comido algo hoy? Yo sí. Tu pan.»"},
+		]},
+		# Le rompen la guardia a Kael.
+		&"stagger": {"chance": 0.6, "cooldown": 25.0, "lines": [
+			{"id": "frank_stagger_1", "chirp": "alarm_talk", "es": "«¡Respira, grandullón!»"},
+			{"id": "frank_stagger_2", "chirp": "alarm_talk", "es": "«¡Apártate, que viene otra!»"},
+		]},
+		# Después de un golpe mortal: la conciencia de Kael (nunca en un duelo con jefe).
+		&"kill": {"chance": 0.25, "cooldown": 90.0, "lines": [
+			{"id": "frank_kill_1", "chirp": "sad", "es": "«Ese también tenía a alguien esperándolo en casa…»"},
+			{"id": "frank_kill_2", "chirp": "sad", "es": "«¿Seguro que eran rebeldes?»"},
+			{"id": "frank_kill_3", "chirp": "chatter", "es": "«El Regente no se mancha las manos, ¿eh? Para eso estás tú.»"},
+		]},
+		# Kael lleva rato quieto.
+		&"idle_long": {"chance": 1.0, "cooldown": 90.0, "lines": [
+			{"id": "frank_idle_long_1", "chirp": "chatter", "es": "«¿Nos quedamos a vivir aquí?»"},
+			{"id": "frank_idle_long_2", "chirp": "chatter", "es": "«Si no vas tú, voy yo. …No. Mejor tú.»"},
+			{"id": "frank_idle_long_3", "chirp": "twitter", "es": "«Me aburro. Te voy a peinar.»"},
 		]},
 		# Sonidos sin subtítulo.
 		&"happy": {"chance": 1.0, "cooldown": 1.0, "lines": [

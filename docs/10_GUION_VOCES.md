@@ -162,6 +162,41 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `frank_meet_3.wav` | meet_3 | (chillido: chatter) | «Me quedo contigo. Alguien tiene que cuidarte.» |
 | `frank_offended_1.wav` | offended | (chillido: indignant) | «¡Ni las gracias! Ya me solté yo solo, ¿eh?» |
 | `frank_offended_2.wav` | offended_2 | (chillido: chatter) | «Bueno. Te sigo igual. Alguien tiene que cuidarte.» |
+| `frank_heal_danger_1.wav` | heal_danger | (chillido: indignant) | «¿Ahora? ¿En serio?» |
+| `frank_heal_danger_2.wav` | heal_danger | (chillido: alarm_talk) | «¡Que te está mirando!» |
+| `frank_heal_danger_3.wav` | heal_danger | (chillido: chatter) | «Vendarse delante de él… Valiente. O tonto.» |
+| `frank_heal_1.wav` | heal | (chillido: chatter) | «Aprieta fuerte. Así.» |
+| `frank_heal_2.wav` | heal | (chillido: twitter) | «Ya está. Como nuevo. Casi.» |
+| `frank_bandages_out_1.wav` | bandages_out | (chillido: chatter) | «No quedan vendas. En un campamento te dan más.» |
+| `frank_death_first_1.wav` | death_first | (chillido: chatter) | «Bueno. Otra vez. Yo no he visto nada.» |
+| `frank_death_first_2.wav` | death_first | (chillido: twitter) | «Te guardé el sitio en el hombro.» |
+| `frank_death_first_3.wav` | death_first | (chillido: chatter) | «Eso dolió de mirar. Vamos otra vez.» |
+| `frank_death_again_1.wav` | death_again | (chillido: chatter) | «Respira. Míralo antes de pegarle.» |
+| `frank_death_again_2.wav` | death_again | (chillido: happy) | «Cada vez aguantas más. Lo estoy contando.» |
+| `frank_hint_soldier_1.wav` | hint_soldier | (chillido: chatter) | «Para el golpe justo cuando llega. Se cansan antes que tú.» |
+| `frank_hint_soldier_2.wav` | hint_soldier | (chillido: chatter) | «Cuando se tambalea, ¡ahí! No lo dejes respirar.» |
+| `frank_hint_spear_1.wav` | hint_spear | (chillido: chatter) | «La lanza llega lejos. Pégate a él.» |
+| `frank_hint_spear_2.wav` | hint_spear | (chillido: chatter) | «Si pincha en rojo, no te apartes: ve hacia la punta.» |
+| `frank_hint_archer_1.wav` | hint_archer | (chillido: chatter) | «El del arco no sabe pelear de cerca. Corre hacia él.» |
+| `frank_hint_bandit_1.wav` | hint_bandit | (chillido: chatter) | «Ese es rápido. Espera a que falle, y entonces, tú.» |
+| `frank_hint_varga_1.wav` | hint_varga | (chillido: chatter) | «Cuando salta, apártate. Cuando cae, ¡pégale!» |
+| `frank_hint_varga_2.wav` | hint_varga | (chillido: chatter) | «Sus cuchillos se paran con la espada. Como un golpe más.» |
+| `frank_hint_varga_3.wav` | hint_varga | (chillido: chatter) | «Cuando gira y barre en rojo… ¡salta!» |
+| `frank_hint_danger_1.wav` | hint_danger | (chillido: chatter) | «Rojo es que no se para. Si barre, salta; si pincha, ve hacia él.» |
+| `frank_zone_village_1.wav` | zone_village | (chillido: twitter) | «Huele a pan… y a humo. Más a humo.» |
+| `frank_zone_forest_1.wav` | zone_forest | (chillido: happy) | «¡Árboles! Por fin algo de mi tamaño. Bueno, más grande.» |
+| `frank_zone_fortress_1.wav` | zone_fortress | (chillido: sad) | «Muros altos. No me gustan los muros altos.» |
+| `frank_rest_first_1.wav` | rest_first | (chillido: happy) | «Fuego, comida y nadie persiguiéndonos. Me gusta.» |
+| `frank_rest_1.wav` | rest | (chillido: twitter) | «Duerme. Yo vigilo. …Un rato.» |
+| `frank_rest_2.wav` | rest | (chillido: chatter) | «¿Has comido algo hoy? Yo sí. Tu pan.» |
+| `frank_stagger_1.wav` | stagger | (chillido: alarm_talk) | «¡Respira, grandullón!» |
+| `frank_stagger_2.wav` | stagger | (chillido: alarm_talk) | «¡Apártate, que viene otra!» |
+| `frank_kill_1.wav` | kill | (chillido: sad) | «Ese también tenía a alguien esperándolo en casa…» |
+| `frank_kill_2.wav` | kill | (chillido: sad) | «¿Seguro que eran rebeldes?» |
+| `frank_kill_3.wav` | kill | (chillido: chatter) | «El Regente no se mancha las manos, ¿eh? Para eso estás tú.» |
+| `frank_idle_long_1.wav` | idle_long | (chillido: chatter) | «¿Nos quedamos a vivir aquí?» |
+| `frank_idle_long_2.wav` | idle_long | (chillido: chatter) | «Si no vas tú, voy yo. …No. Mejor tú.» |
+| `frank_idle_long_3.wav` | idle_long | (chillido: twitter) | «Me aburro. Te voy a peinar.» |
 | `frank_happy_1.wav` | happy | (chillido: happy) | little rising trill of a happy small monkey |
 | `frank_happy_2.wav` | happy | (chillido: squeak) | short cheerful squeak |
 | `frank_idle_1.wav` | idle | (chillido: twitter) | soft twittering to himself, small monkey |

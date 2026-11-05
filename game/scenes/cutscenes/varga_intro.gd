@@ -17,6 +17,9 @@ func setup(arena: Node3D, player: Player, varga: Enemy) -> void:
 
 func _begin() -> void:
 	_varga.state_machine.transition_to(&"Scripted")
+	# La ropa de los enfermos ardiendo: Frank no bromea, se queda cabizbajo.
+	if _player.frank and _player.frank.mode == Frank.Mode.PERCHED:
+		_player.frank.pose = Frank.Pose.SAD
 
 
 func _run() -> void:
@@ -77,5 +80,7 @@ func _face(enemy: Enemy, direction: Vector3) -> void:
 
 
 func _end() -> void:
+	if _player.frank and _player.frank.mode == Frank.Mode.PERCHED:
+		_player.frank.pose = Frank.Pose.IDLE
 	_varga.body.stop_action(0.2)
 	_varga.state_machine.transition_to(&"Idle", {"wait": 0.4})

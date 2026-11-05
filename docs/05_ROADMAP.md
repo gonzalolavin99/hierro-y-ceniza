@@ -194,7 +194,14 @@ de caminar agachado (Mixamo, las descarga el jugador).
       cuenta que no lo quieren por los rulos, el anciano recuerda y Frank se le sube al hombro). Si Kael
       **pasa de largo**, Frank se suelta solo, lo alcanza corriendo y se le sube, ofendido. Desde entonces
       va en el **hombro izquierdo** de Kael; parlotea a ratos y se asusta si a Kael le pegan.
-- [ ] Paso 2: consejos y bromas (al curarse con enemigos cerca, al morir mucho, al entrar en zonas…).
+- [x] Paso 2: consejos y bromas. Hecho y probado (OK del jugador): vendarse con un enemigo alerta cerca → se
+      tapa la cara («¿Ahora? ¿En serio?»); sin vendas → «En un campamento te dan más»; al morir se tapa los
+      ojos y al reaparecer anima; desde la 2.ª muerte con el mismo enemigo, **pistas** de ese enemigo
+      (soldado, lancero, arquero, bandido, Varga) alternadas con ánimos y una pista de los ataques rojos;
+      guardia rota → «¡Respira, grandullón!»; comentario al entrar en cada zona (tras el anciano); primer
+      descanso; broma tras 25 s quieto; a veces, tras un golpe mortal, **la conciencia de Kael** («¿Seguro que
+      eran rebeldes?»). **Momentos serios**: en el duelo con un jefe no bromea (solo pistas); en la escena de
+      la ropa ardiendo y tras la muerte de Varga se queda cabizbajo y callado. 35 chillidos nuevos.
 - [ ] Paso 3: avisa de peligros (arqueros, enemigos escondidos) y encuentra cosas (secretos, atajos).
 - [ ] Paso 4: distrae (le tira fruta a un enemigo para abrir un golpe por la espalda).
 

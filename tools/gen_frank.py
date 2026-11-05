@@ -14,6 +14,7 @@ Tipos (inspirados en los monitos pequeños de verdad: silbidos largos, trinos y 
   squeak     un chillidito corto
   twitter    gorjeo bajito, hablando solo
   alarm      chillido agudo y áspero, susto
+  alarm_talk susto y enseguida parloteo nervioso
 """
 import json
 import os
@@ -140,6 +141,9 @@ def make(kind, seconds, rng):
         for k in range(3):
             parts.append((k * 0.12, sweep(4200, 3300, 0.09, rng, gain=1.0, breath=0.45)))
         return place(parts)
+    if kind == "alarm_talk":  # Susto y, enseguida, parloteo nervioso.
+        start = make("alarm", 0.0, rng)
+        return place([(0.0, start), (len(start) / SR + 0.05, chatter(max(seconds - 0.45, 0.5), rng, base=3100.0))])
     raise SystemExit("Tipo de chillido desconocido: %s" % kind)
 
 
