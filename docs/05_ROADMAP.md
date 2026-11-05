@@ -141,7 +141,11 @@ de caminar agachado (Mixamo, las descarga el jugador).
       el anciano envejece con el relato). Voces generadas con Kokoro, subtítulos en español. Cada narración
       suena una sola vez por partida y se guarda. En el nivel de pruebas: prólogo al empezar, aldea en la
       pelea en grupo, bosque en el patio de sigilo, fortaleza en el grupo mixto y la del primer descanso.
-- [ ] Descripciones de objetos que cuentan la historia.
+- [~] Descripciones de objetos que cuentan la historia.
+      Paso 3 hecho y probado (OK del jugador): **inventario** en el menú de pausa (Pausa → Inventario) con
+      13 descripciones: espada, cinta de Lira, vendaje, las 3 armas secundarias, las 3 técnicas y 4 objetos
+      clave de la historia (tela gris, llave del Carcelero, carta del Regente, registro de la capital) que
+      aparecerán cuando se consigan. Muestra cuántos vendajes y usos quedan.
 - [ ] Sistema de narración: voz en inglés + subtítulos en español, primera cinemática.
 
 **🧪 PRUEBA:** leer el guion y escuchar la primera narración. ¿Engancha?

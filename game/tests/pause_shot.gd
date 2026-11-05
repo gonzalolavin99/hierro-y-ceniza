@@ -1,5 +1,5 @@
 extends Node
-## Herramienta: capturas del menú de pausa (principal, controles y confirmación), con ventana.
+## Herramienta: capturas del menú de pausa (principal, inventario, controles y confirmación), con ventana.
 ## Godot --path game res://tests/pause_shot.tscn -- <carpeta>
 
 func _ready() -> void:
@@ -9,6 +9,8 @@ func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	Camps.pause_menu.open()
 	await _shot(out, "p1")
+	Camps.pause_menu.call("_show", &"inventory")
+	await _shot(out, "p_inv")
 	Camps.pause_menu.call("_show", &"controls")
 	await _shot(out, "p2")
 	Camps.pause_menu.call("_show", &"confirm")

@@ -118,6 +118,8 @@ var lock_target: Enemy
 var tools: PlayerTools = PlayerTools.new()
 ## Técnicas (LB + RB): la equipada y las desbloqueadas.
 var arts: PlayerArts = PlayerArts.new()
+## Objetos clave de la historia que lleva (cartas, llaves…; ver ItemLore). Se guardan con la partida.
+var key_items: Array[StringName] = []
 ## Tiempo restante para pisar la hoja (lo activa un paso rápido hacia delante).
 var counter_timer: float = 0.0
 ## Dirección del último paso rápido.

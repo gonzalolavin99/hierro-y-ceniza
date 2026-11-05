@@ -1,6 +1,7 @@
 class_name PauseMenu
 extends CanvasLayer
-## Menú de pausa (Start / Esc): congela el juego. Continuar · Controles · Empezar de nuevo (pide
+## Menú de pausa (Start / Esc): congela el juego. Continuar · Inventario (objetos y sus descripciones,
+## ItemLore) · Controles · Empezar de nuevo (pide
 ## confirmación y borra la partida guardada) · Salir. Start o B / Esc vuelve atrás o cierra.
 ## Lo crea el autoload Camps (siempre existe, oculto). Se construye en código.
 
@@ -36,6 +37,11 @@ var _root: Control
 var _pages: Dictionary[StringName, Control] = {}
 var _buttons: Dictionary[StringName, Button] = {}
 var _controls_label: Label
+var _item_list: VBoxContainer
+var _item_buttons: Dictionary[StringName, Button] = {}
+var _item_name: Label
+var _item_kind: Label
+var _item_text: Label
 var _page: StringName = &""
 var _open: bool = false
 
@@ -61,6 +67,28 @@ func focused_option() -> StringName:
 		if _buttons[key].has_focus():
 			return key
 	return &""
+
+
+## Objeto señalado en el inventario (o &"" si no hay).
+func focused_item() -> StringName:
+	for id in _item_buttons:
+		if _item_buttons[id].has_focus():
+			return id
+	return &""
+
+
+## Objetos que muestra ahora el inventario, en orden.
+func inventory_items() -> Array[StringName]:
+	var result: Array[StringName] = []
+	result.assign(_item_buttons.keys())
+	return result
+
+
+## Texto de la descripción que se ve ahora (nombre, tipo y descripción).
+func item_description() -> String:
+	return "%s
+%s
+%s" % [_item_name.text, _item_kind.text, _item_text.text]
 
 
 func controls_text() -> String:
@@ -104,19 +132,24 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _page == &"main":
 			close()
 		else:
-			_show(&"main", &"controls" if _page == &"controls" else &"restart")
+			_show(&"main", {&"controls": &"controls", &"inventory": &"inventory"}.get(_page, &"restart"))
 	elif event.is_action_pressed("pause"):
 		get_viewport().set_input_as_handled()
 		close()
 
 
 func _show(page: StringName, focus: StringName = &"") -> void:
+	if page == &"inventory":
+		_fill_inventory()
 	_page = page
 	for key in _pages:
 		_pages[key].visible = key == page
 	var first: StringName = focus
 	if first == &"":
-		first = {&"main": &"continue", &"controls": &"back", &"confirm": &"no"}[page]
+		first = {&"main": &"continue", &"controls": &"back", &"confirm": &"no", &"inventory": &"inv_back"}[page]
+	if page == &"inventory" and not _item_buttons.is_empty():
+		_item_buttons[_item_buttons.keys()[0]].grab_focus()
+		return
 	_buttons[first].grab_focus()
 
 
@@ -124,6 +157,10 @@ func _on_option(option: StringName) -> void:
 	match option:
 		&"continue":
 			close()
+		&"inventory":
+			_show(&"inventory")
+		&"inv_back":
+			_show(&"main", &"inventory")
 		&"controls":
 			_show(&"controls")
 		&"back":
@@ -162,7 +199,7 @@ func _build() -> void:
 	var main := _panel(Vector2(560, 0))
 	main.add_child(_label("Pausa", 40, TITLE_COLOR))
 	main.add_child(HSeparator.new())
-	for entry in [[&"continue", "Continuar"], [&"controls", "Controles"], [&"restart", "Empezar de nuevo"], [&"quit", "Salir del juego"]]:
+	for entry in [[&"continue", "Continuar"], [&"inventory", "Inventario"], [&"controls", "Controles"], [&"restart", "Empezar de nuevo"], [&"quit", "Salir del juego"]]:
 		main.add_child(_button(entry[0], entry[1]))
 	main.add_child(HSeparator.new())
 	main.add_child(_label("A / Intro: elegir     ·     B / Esc: volver", 20, DIM_COLOR))
@@ -180,6 +217,32 @@ func _build() -> void:
 	controls.add_child(_button(&"back", "Volver"))
 	_pages[&"controls"] = controls.get_meta("page")
 
+	var inventory := _panel(Vector2(1180, 0))
+	inventory.add_child(_label("Inventario", 34, TITLE_COLOR))
+	inventory.add_child(HSeparator.new())
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 30)
+	inventory.add_child(columns)
+	_item_list = VBoxContainer.new()
+	_item_list.custom_minimum_size = Vector2(400, 0)
+	_item_list.add_theme_constant_override("separation", 2)
+	columns.add_child(_item_list)
+	var details := VBoxContainer.new()
+	details.custom_minimum_size = Vector2(640, 0)
+	details.add_theme_constant_override("separation", 10)
+	columns.add_child(details)
+	_item_name = _label("", 32, TITLE_COLOR)
+	details.add_child(_item_name)
+	_item_kind = _label("", 20, DIM_COLOR)
+	details.add_child(_item_kind)
+	_item_text = _label("", 23, TEXT_COLOR)
+	_item_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_item_text.custom_minimum_size = Vector2(640, 0)
+	details.add_child(_item_text)
+	inventory.add_child(HSeparator.new())
+	inventory.add_child(_button(&"inv_back", "Volver"))
+	_pages[&"inventory"] = inventory.get_meta("page")
+
 	var confirm := _panel(Vector2(760, 0))
 	confirm.add_child(_label("¿Empezar de nuevo?", 36, TITLE_COLOR))
 	var warning := _label("Se borrará tu partida: atributos, experiencia, morral y campamento.\nNo se puede deshacer.", 22, TEXT_COLOR)
@@ -189,6 +252,43 @@ func _build() -> void:
 	confirm.add_child(_button(&"no", "No, volver"))
 	confirm.add_child(_button(&"yes", "Sí, borrar y empezar de nuevo"))
 	_pages[&"confirm"] = confirm.get_meta("page")
+
+
+## Rehace la lista del inventario con lo que lleva Kael ahora.
+func _fill_inventory() -> void:
+	for child in _item_list.get_children():
+		_item_list.remove_child(child)
+		child.queue_free()
+	_item_buttons.clear()
+	_describe(&"")
+	var player := get_tree().get_first_node_in_group("player") as Player
+	if player == null:
+		return
+	for id: StringName in ItemLore.owned(player):
+		var count: String = ItemLore.count_text(player, id)
+		var text: String = ItemLore.ITEMS[id]["name"] + ("   " + count if count != "" else "")
+		var button := _button(&"", text)
+		button.add_theme_font_size_override("font_size", 23)
+		button.focus_entered.connect(_describe.bind(id))
+		_item_list.add_child(button)
+		_item_buttons[id] = button
+	# Bajar desde el último objeto lleva a "Volver"; subir desde "Volver", al último objeto.
+	var last: Button = _item_buttons[_item_buttons.keys()[-1]]
+	last.focus_neighbor_bottom = _buttons[&"inv_back"].get_path()
+	_buttons[&"inv_back"].focus_neighbor_top = last.get_path()
+
+
+func _describe(id: StringName) -> void:
+	if id == &"":
+		_item_name.text = ""
+		_item_kind.text = ""
+		_item_text.text = ""
+		return
+	var player := get_tree().get_first_node_in_group("player") as Player
+	var count: String = ItemLore.count_text(player, id) if player else ""
+	_item_name.text = ItemLore.ITEMS[id]["name"]
+	_item_kind.text = ItemLore.ITEMS[id]["kind"] + ("   ·   lleva " + count if count != "" else "")
+	_item_text.text = ItemLore.ITEMS[id]["text"]
 
 
 ## Panel centrado; devuelve la caja donde van los elementos.
@@ -233,8 +333,9 @@ func _button(key: StringName, text: String) -> Button:
 	button.add_theme_stylebox_override("hover", flat)
 	button.add_theme_stylebox_override("pressed", focus)
 	button.add_theme_stylebox_override("focus", focus)
-	button.pressed.connect(_on_option.bind(key))
-	_buttons[key] = button
+	if key != &"":  # Los objetos del inventario no son opciones del menú.
+		button.pressed.connect(_on_option.bind(key))
+		_buttons[key] = button
 	return button
 
 

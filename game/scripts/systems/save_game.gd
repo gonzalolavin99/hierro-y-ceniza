@@ -39,6 +39,7 @@ func save(player: Player) -> void:
 		"attributes": player.attributes.to_dict(),
 		"spawn": _vec(player.spawn_position()) + [player.start_facing_degrees],
 		"story": Story.to_dict(),
+		"key_items": player.key_items.map(func(id: StringName) -> String: return String(id)),
 	}
 	for node in get_tree().get_nodes_in_group("xp_satchels"):
 		var bag := node as XpSatchel
@@ -74,6 +75,9 @@ func on_player_ready(player: Player) -> void:
 	if data.is_empty():
 		return
 	Story.from_dict(data.get("story", {}))
+	player.key_items.clear()
+	for id in data.get("key_items", []):
+		player.key_items.append(StringName(id))
 	player.attributes.from_dict(data.get("attributes", {}))
 	player.apply_attributes()
 	player.xp = int(data.get("xp", 0))

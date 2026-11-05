@@ -110,6 +110,7 @@ G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path ga
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/save_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/pause_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/story_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/lore_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --fixed-fps 60 --path game res://tests/anim_audit.tscn
 ```
 
