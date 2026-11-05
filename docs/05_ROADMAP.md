@@ -155,7 +155,14 @@ de caminar agachado (Mixamo, las descarga el jugador).
 **🧪 PRUEBA:** leer el guion y escuchar la primera narración. ¿Engancha?
 
 ## Hito 8 — Primer jefe (2–3 semanas)
-- [ ] Capitana Varga: duelo de 2 fases, varias barras de golpe mortal, música, arena con niebla.
+- [~] Capitana Varga: duelo de 2 fases, varias barras de golpe mortal, música, arena con niebla.
+      Paso 1 hecho y probado (OK del jugador): **arena** (patio de la fortaleza al este del nivel de pruebas,
+      x = 84, con pasillo, niebla baja, braseros y "Campamento de la fortaleza" a la entrada). Al entrar, el
+      **rastrillo** baja detrás de Kael y aparece la **barra de jefa** arriba (nombre, vida, postura y un punto
+      rojo por golpe mortal). **2 golpes mortales**: el primero la tumba y se rehace con todo (fase 2). Si Kael
+      muere, el rastrillo sube y todo vuelve a empezar; vencida, no vuelve (se guarda). De momento pelea con
+      ataques de soldado más rápidos y fuertes; faltan su repertorio propio (paso 2), la fase 2 distinta
+      (paso 3) y música y voz (paso 4).
 
 **🧪 PRUEBA:** ¿lo puedes vencer en 5–15 intentos aprendiendo patrones?
 

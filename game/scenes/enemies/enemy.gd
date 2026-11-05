@@ -4,10 +4,16 @@ extends CharacterBody3D
 ## es presionar su postura con ataques y desvíos hasta romperla, y entonces dar el golpe mortal.
 
 signal died
+## Jefes: tras un golpe mortal que no es el último, pasa a la fase siguiente (2, 3…).
+signal phase_changed(phase: int)
 ## Empieza la preparación de un ataque peligroso (aviso rojo). kind: HitData.Kind.
 signal danger_warned(kind: int)
 
 @export var display_name: String = "Soldado"
+## Jefe: usa la barra grande de abajo (BossBar) en vez de la flotante, y aguanta varios golpes mortales.
+@export var boss: bool = false
+## Golpes mortales que hacen falta para vencerlo (los jefes, más de uno: uno por fase).
+@export var deathblows: int = 1
 ## Experiencia que da al morir.
 @export var xp_reward: int = 40
 @export var walk_speed: float = 3.0
@@ -133,11 +139,14 @@ var _evade_in: float = -1.0
 ## Momento (reloj de Squad) del último salto para recuperar distancia.
 var last_keep_away: float = -100.0
 var _spawn: Transform3D
+## Golpes mortales que aún le faltan para caer.
+var deathblows_left: int = 1
 var _base_posture_regen: float
 
 
 func _ready() -> void:
 	add_to_group("enemies")
+	deathblows_left = deathblows
 	_spawn = global_transform
 	_base_posture_regen = posture.regen_rate
 	state_machine.setup(self)
@@ -362,9 +371,24 @@ func receive_deathblow(_attacker: Node3D) -> void:
 	CombatFX.blood(at)
 	CombatFX.hitstop(0.14)
 	CombatFX.shake(0.6)
+	if deathblows_left > 1:
+		# Jefe: no cae aún. Se rehace con todo y pasa a la siguiente fase.
+		deathblows_left -= 1
+		health.heal(health.max_health)
+		posture.reset()
+		blocks_in_a_row = 0
+		state_machine.transition_to(&"Rally")
+		phase_changed.emit(phase())
+		return
+	deathblows_left = 0
 	health.current = 0.0
 	health.changed.emit(0.0, health.max_health)
 	state_machine.transition_to(&"Dead")
+
+
+## Fase actual (1 = la primera). Sube con cada golpe mortal que no es el último.
+func phase() -> int:
+	return deathblows - deathblows_left + 1
 
 
 func set_vulnerable(enabled: bool) -> void:
@@ -380,6 +404,7 @@ func respawn() -> void:
 	body.stop_action(0.1)
 	health.heal(health.max_health)
 	posture.reset()
+	deathblows_left = deathblows
 	blocks_in_a_row = 0
 	has_spoken_to_target = false
 	alerted = not starts_unaware
@@ -390,6 +415,8 @@ func respawn() -> void:
 
 ## Al descansar en un campamento (o morir Kael): vuelve vivo y tranquilo a su puesto.
 func reset_to_post() -> void:
+	if boss and is_dead() and deathblows_left <= 0:
+		return  # Un jefe vencido no vuelve.
 	Squad.end_turn(self)
 	evading = false
 	respawn()

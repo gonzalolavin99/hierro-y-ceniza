@@ -62,7 +62,8 @@ func _process(_delta: float) -> void:
 	if enemy and (enemy.is_dead() or _player.global_position.distance_to(enemy.global_position) > 20.0):
 		enemy = null
 
-	_enemy_panel.visible = enemy != null and not camera.is_position_behind(enemy.lock_point())
+	# Los jefes tienen su barra grande (BossBar); sin panel flotante.
+	_enemy_panel.visible = enemy != null and not enemy.boss and not camera.is_position_behind(enemy.lock_point())
 	if _enemy_panel.visible:
 		var head: Vector2 = camera.unproject_position(enemy.lock_point() + Vector3.UP * 1.0)
 		_enemy_panel.position = head - Vector2(_enemy_panel.size.x * 0.5, _enemy_panel.size.y)

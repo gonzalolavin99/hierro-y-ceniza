@@ -20,7 +20,8 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Caminar agachado fabricado a partir de caminar (sin descargas) |
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
-| 8–9 | Pendientes (primer jefe, vertical slice) |
+| 8 · Primer jefe | 🔨 Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Sigue: repertorio propio de Varga |
+| 9 | Pendiente (vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
 El mundo, por ahora, solo es el escenario de pruebas.
@@ -149,6 +150,16 @@ cambiar de objetivo con el stick derecho.
   `NarrationZone` (`scenes/props/narration_zone.gd`, Area3D con `event`, `size` y `act` opcional) en el
   nivel bajo el nodo `Narration`. Frases en `VoiceLines` (narrador, eventos `story_*` y `player_death_N`);
   tras cambiarlas: exportar el guion y `gen_voices.py`. Prueba `story_test`.
+- **Jefes** (`Enemy.boss`, `Enemy.deathblows`): `deathblows_left`; un golpe mortal que no es el último pasa
+  al estado `Rally` (de rodillas, invulnerable 2,4 s, se rehace con vida y postura llenas) y emite
+  `phase_changed`; `phase()` da la fase. Un jefe vencido no vuelve con `reset_to_post`. Barra `BossBar`
+  (`scenes/ui/boss_bar.gd`); el HUD no pone panel flotante a los jefes.
+- **Arena de Varga** (`scenes/levels/varga_arena.gd`, `VargaArena`, grupo "arenas", en el nivel en x = 84):
+  todo en código (suelo, muros, torre del rastrillo, niebla en capas, braseros, campamento a la entrada).
+  `DuelTrigger` → `start_fight()` (baja el rastrillo `AnimatableBody3D`, `aggro_range` 60, barra, narración
+  `story_varga_before`). `Camps.reset_world()` llama a `reset_arena()`. Al caer: `Story` "boss_varga" (se
+  guarda), rastrillo arriba, narración `story_varga_after`. Varga: `scenes/enemies/varga.tscn` (hereda del
+  soldado). Prueba `varga_test`; capturas `tests/arena_shot`.
 - **Escena del prólogo** (`scenes/cutscenes/prologue_scene.gd`, `PrologueScene`, CanvasLayer capa 70, grupo
   "cutscene"): mundo 3D propio (SubViewport `own_world_3d`) con dos decorados hechos en código (fogata en el
   origen, sala del Regente en x = 200), maniquíes quietos (`Mannequin.Weapon.NONE`, `ribbon`), cámara con
@@ -216,7 +227,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -272,7 +283,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 ## 7. Siguiente paso recomendado
 
 1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Escena del prólogo hecha (OK). **Hito 7 cerrado.**
-   Después: **Hito 8** (primer jefe: Capitana Varga, ver `05_ROADMAP.md`).
+   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Siguen su repertorio propio, la fase 2 y música/voz.
 2. **Ajustes tras la prueba del jugador (2026-11-05)**, con su OK: A / B del mando en los menús
    (`InputSetup._pad`: Godot no los trae en `ui_accept` / `ui_cancel`), pisotón más exigente (1,6 m, de cara
    al enemigo), la guardia corta los tajos ligeros en cualquier momento salvo en el impacto
