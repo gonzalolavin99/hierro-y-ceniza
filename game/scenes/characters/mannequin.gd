@@ -19,10 +19,13 @@ const UPPER_BODY: Array[String] = [
 	"RightShoulder", "RightArm", "RightForeArm", "RightHand",
 ]
 
-enum Weapon { SWORD, SPEAR, BOW }
+enum Weapon { SWORD, SPEAR, BOW, NONE }
 
-## Arma que lleva: espada (por defecto), lanza (lancero) o arco en la mano izquierda (arquero).
+## Arma que lleva: espada (por defecto), lanza (lancero), arco en la mano izquierda (arquero) o nada
+## (personajes de las escenas).
 @export var weapon: Weapon = Weapon.SWORD
+## Cinta azul de Lira atada a la muñeca izquierda (Kael).
+@export var ribbon: bool = false
 ## Pose de la parte de arriba "en guardia" (el arquero tiene el arco listo en vez de la espada).
 @export var guard_anim: StringName = &"block_hold"
 @export var body_color: Color = Color(0.55, 0.15, 0.12)
@@ -547,6 +550,12 @@ func _setup_weapon() -> void:
 			_build_spear(sword)
 		Weapon.BOW:
 			_build_bow(sword)
+		Weapon.NONE:
+			for child in sword.get_children():
+				if child != _glint:
+					(child as Node3D).visible = false
+	if ribbon:
+		_build_ribbon()
 
 
 ## Tras posar el esqueleto: si hay estocada, la lanza deja de seguir el giro de la muñeca y apunta al
@@ -568,6 +577,35 @@ func _apply_spear_thrust() -> void:
 	var basis_now: Basis = rest.basis.orthonormalized().slerp(target, aim).scaled_local(scale_now)
 	var wanted := Transform3D(basis_now, rest.origin + y * reach)
 	_sword.transform = hand.affine_inverse() * wanted
+
+
+## Cinta de Lira: una vuelta de tela azul descolorida en la muñeca izquierda, con un cabo que cuelga.
+func _build_ribbon() -> void:
+	var wrist := BoneAttachment3D.new()
+	wrist.name = "LeftWrist"
+	wrist.bone_name = "mixamorig_LeftHand"
+	_skeleton.add_child(wrist)
+	var cloth := StandardMaterial3D.new()
+	cloth.albedo_color = Color(0.32, 0.47, 0.68)
+	cloth.roughness = 0.9
+	var band := MeshInstance3D.new()
+	band.name = "Ribbon"
+	var ring := CylinderMesh.new()
+	ring.top_radius = 0.042
+	ring.bottom_radius = 0.045
+	ring.height = 0.035
+	ring.material = cloth
+	band.mesh = ring
+	band.position = Vector3(0.0, -0.035, 0.0)
+	wrist.add_child(band)
+	var tail := MeshInstance3D.new()
+	var strip := BoxMesh.new()
+	strip.size = Vector3(0.022, 0.11, 0.004)
+	strip.material = cloth
+	tail.mesh = strip
+	tail.position = Vector3(0.0, -0.08, 0.045)
+	tail.rotation_degrees = Vector3(18.0, 0.0, 0.0)
+	band.add_child(tail)
 
 
 ## Lanza: asta larga sujeta por un tercio, con la punta de hierro hacia delante.

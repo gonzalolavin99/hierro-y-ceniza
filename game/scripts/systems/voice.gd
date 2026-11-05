@@ -14,6 +14,8 @@ const POOL_SIZE: int = 6
 ## Voces a la vez en toda la escena (sin contar al narrador, que va solo).
 const MAX_VOICES: int = 2
 
+## Cuánto dura (s) lo último que se dijo (las escenas esperan a que termine cada frase).
+var last_seconds: float = 0.0
 ## Solo para pruebas: ignora la probabilidad (habla siempre que la pausa lo permita).
 var always_speak: bool = false
 
@@ -67,6 +69,7 @@ func say(speaker: StringName, event: StringName, at: Vector3 = Vector3.ZERO) -> 
 	var seconds: float = played[0]
 	# Sin audio, se estima cuánto "ocupa" la línea (para los turnos y los subtítulos).
 	var busy: float = seconds if seconds > 0.0 else (0.5 + String(line.get("es", "")).length() * 0.05)
+	last_seconds = busy
 	_active[speaker] = {"priority": priority, "until": _clock + busy, "player": played[1]}
 	if line.has("es"):
 		var text: String = line["es"]

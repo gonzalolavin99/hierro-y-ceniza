@@ -19,7 +19,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 4 · Pulido del combate II (opciones) | ✅ Repertorio de 9 movimientos. Ataques peligrosos (barrido, estocada, agarre) y pisotón hechos (OK del jugador). Armas secundarias hechas (OK del jugador). Técnicas Martillo y Ráfaga + desbloqueo y sistema de voces con subtítulos hechos (OK del jugador). Voces generadas en local con Kokoro. ✅ **OK del jugador: Hito 4 cerrado** (pulido fino de audio/diálogo, más adelante) |
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Caminar agachado fabricado a partir de caminar (sin descargas) |
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
-| 7 · Historia | 🔨 Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK) |
+| 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
 | 8–9 | Pendientes (primer jefe, vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -149,6 +149,14 @@ cambiar de objetivo con el stick derecho.
   `NarrationZone` (`scenes/props/narration_zone.gd`, Area3D con `event`, `size` y `act` opcional) en el
   nivel bajo el nodo `Narration`. Frases en `VoiceLines` (narrador, eventos `story_*` y `player_death_N`);
   tras cambiarlas: exportar el guion y `gen_voices.py`. Prueba `story_test`.
+- **Escena del prólogo** (`scenes/cutscenes/prologue_scene.gd`, `PrologueScene`, CanvasLayer capa 70, grupo
+  "cutscene"): mundo 3D propio (SubViewport `own_world_3d`) con dos decorados hechos en código (fogata en el
+  origen, sala del Regente en x = 200), maniquíes quietos (`Mannequin.Weapon.NONE`, `ribbon`), cámara con
+  acercamientos lentos, subtítulos propios y fundidos. Espera cada frase con `Voice.last_seconds`. La lanza
+  `Story.start_if_new()` (diferido desde `Player._ready`) solo si es la escena principal y no se vio
+  (`scene_prologue` en `Story`); pausa el árbol; al terminar quita la pausa y guarda. Mantener A / Start 1 s
+  la salta; el menú de pausa no se abre durante una escena. El Regente es un "narrador" (voz no posicional)
+  en `VoiceLines.NARRATORS`. Prueba `prologue_test`; capturas `tests/prologue_shot`.
 - **Descripciones de objetos** (`scripts/systems/item_lore.gd`, `ItemLore`): `ITEMS` (nombre, tipo, texto) y
   `ORDER`; `owned(player)` = siempre espada/cinta/vendaje + armas secundarias + técnicas desbloqueadas +
   `Player.key_items` (objetos clave, guardados en `save.json`). Se ven en Pausa → Inventario. Al añadir un arma,
@@ -208,7 +216,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -263,8 +271,8 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 
 ## 7. Siguiente paso recomendado
 
-1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Después: de objetos y sistema de narración (ver
-   `05_ROADMAP.md`). El Hito 6 (el loop souls) está cerrado con OK del jugador.
+1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Escena del prólogo hecha (OK). **Hito 7 cerrado.**
+   Después: **Hito 8** (primer jefe: Capitana Varga, ver `05_ROADMAP.md`).
 2. **Ajustes tras la prueba del jugador (2026-11-05)**, con su OK: A / B del mando en los menús
    (`InputSetup._pad`: Godot no los trae en `ui_accept` / `ui_cancel`), pisotón más exigente (1,6 m, de cara
    al enemigo), la guardia corta los tajos ligeros en cualquier momento salvo en el impacto

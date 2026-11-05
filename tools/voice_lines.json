@@ -147,6 +147,24 @@
       "text": "The warrior rested by the fire. He never slept well. Not even then."
     },
     {
+      "event": "story_prologue_order",
+      "id": "narrator_story_prologue_order",
+      "phrase": true,
+      "text": "It began with an order, in a hall of cold stone."
+    },
+    {
+      "event": "story_prologue_ribbon",
+      "id": "narrator_story_prologue_ribbon",
+      "phrase": true,
+      "text": "The warrior did not ask a single question. He only looked at the ribbon on his wrist."
+    },
+    {
+      "event": "story_prologue_end",
+      "id": "narrator_story_prologue_end",
+      "phrase": true,
+      "text": "His sister's ribbon. And at dawn, he set out for the Iron Pass."
+    },
+    {
       "event": "story_pass_village",
       "id": "narrator_story_pass_village",
       "phrase": true,
@@ -247,6 +265,20 @@
       "id": "narrator_story_ending_trial",
       "phrase": true,
       "text": "I was that warrior. And at the end, I did the only thing left to me. I stopped obeying."
+    }
+  ],
+  "regent": [
+    {
+      "event": "prologue_order",
+      "id": "regent_prologue_order",
+      "phrase": true,
+      "text": "Five names. Five cordons. When they fall, the fever ends."
+    },
+    {
+      "event": "prologue_sister",
+      "id": "regent_prologue_sister",
+      "phrase": true,
+      "text": "The fever took your sister, Kael. The rebels brought it to us. Make them pay."
     }
   ],
   "soldier": [

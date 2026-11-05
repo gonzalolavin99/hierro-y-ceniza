@@ -9,9 +9,10 @@ extends RefCounted
 ## el generador de voz local (tools/gen_voices.py) y `effort` la descripción del sonido buscado.
 
 ## Nombre que aparece en los subtítulos.
-const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano"}
-## El narrador no está en la escena: su voz suena igual en todas partes (no posicional).
-const NARRATORS: Array[StringName] = [&"narrator"]
+const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente"}
+## Voces que no salen de un personaje del nivel (el narrador; el Regente en las escenas): suenan igual en
+## todas partes (no posicionales) y mandan sobre las demás.
+const NARRATORS: Array[StringName] = [&"narrator", &"regent"]
 ## Importancia de cada evento cuando varias voces coinciden: la más importante interrumpe a la menos
 ## importante del mismo personaje o, si ya suenan demasiadas, a la menos importante de la escena.
 ## Los eventos que no aparecen valen 1 (esfuerzos de ataque, lanzar…).
@@ -107,6 +108,16 @@ const LINES: Dictionary = {
 		&"story_camp_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_camp_first", "en": "The warrior rested by the fire. He never slept well. Not even then.", "es": "El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces."},
 		]},
+		# Escena del prólogo (PrologueScene), después de story_prologue.
+		&"story_prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_prologue_order", "en": "It began with an order, in a hall of cold stone.", "es": "Todo empezó con una orden, en una sala de piedra fría."},
+		]},
+		&"story_prologue_ribbon": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_prologue_ribbon", "en": "The warrior did not ask a single question. He only looked at the ribbon on his wrist.", "es": "El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca."},
+		]},
+		&"story_prologue_end": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_prologue_end", "en": "His sister's ribbon. And at dawn, he set out for the Iron Pass.", "es": "La cinta de su hermana. Y al amanecer partió hacia el Paso de Hierro."},
+		]},
 		# Acto I: el Paso de Hierro.
 		&"story_pass_village": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_pass_village", "en": "The village at the Iron Pass. The rebels had burned it. Everyone knew that.", "es": "La aldea del Paso de Hierro. Los rebeldes la habían quemado. Todos lo sabían."},
@@ -162,6 +173,15 @@ const LINES: Dictionary = {
 		]},
 		&"story_ending_trial": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_ending_trial", "en": "I was that warrior. And at the end, I did the only thing left to me. I stopped obeying.", "es": "Yo fui ese guerrero. Y al final hice lo único que me quedaba: dejé de obedecer."},
+		]},
+	},
+	# El Regente Malcor: solo habla en las escenas (no está en el nivel).
+	&"regent": {
+		&"prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_order", "en": "Five names. Five cordons. When they fall, the fever ends.", "es": "Cinco nombres. Cinco cordones. Cuando caigan, la fiebre se acaba."},
+		]},
+		&"prologue_sister": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_sister", "en": "The fever took your sister, Kael. The rebels brought it to us. Make them pay.", "es": "La fiebre se llevó a tu hermana, Kael. Nos la trajeron los rebeldes. Haz que paguen."},
 		]},
 	},
 }

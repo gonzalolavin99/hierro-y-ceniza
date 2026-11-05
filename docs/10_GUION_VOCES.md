@@ -77,6 +77,9 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_player_death_4_2.wav` | player_death_4 | Let me rest a moment. Then I'll go on. | Subtítulo: Déjame descansar un momento. Luego sigo. |
 | `narrator_story_prologue.wav` | story_prologue | This is the story of a warrior who saved a kingdom. Or so the songs say. | Subtítulo: Esta es la historia de un guerrero que salvó un reino. O eso dicen las canciones. |
 | `narrator_story_camp_first.wav` | story_camp_first | The warrior rested by the fire. He never slept well. Not even then. | Subtítulo: El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces. |
+| `narrator_story_prologue_order.wav` | story_prologue_order | It began with an order, in a hall of cold stone. | Subtítulo: Todo empezó con una orden, en una sala de piedra fría. |
+| `narrator_story_prologue_ribbon.wav` | story_prologue_ribbon | The warrior did not ask a single question. He only looked at the ribbon on his wrist. | Subtítulo: El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca. |
+| `narrator_story_prologue_end.wav` | story_prologue_end | His sister's ribbon. And at dawn, he set out for the Iron Pass. | Subtítulo: La cinta de su hermana. Y al amanecer partió hacia el Paso de Hierro. |
 | `narrator_story_pass_village.wav` | story_pass_village | The village at the Iron Pass. The rebels had burned it. Everyone knew that. | Subtítulo: La aldea del Paso de Hierro. Los rebeldes la habían quemado. Todos lo sabían. |
 | `narrator_story_pass_forest.wav` | story_pass_forest | Smoke rose above the trees. The warrior thought of his sister, and walked faster. | Subtítulo: Sobre los árboles subía humo. El guerrero pensó en su hermana y apuró el paso. |
 | `narrator_story_pass_fortress.wav` | story_pass_fortress | The fortress gate. Behind it waited the Jailer and his chain. | Subtítulo: La puerta de la fortaleza. Tras ella esperaban el Carcelero y su cadena. |
@@ -94,3 +97,12 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_story_aren_before.wav` | story_aren_before | General Aren did not draw his sword. He was waiting for him. He only wanted to talk. | Subtítulo: El general Aren no desenvainó. Lo estaba esperando. Solo quería hablar. |
 | `narrator_story_ending_legend.wav` | story_ending_legend | The warrior saved the kingdom. That is what the songs say. I was that warrior. And I saved no one. | Subtítulo: El guerrero salvó el reino. Eso dicen las canciones. Yo fui ese guerrero. Y no salvé a nadie. |
 | `narrator_story_ending_trial.wav` | story_ending_trial | I was that warrior. And at the end, I did the only thing left to me. I stopped obeying. | Subtítulo: Yo fui ese guerrero. Y al final hice lo único que me quedaba: dejé de obedecer. |
+
+## El Regente (`regent`)
+
+*Voz:* El Regente Malcor: hombre maduro, culto y frío; habla bajo, sin prisa, sin levantar la voz. Kokoro: `bm_george`, algo más grave, con eco de sala de piedra.
+
+| Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
+|---|---|---|---|
+| `regent_prologue_order.wav` | prologue_order | Five names. Five cordons. When they fall, the fever ends. | Subtítulo: Cinco nombres. Cinco cordones. Cuando caigan, la fiebre se acaba. |
+| `regent_prologue_sister.wav` | prologue_sister | The fever took your sister, Kael. The rebels brought it to us. Make them pay. | Subtítulo: La fiebre se llevó a tu hermana, Kael. Nos la trajeron los rebeldes. Haz que paguen. |

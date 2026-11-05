@@ -168,6 +168,7 @@ func _ready() -> void:
 	state_machine.setup(self)
 	posture.broken.connect(_on_posture_broken)
 	SaveGame.on_player_ready.call_deferred(self)
+	Story.start_if_new.call_deferred()
 	if start_with_all_arts:
 		arts.unlock_all()
 

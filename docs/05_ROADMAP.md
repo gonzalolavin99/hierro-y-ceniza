@@ -132,21 +132,25 @@ de caminar agachado (Mixamo, las descarga el jugador).
 
 **🧪 PRUEBA:** ciclo completo: explorar → morir → recuperar → subir nivel.
 
-## Hito 7 — Historia (2–4 semanas, en paralelo con lo anterior)
-- [~] Guion completo: actos, personajes, cada jefe y su verdad oculta, pistas, los dos finales.
+## Hito 7 — Historia (2–4 semanas, en paralelo con lo anterior) ✅ OK del jugador: hito cerrado
+- [x] Guion completo: actos, personajes, cada jefe y su verdad oculta, pistas, los dos finales.
       Paso 1 hecho y revisado (OK del jugador): borrador en `docs/11_GUION.md` (decisiones del §11 tomadas: D18–D21).
-- [~] Textos del narrador (Kael anciano) por zona, por jefe y por muerte.
+- [x] Textos del narrador (Kael anciano) por zona, por jefe y por muerte.
       Paso 2 hecho y probado (OK del jugador): 19 narraciones de historia (prólogo, primer descanso, zonas
       de los 4 actos, antes/después de cada jefe y los dos finales) + frases de muerte por acto (2 por acto,
       el anciano envejece con el relato). Voces generadas con Kokoro, subtítulos en español. Cada narración
       suena una sola vez por partida y se guarda. En el nivel de pruebas: prólogo al empezar, aldea en la
       pelea en grupo, bosque en el patio de sigilo, fortaleza en el grupo mixto y la del primer descanso.
-- [~] Descripciones de objetos que cuentan la historia.
+- [x] Descripciones de objetos que cuentan la historia.
       Paso 3 hecho y probado (OK del jugador): **inventario** en el menú de pausa (Pausa → Inventario) con
       13 descripciones: espada, cinta de Lira, vendaje, las 3 armas secundarias, las 3 técnicas y 4 objetos
       clave de la historia (tela gris, llave del Carcelero, carta del Regente, registro de la capital) que
       aparecerán cuando se consigan. Muestra cuántos vendajes y usos quedan.
-- [ ] Sistema de narración: voz en inglés + subtítulos en español, primera cinemática.
+- [x] Sistema de narración: voz en inglés + subtítulos en español, primera cinemática.
+      Paso 4 hecho y probado (OK del jugador): **escena del prólogo** al empezar una partida nueva (~40 s,
+      mantener A la salta): la fogata del anciano con el niño → la sala del Regente, que da la orden ("Cinco
+      nombres. Cinco cordones…") → primer plano de la cinta de Lira → título → el patio. Voz del Regente
+      nueva (Kokoro `bm_george`). Kael lleva ahora la cinta azul en la muñeca también al jugar.
 
 **🧪 PRUEBA:** leer el guion y escuchar la primera narración. ¿Engancha?
 

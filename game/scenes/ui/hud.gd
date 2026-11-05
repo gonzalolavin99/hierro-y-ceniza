@@ -112,6 +112,14 @@ func _on_subtitle(text: String, speaker_name: String, seconds: float) -> void:
 	_subtitle_tween.tween_callback(func() -> void: _subtitle_line = "")
 
 
+## Quita el subtítulo al momento (al terminar una escena).
+func clear_subtitle() -> void:
+	if _subtitle_tween:
+		_subtitle_tween.kill()
+	_subtitle_label.modulate.a = 0.0
+	_subtitle_line = ""
+
+
 ## Texto del subtítulo visible ahora (vacío si no hay ninguno).
 func subtitle_text() -> String:
 	return _subtitle_line
