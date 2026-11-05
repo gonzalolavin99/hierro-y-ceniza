@@ -184,6 +184,20 @@ de caminar agachado (Mixamo, las descarga el jugador).
 
 **🧪 PRUEBA:** ¿lo puedes vencer en 5–15 intentos aprendiendo patrones?
 
+## Extra — Frank, el tití (compañero; guion §12, D22)
+- [x] Paso 1: crear a Frank. Hecho y probado (OK del jugador): tití pequeño con el pelo lleno de **rulos**,
+      cola larga, ojos grandes; hecho en código y animado por código (respira, parpadea, mece la cola,
+      cabecea al chillar, gestos: agarrarse, taparse los ojos, señalar, triste, tocarse los rulos). **No
+      habla: chilla** (chillidos sintetizados propios, `tools/gen_frank.py`) y el subtítulo es lo que Kael
+      entiende, entre «». **La red de los cazadores** junto al inicio: Frank pide ayuda al acercarse; con
+      **Y** sale la escena (Kael corta la cuerda, Frank cae, se sacude, Kael lo manda con los suyos, Frank
+      cuenta que no lo quieren por los rulos, el anciano recuerda y Frank se le sube al hombro). Si Kael
+      **pasa de largo**, Frank se suelta solo, lo alcanza corriendo y se le sube, ofendido. Desde entonces
+      va en el **hombro izquierdo** de Kael; parlotea a ratos y se asusta si a Kael le pegan.
+- [ ] Paso 2: consejos y bromas (al curarse con enemigos cerca, al morir mucho, al entrar en zonas…).
+- [ ] Paso 3: avisa de peligros (arqueros, enemigos escondidos) y encuentra cosas (secretos, atajos).
+- [ ] Paso 4: distrae (le tira fruta a un enemigo para abrir un golpe por la espalda).
+
 ## Hito 9 — Vertical slice "El Paso de Hierro" + diseño de personajes (6–10 semanas)
 - [ ] Diseño final de Kael y enemigos.
 - [ ] Nivel completo con arte real, iluminación, 2 campamentos, 1 atajo, secretos.

@@ -4,6 +4,9 @@ extends Node
 ## Uso: Story.narrate(&"story_prologue") · Story.death_event() · Story.act = 2
 
 ## Acto del relato (1–4). Cambia las frases del anciano al morir.
+## Avisa cuando cambia la partida entera (nueva o cargada), para que el mundo se recoloque (Frank, la red…).
+signal changed
+
 var act: int = 1:
 	set(value):
 		act = clampi(value, 1, 4)
@@ -68,6 +71,7 @@ func death_event() -> StringName:
 func reset() -> void:
 	act = 1
 	_heard.clear()
+	changed.emit()
 
 
 func to_dict() -> Dictionary:
@@ -79,3 +83,4 @@ func from_dict(data: Dictionary) -> void:
 	act = int(data.get("act", 1))
 	for event in data.get("heard", []):
 		_heard[StringName(event)] = true
+	changed.emit()

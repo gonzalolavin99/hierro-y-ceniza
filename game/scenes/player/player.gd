@@ -148,6 +148,8 @@ var bandages: int = 0:
 		bandages = clampi(value, 0, max_bandages)
 		bandages_changed.emit(bandages)
 
+## Frank, el tití (oculto hasta que Kael lo encuentra; ver scenes/companions/frank.gd).
+var frank: Frank
 var _last_block_press: float = -10.0
 var _spam_count: int = 0
 var _spawn_position: Vector3
@@ -171,6 +173,10 @@ func _ready() -> void:
 	Story.start_if_new.call_deferred()
 	if start_with_all_arts:
 		arts.unlock_all()
+	frank = Frank.new()
+	frank.name = "Frank"
+	frank.setup(self)
+	add_child(frank)
 
 
 func _physics_process(delta: float) -> void:

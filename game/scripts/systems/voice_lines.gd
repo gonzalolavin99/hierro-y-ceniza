@@ -7,9 +7,11 @@ extends RefCounted
 ## Por evento: chance (0–1, probabilidad de hablar), cooldown (segundos sin repetir ese evento) y
 ## lines: frases {id, en, es} (llevan subtítulo) o esfuerzos {id, say, effort}: `say` es la interjección que lee
 ## el generador de voz local (tools/gen_voices.py) y `effort` la descripción del sonido buscado.
+## Frank (el tití) no habla: sus líneas son chillidos {id, chirp, es} o {id, chirp, effort}. `chirp` es el tipo de
+## chillido que sintetiza tools/gen_frank.py y `es`, lo que Kael entiende (va entre «»).
 
 ## Nombre que aparece en los subtítulos.
-const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga"}
+const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga", &"frank": "Frank"}
 ## Voces que no salen de un personaje del nivel (el narrador; el Regente en las escenas): suenan igual en
 ## todas partes (no posicionales) y mandan sobre las demás.
 const NARRATORS: Array[StringName] = [&"narrator", &"regent", &"kael_scene"]
@@ -20,6 +22,7 @@ const EVENT_PRIORITY: Dictionary = {
 	&"player_death": 4, &"player_death_2": 4, &"player_death_3": 4, &"player_death_4": 4,
 	&"death": 3, &"spot": 3, &"victory": 3,
 	&"danger": 2, &"broken": 2, &"hurt": 2, &"deathblow": 2,
+	&"offended": 3, &"offended_2": 3, &"meet_1": 3, &"meet_2": 3, &"meet_3": 3, &"scared": 2,
 }
 
 const LINES: Dictionary = {
@@ -107,6 +110,13 @@ const LINES: Dictionary = {
 		]},
 		&"story_camp_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_camp_first", "en": "The warrior rested by the fire. He never slept well. Not even then.", "es": "El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces."},
+		]},
+		# Frank (escena de la red, FrankMeet; o si Kael pasa de largo).
+		&"story_frank_meet": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_frank_meet", "en": "I never learned to speak monkey. But that look... that look, I understood.", "es": "Nunca aprendí a hablar mono. Pero aquella mirada… aquella sí la entendí."},
+		]},
+		&"story_frank_left": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_frank_left", "en": "I walked right past him. I'm not proud of it. He followed me anyway.", "es": "Pasé de largo. No me enorgullece. Me siguió igual."},
 		]},
 		# Escena del prólogo (PrologueScene), después de story_prologue.
 		&"story_prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
@@ -207,6 +217,12 @@ const LINES: Dictionary = {
 		&"prologue_answer": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_prologue_answer", "en": "It will be done.", "es": "Así se hará."},
 		]},
+		&"frank_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_frank_1", "en": "Go on. Back to your own kind.", "es": "Anda, vete. Vuelve con los tuyos."},
+		]},
+		&"frank_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_frank_2", "en": "...Do as you like.", "es": "…Haz lo que quieras."},
+		]},
 	},
 	# La Capitana Varga (jefa del Paso de Hierro). Duelista: segura, cortante, cansada de la guerra.
 	&"varga": {
@@ -248,6 +264,45 @@ const LINES: Dictionary = {
 		&"victory": {"chance": 1.0, "cooldown": 10.0, "lines": [
 			{"id": "varga_victory_1", "en": "Stay down. You don't know what you're doing.", "es": "No te levantes. No sabes lo que haces."},
 			{"id": "varga_victory_2", "en": "Go home. Tell him the Pass is closed.", "es": "Vuelve a casa. Dile que el Paso está cerrado."},
+		]},
+	},
+	# Frank, el tití: chilla; el subtítulo es lo que Kael entiende (D22). Suena desde su hombro.
+	&"frank": {
+		# Atrapado en la red, cuando Kael se acerca.
+		&"trapped": {"chance": 1.0, "cooldown": 7.0, "lines": [
+			{"id": "frank_trapped_1", "chirp": "call", "es": "«¡Eh! ¡Tú, el de la espada! ¡Aquí arriba!»"},
+			{"id": "frank_trapped_2", "chirp": "call", "es": "«¡Sácame de aquí, por favor!»"},
+			{"id": "frank_trapped_3", "chirp": "chatter", "es": "«No muerdo. Casi nunca.»"},
+		]},
+		# Escena de la red.
+		&"meet_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_meet_1", "chirp": "happy", "es": "«¡Por fin! Dos días aquí colgado.»"},
+		]},
+		&"meet_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_meet_2", "chirp": "sad", "es": "«Los míos no me quieren. Por los rulos.»"},
+		]},
+		&"meet_3": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_meet_3", "chirp": "chatter", "es": "«Me quedo contigo. Alguien tiene que cuidarte.»"},
+		]},
+		# Si Kael pasa de largo: se suelta solo y lo sigue, ofendido.
+		&"offended": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_offended_1", "chirp": "indignant", "es": "«¡Ni las gracias! Ya me solté yo solo, ¿eh?»"},
+		]},
+		&"offended_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_offended_2", "chirp": "chatter", "es": "«Bueno. Te sigo igual. Alguien tiene que cuidarte.»"},
+		]},
+		# Sonidos sin subtítulo.
+		&"happy": {"chance": 1.0, "cooldown": 1.0, "lines": [
+			{"id": "frank_happy_1", "chirp": "happy", "effort": "little rising trill of a happy small monkey"},
+			{"id": "frank_happy_2", "chirp": "squeak", "effort": "short cheerful squeak"},
+		]},
+		&"idle": {"chance": 0.5, "cooldown": 30.0, "lines": [
+			{"id": "frank_idle_1", "chirp": "twitter", "effort": "soft twittering to himself, small monkey"},
+			{"id": "frank_idle_2", "chirp": "squeak", "effort": "curious little squeak"},
+		]},
+		&"scared": {"chance": 0.6, "cooldown": 4.0, "lines": [
+			{"id": "frank_scared_1", "chirp": "alarm", "effort": "sharp startled shriek of a small monkey"},
+			{"id": "frank_scared_2", "chirp": "squeak", "effort": "frightened squeak"},
 		]},
 	},
 }

@@ -580,6 +580,19 @@ func _apply_spear_thrust() -> void:
 
 
 ## Cinta de Lira: una vuelta de tela azul descolorida en la muñeca izquierda, con un cabo que cuelga.
+## Punto que sigue a un hueso del esqueleto (lo crea la primera vez). Lo usa Frank para ir en el hombro.
+func bone_attachment(bone: String) -> BoneAttachment3D:
+	var node_name: String = "Follow_" + bone
+	var existing: Node = _skeleton.get_node_or_null(node_name)
+	if existing:
+		return existing as BoneAttachment3D
+	var follow := BoneAttachment3D.new()
+	follow.name = node_name
+	follow.bone_name = bone
+	_skeleton.add_child(follow)
+	return follow
+
+
 func _build_ribbon() -> void:
 	var wrist := BoneAttachment3D.new()
 	wrist.name = "LeftWrist"

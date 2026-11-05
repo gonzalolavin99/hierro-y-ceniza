@@ -77,6 +77,8 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_player_death_4_2.wav` | player_death_4 | Let me rest a moment. Then I'll go on. | Subtítulo: Déjame descansar un momento. Luego sigo. |
 | `narrator_story_prologue.wav` | story_prologue | This is the story of a warrior who saved a kingdom. Or so the songs say. | Subtítulo: Esta es la historia de un guerrero que salvó un reino. O eso dicen las canciones. |
 | `narrator_story_camp_first.wav` | story_camp_first | The warrior rested by the fire. He never slept well. Not even then. | Subtítulo: El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces. |
+| `narrator_story_frank_meet.wav` | story_frank_meet | I never learned to speak monkey. But that look... that look, I understood. | Subtítulo: Nunca aprendí a hablar mono. Pero aquella mirada… aquella sí la entendí. |
+| `narrator_story_frank_left.wav` | story_frank_left | I walked right past him. I'm not proud of it. He followed me anyway. | Subtítulo: Pasé de largo. No me enorgullece. Me siguió igual. |
 | `narrator_story_prologue_order.wav` | story_prologue_order | It began with an order, in a hall of cold stone. | Subtítulo: Todo empezó con una orden, en una sala de piedra fría. |
 | `narrator_story_prologue_summon.wav` | story_prologue_summon | They summoned the warrior at dawn. He had never stood so close to the Regent. | Subtítulo: Llamaron al guerrero al amanecer. Nunca había estado tan cerca del Regente. |
 | `narrator_story_prologue_ribbon.wav` | story_prologue_ribbon | The warrior did not ask a single question. He only looked at the ribbon on his wrist. | Subtítulo: El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca. |
@@ -120,6 +122,8 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `kael_scene_varga_1.wav` | varga_1 | The Regent says you burn villages. | Subtítulo: El Regente dice que quemáis aldeas. |
 | `kael_scene_varga_2.wav` | varga_2 | I have my orders. | Subtítulo: Tengo mis órdenes. |
 | `kael_scene_prologue_answer.wav` | prologue_answer | It will be done. | Subtítulo: Así se hará. |
+| `kael_scene_frank_1.wav` | frank_1 | Go on. Back to your own kind. | Subtítulo: Anda, vete. Vuelve con los tuyos. |
+| `kael_scene_frank_2.wav` | frank_2 | ...Do as you like. | Subtítulo: …Haz lo que quieras. |
 
 ## Varga (`varga`)
 
@@ -143,3 +147,24 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `varga_death_1.wav` | death | He told you we burned villages? Look at the smoke... look at what we burn. | Subtítulo: ¿Te dijo que quemábamos aldeas? Mira el humo… mira qué quemamos. |
 | `varga_victory_1.wav` | victory | Stay down. You don't know what you're doing. | Subtítulo: No te levantes. No sabes lo que haces. |
 | `varga_victory_2.wav` | victory | Go home. Tell him the Pass is closed. | Subtítulo: Vuelve a casa. Dile que el Paso está cerrado. |
+
+## Frank (`frank`)
+
+*Voz:* Frank, el tití: no habla, chilla. Chillidos sintetizados (tools/gen_frank.py, sin Kokoro): agudos, rápidos y tiernos. El subtítulo es lo que Kael entiende.
+
+| Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
+|---|---|---|---|
+| `frank_trapped_1.wav` | trapped | (chillido: call) | «¡Eh! ¡Tú, el de la espada! ¡Aquí arriba!» |
+| `frank_trapped_2.wav` | trapped | (chillido: call) | «¡Sácame de aquí, por favor!» |
+| `frank_trapped_3.wav` | trapped | (chillido: chatter) | «No muerdo. Casi nunca.» |
+| `frank_meet_1.wav` | meet_1 | (chillido: happy) | «¡Por fin! Dos días aquí colgado.» |
+| `frank_meet_2.wav` | meet_2 | (chillido: sad) | «Los míos no me quieren. Por los rulos.» |
+| `frank_meet_3.wav` | meet_3 | (chillido: chatter) | «Me quedo contigo. Alguien tiene que cuidarte.» |
+| `frank_offended_1.wav` | offended | (chillido: indignant) | «¡Ni las gracias! Ya me solté yo solo, ¿eh?» |
+| `frank_offended_2.wav` | offended_2 | (chillido: chatter) | «Bueno. Te sigo igual. Alguien tiene que cuidarte.» |
+| `frank_happy_1.wav` | happy | (chillido: happy) | little rising trill of a happy small monkey |
+| `frank_happy_2.wav` | happy | (chillido: squeak) | short cheerful squeak |
+| `frank_idle_1.wav` | idle | (chillido: twitter) | soft twittering to himself, small monkey |
+| `frank_idle_2.wav` | idle | (chillido: squeak) | curious little squeak |
+| `frank_scared_1.wav` | scared | (chillido: alarm) | sharp startled shriek of a small monkey |
+| `frank_scared_2.wav` | scared | (chillido: squeak) | frightened squeak |

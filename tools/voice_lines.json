@@ -1,4 +1,118 @@
 {
+  "frank": [
+    {
+      "chars": 42,
+      "chirp": "call",
+      "event": "trapped",
+      "id": "frank_trapped_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 29,
+      "chirp": "call",
+      "event": "trapped",
+      "id": "frank_trapped_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 24,
+      "chirp": "chatter",
+      "event": "trapped",
+      "id": "frank_trapped_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 34,
+      "chirp": "happy",
+      "event": "meet_1",
+      "id": "frank_meet_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 40,
+      "chirp": "sad",
+      "event": "meet_2",
+      "id": "frank_meet_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 47,
+      "chirp": "chatter",
+      "event": "meet_3",
+      "id": "frank_meet_3",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 44,
+      "chirp": "indignant",
+      "event": "offended",
+      "id": "frank_offended_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 51,
+      "chirp": "chatter",
+      "event": "offended_2",
+      "id": "frank_offended_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
+      "chirp": "happy",
+      "event": "happy",
+      "id": "frank_happy_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
+      "chirp": "squeak",
+      "event": "happy",
+      "id": "frank_happy_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
+      "chirp": "twitter",
+      "event": "idle",
+      "id": "frank_idle_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
+      "chirp": "squeak",
+      "event": "idle",
+      "id": "frank_idle_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
+      "chirp": "alarm",
+      "event": "scared",
+      "id": "frank_scared_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
+      "chirp": "squeak",
+      "event": "scared",
+      "id": "frank_scared_2",
+      "phrase": false,
+      "text": ""
+    }
+  ],
   "kael": [
     {
       "event": "attack",
@@ -103,6 +217,18 @@
       "id": "kael_scene_prologue_answer",
       "phrase": true,
       "text": "It will be done."
+    },
+    {
+      "event": "frank_1",
+      "id": "kael_scene_frank_1",
+      "phrase": true,
+      "text": "Go on. Back to your own kind."
+    },
+    {
+      "event": "frank_2",
+      "id": "kael_scene_frank_2",
+      "phrase": true,
+      "text": "...Do as you like."
     }
   ],
   "narrator": [
@@ -171,6 +297,18 @@
       "id": "narrator_story_camp_first",
       "phrase": true,
       "text": "The warrior rested by the fire. He never slept well. Not even then."
+    },
+    {
+      "event": "story_frank_meet",
+      "id": "narrator_story_frank_meet",
+      "phrase": true,
+      "text": "I never learned to speak monkey. But that look... that look, I understood."
+    },
+    {
+      "event": "story_frank_left",
+      "id": "narrator_story_frank_left",
+      "phrase": true,
+      "text": "I walked right past him. I'm not proud of it. He followed me anyway."
     },
     {
       "event": "story_prologue_order",

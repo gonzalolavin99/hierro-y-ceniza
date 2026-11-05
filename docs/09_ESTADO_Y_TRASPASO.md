@@ -21,6 +21,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
 | 8 · Primer jefe | ✅ **OK del jugador: Hito 8 cerrado.** Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Paso 4 (reacciones a los golpes, escena previa, música, estandarte) hecho y probado (OK) |
+| Extra · Frank | Paso 1 (Frank, la red y su escena) hecho y probado (OK). Sigue: consejos y bromas |
 | 9 | Pendiente (vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -176,10 +177,21 @@ cambiar de objetivo con el stick derecho.
 - **Pausa y escenas**: el menú de pausa quita su pausa 0,08 s después de cerrarse; no lo hace si hay una
   escena en el grupo "cutscene" (si no, tras "Empezar de nuevo" el prólogo corría con el juego en marcha).
   El soldado de práctica junto al inicio tiene `aggro_range` 6 (no ataca nada más aparecer).
-- **Escenas en el nivel** (`scenes/cutscenes/varga_intro.gd`, `VargaIntro`): bandas negras, cámara propia,
-  Kael y Varga en el estado `Scripted` (jugador y enemigo; el del enemigo acepta `walk_velocity`), subtítulos
-  propios, mantener A la salta. La lanza la arena la primera vez (`Story` "scene_varga"). Capturas
-  `tests/varga_intro_shot`.
+- **Escenas en el nivel**: base común `LevelCutscene` (`scenes/cutscenes/level_cutscene.gd`): bandas negras,
+  cámara propia, HUD oculto, subtítulos propios, mantener A la salta, Kael en `Scripted`. Cada escena escribe
+  `_begin()`, `_run()` (guion con `await _line(...)` / `_wait(...)`, que devuelven false si se saltó) y `_end()`
+  (también al saltarla: dejarlo todo como al terminar). `VargaIntro` (`varga_intro.gd`): Varga también en
+  `Scripted` (el del enemigo acepta `walk_velocity`); la lanza la arena la primera vez (`Story` "scene_varga").
+  `FrankMeet` (`frank_meet.gd`): la escena de la red. Capturas `tests/varga_intro_shot`, `tests/frank_shot`.
+- **Frank, el tití** (`scenes/companions/frank.gd`, `Frank`): lo crea `Player._ready` (`player.frank`), oculto.
+  Modos HIDDEN / TRAPPED (sigue a la red) / GROUND / RUNNING / HOPPING / PERCHED (en el hombro: sigue al hueso
+  `mixamorig_LeftArm` vía `Mannequin.bone_attachment()`, un poco hacia el cuello). Poses IDLE, CLING,
+  COVER_EYES, POINT, SAD, TOUCH_CURLS. `say(evento)` = `Voice.say(&"frank", …)`. Se recoloca con
+  `Story.changed` (partida nueva o cargada): `Story` "frank_met" (va con Kael) y "frank_freed" (Kael lo soltó).
+  **La red** (`scenes/props/frank_snare.gd`, `FrankSnare`, en test_level junto al inicio): pide ayuda a menos de
+  11 m; "Y  Soltar al tití" a menos de 2,3 m lanza `FrankMeet`; si Kael lo vio y se aleja 26 m, Frank se
+  suelta solo y lo alcanza corriendo (ofendido). Chillidos: `tools/gen_frank.py` (lee `tools/voice_lines.json`;
+  líneas `{id, chirp, es}` o `{id, chirp, effort}`); `gen_voices.py` salta a Frank. Prueba `frank_test`.
 - **Música** (`tools/gen_music.py` → `assets/audio/music/varga_duel_1/2.wav`, bucles de 40 s a 96 ppm): la
   arena la pone en bucle (`AudioStreamWAV.LOOP_FORWARD`), cambia de pista en la fase 2 en el mismo punto
   del compás y la apaga al reiniciar o al vencer.
@@ -250,7 +262,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `hit_react_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `hit_react_test.tscn` · `frank_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -306,7 +318,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 ## 7. Siguiente paso recomendado
 
 1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Escena del prólogo hecha (OK). **Hito 7 cerrado.**
-   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Hechos repertorio, fase 2 y voz (OK). Pulido de Varga hecho (OK). **Hito 8 cerrado.** Sigue: Frank (guion §12).
+   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Hechos repertorio, fase 2 y voz (OK). Pulido de Varga hecho (OK). **Hito 8 cerrado.** Frank, paso 1 (crearlo, la red y su escena) hecho y probado (OK); sigue con sus consejos y bromas (guion §12).
 2. **Ajustes tras la prueba del jugador (2026-11-05)**, con su OK: A / B del mando en los menús
    (`InputSetup._pad`: Godot no los trae en `ui_accept` / `ui_cancel`), pisotón más exigente (1,6 m, de cara
    al enemigo), la guardia corta los tajos ligeros en cualquier momento salvo en el impacto

@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/campfire.tscn" id="8_campfire"]
 [ext_resource type="Script" path="res://scenes/props/narration_zone.gd" id="9_narration"]
 [ext_resource type="Script" path="res://scenes/levels/varga_arena.gd" id="10_arena"]
+[ext_resource type="Script" path="res://scenes/props/frank_snare.gd" id="11_snare"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_material"]
 sky_top_color = Color(0.32, 0.37, 0.44, 1)
@@ -557,3 +558,7 @@ text = "FORTALEZA →
 Duelo: Capitana Varga (jefa, 2 golpes mortales)"
 font_size = 48
 outline_size = 12
+
+[node name="FrankSnare" type="Node3D" parent="."]
+transform = Transform3D(0.3907, 0, 0.9205, 0, 1, 0, -0.9205, 0, 0.3907, -7, 0, 11)
+script = ExtResource("11_snare")

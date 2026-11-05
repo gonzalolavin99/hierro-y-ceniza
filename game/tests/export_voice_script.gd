@@ -11,6 +11,7 @@ const VOICE_DESCRIPTIONS: Dictionary = {
 	&"kael_scene": "Kael en las escenas (la misma voz que en combate, sin eco): sereno, obediente. Kokoro: `bm_daniel`.",
 	&"varga": "La Capitana Varga: mujer de unos 40 años, duelista y soldado veterana. Voz firme y cortante, cansada de la guerra; nunca grita salvo en los ataques peligrosos. Kokoro: `bf_isabella`, algo más grave.",
 	&"regent": "El Regente Malcor: hombre maduro, culto y frío; habla bajo, sin prisa, sin levantar la voz. Kokoro: `bm_george`, algo más grave, con eco de sala de piedra.",
+	&"frank": "Frank, el tití: no habla, chilla. Chillidos sintetizados (tools/gen_frank.py, sin Kokoro): agudos, rápidos y tiernos. El subtítulo es lo que Kael entiende.",
 	&"narrator": "Kael anciano contando la historia junto a una fogata. Voz grave y gastada; habla despacio, dubitativo al corregirse. Kokoro: `bm_lewis`, más lenta y grave, con eco de sala.",
 }
 
@@ -49,7 +50,9 @@ func _init() -> void:
 		md.append("|---|---|---|---|")
 		for event: StringName in VoiceLines.LINES[speaker]:
 			for line: Dictionary in VoiceLines.LINES[speaker][event]["lines"]:
-				if line.has("en"):
+				if line.has("chirp"):
+					md.append("| `%s.wav` | %s | (chillido: %s) | %s |" % [line["id"], event, line["chirp"], line.get("es", line.get("effort", ""))])
+				elif line.has("en"):
 					md.append("| `%s.wav` | %s | %s | Subtítulo: %s |" % [line["id"], event, line["en"], line["es"]])
 				else:
 					md.append("| `%s.wav` | %s | %s | %s |" % [line["id"], event, line["say"], line["effort"]])
@@ -64,8 +67,12 @@ func _init() -> void:
 		var lines: Array = []
 		for event: StringName in VoiceLines.LINES[speaker]:
 			for line: Dictionary in VoiceLines.LINES[speaker][event]["lines"]:
-				lines.append({"id": line["id"], "event": String(event), "text": line.get("en", line.get("say", "")),
-					"phrase": line.has("en")})
+				var entry: Dictionary = {"id": line["id"], "event": String(event), "text": line.get("en", line.get("say", "")),
+					"phrase": line.has("en")}
+				if line.has("chirp"):  # Frank: lo sintetiza tools/gen_frank.py (largo según el subtítulo).
+					entry["chirp"] = line["chirp"]
+					entry["chars"] = String(line.get("es", "")).length()
+				lines.append(entry)
 		data[String(speaker)] = lines
 	var json := FileAccess.open(root_dir.path_join("tools/voice_lines.json"), FileAccess.WRITE)
 	json.store_string(JSON.stringify(data, "  ") + "\n")

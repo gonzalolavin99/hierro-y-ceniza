@@ -126,6 +126,8 @@ def main():
     kokoro = Kokoro(os.path.join(MODELS, "kokoro-v1.0.onnx"), os.path.join(MODELS, "voices-v1.0.bin"))
     made, skipped = 0, 0
     for speaker, lines in data.items():
+        if speaker not in SPEAKERS:  # Frank (chillidos): lo hace tools/gen_frank.py.
+            continue
         folder = os.path.join(OUT, speaker)
         os.makedirs(folder, exist_ok=True)
         for line in lines:

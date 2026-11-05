@@ -20,6 +20,10 @@ func _ready() -> void:
 	add_child(level)
 	_player = get_tree().get_first_node_in_group("player") as Player
 	_enemy = get_tree().get_first_node_in_group("enemies") as Enemy
+	# Frank (en la red, cerca del inicio) chillaría y ocuparía turnos de voz: aquí no participa.
+	for snare in get_tree().get_nodes_in_group("frank_snare"):
+		snare.queue_free()
+	_player.frank.queue_free()
 	Voice.always_speak = true  # Sin azar: cada evento habla si su pausa lo permite.
 	Voice.spoken.connect(func(speaker: StringName, event: StringName, _id: String) -> void: _spoken.append([speaker, event]))
 	Voice.subtitle.connect(func(text: String, _who: String, _secs: float) -> void: _subtitles.append(text))
@@ -43,7 +47,7 @@ func _run() -> void:
 		for event: StringName in VoiceLines.LINES[speaker]:
 			var data: Dictionary = VoiceLines.LINES[speaker][event]
 			for line: Dictionary in data["lines"]:
-				lines_ok = lines_ok and line.has("id") and (line.has("effort") or (line.has("en") and line.has("es")))
+				lines_ok = lines_ok and line.has("id") and (line.has("effort") or (line.has("en") and line.has("es")) or (line.has("chirp") and line.has("es")))
 				if line.has("es"):
 					phrases += 1
 	_check("Todas las líneas tienen id y texto o descripción de esfuerzo", lines_ok)
