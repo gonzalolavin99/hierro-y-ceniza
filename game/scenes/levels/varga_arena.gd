@@ -16,6 +16,13 @@ const WALL_HEIGHT: float = 6.0
 const GATE_WIDTH: float = 4.0
 const GATE_OPEN_Y: float = 4.6
 const DEFEATED_FLAG: StringName = &"boss_varga"
+const INTRO_FLAG: StringName = &"scene_varga"
+## Dónde arde la ropa de los enfermos (junto al sitio de Varga).
+const PYRE_AT: Vector3 = Vector3(11.0, 0.0, 1.8)
+## Música del duelo (tools/gen_music.py): fase 1 y fase 2, mismo ritmo y duración.
+const MUSIC: Array[String] = ["res://assets/audio/music/varga_duel_1.wav", "res://assets/audio/music/varga_duel_2.wav"]
+const MUSIC_DB: float = -9.0
+const SILENT_DB: float = -50.0
 ## Fase 2 (tras el primer golpe mortal): más rápida, más agresiva, con el abanico de cuchillos y el combo
 ## largo. Al reiniciar el duelo vuelve a la fase 1 (sus valores de la escena).
 const PHASE_2: Dictionary = {
@@ -30,6 +37,8 @@ const PHASE_2: Dictionary = {
 }
 
 var varga: Enemy
+## Escena antes del duelo (mientras dura).
+var intro: VargaIntro
 var _gate: AnimatableBody3D
 var _bar: BossBar
 var _active: bool = false
@@ -37,6 +46,8 @@ var _fog: Array[MeshInstance3D] = []
 var _time: float = 0.0
 ## Valores de la fase 1 (los de la escena), para volver a ellos al reiniciar.
 var _phase_1: Dictionary = {}
+var _music: Array[AudioStreamPlayer] = []
+var _music_tween: Tween
 
 
 func _ready() -> void:
@@ -46,6 +57,7 @@ func _ready() -> void:
 	_build_gate()
 	_build_fog()
 	_build_braziers()
+	_build_pyre()
 	var fire := CAMPFIRE.instantiate() as Campfire
 	fire.camp_name = "Campamento de la fortaleza"
 	fire.position = Vector3(-31.0, 0.0, 5.0)
@@ -64,6 +76,7 @@ func _ready() -> void:
 	trigger.body_entered.connect(_on_trigger)
 	_bar = BossBar.new()
 	add_child(_bar)
+	_build_music()
 	if not Story.heard(DEFEATED_FLAG):
 		varga = VARGA.instantiate() as Enemy
 		varga.position = Vector3(8.0, 0.0, 0.0)
@@ -90,17 +103,34 @@ func _process(delta: float) -> void:
 		mat.uv1_offset = Vector3(_time * (0.008 + i * 0.003), _time * 0.004 * (1 - i % 2 * 2), 0.0)
 
 
-## Empieza el duelo (al entrar Kael en el patio).
+## Empieza el duelo (al entrar Kael en el patio). La primera vez, antes, la escena con Varga.
 func start_fight() -> void:
 	if _active or varga == null or varga.is_dead():
 		return
 	_active = true
 	_move_gate(0.0, 0.5)
 	Sfx.play(&"block", global_position + Vector3(-HALF, 1.5, 0.0), 2.0)
+	var player := get_tree().get_first_node_in_group("player") as Player
+	if not Story.heard(INTRO_FLAG) and player:
+		Story.mark_heard(&"story_varga_before")  # La dice el anciano dentro de la escena.
+		intro = VargaIntro.new()
+		intro.setup(self, player, varga)
+		intro.finished.connect(_begin_duel)
+		add_child(intro)
+	else:
+		_begin_duel()
+
+
+func _begin_duel() -> void:
+	if intro:
+		varga.has_spoken_to_target = true  # Ya habló en la escena: no repite su frase al verte.
+	Story.mark_heard(INTRO_FLAG)
+	intro = null
 	varga.aggro_range = 60.0
 	varga.alert()
 	_bar.show_boss(varga)
 	Story.narrate(&"story_varga_before")
+	_play_music(0, 1.5)
 	fight_started.emit()
 
 
@@ -108,6 +138,7 @@ func start_fight() -> void:
 func reset_arena() -> void:
 	_active = false
 	_bar.hide_boss()
+	_stop_music(1.5)
 	_move_gate(GATE_OPEN_Y, 0.8)
 	if varga and not varga.is_dead():
 		varga.aggro_range = 0.0
@@ -123,6 +154,7 @@ func _on_phase_changed(phase: int) -> void:
 	if phase >= 2:
 		_apply_phase(PHASE_2)
 		Voice.say(varga.voice, &"phase", varga.lock_point())
+		_play_music(1, 1.2)
 
 
 func _apply_phase(values: Dictionary) -> void:
@@ -145,7 +177,14 @@ func phase() -> int:
 func _on_varga_died() -> void:
 	_active = false
 	Story.mark_heard(DEFEATED_FLAG)
+	# Recompensas: su estandarte (lo que pidió el Regente) y su técnica, la Ráfaga.
+	var player := get_tree().get_first_node_in_group("player") as Player
+	if player:
+		if not &"varga_banner" in player.key_items:
+			player.key_items.append(&"varga_banner")
+		player.arts.unlock(&"art_flurry")
 	_bar.hide_boss(2.5)
+	_stop_music(3.5)
 	_move_gate(GATE_OPEN_Y, 2.0)
 	get_tree().create_timer(3.0, false).timeout.connect(Story.narrate.bind(&"story_varga_after"))
 	SaveGame.save(get_tree().get_first_node_in_group("player") as Player)
@@ -273,6 +312,85 @@ func _build_braziers() -> void:
 		light.omni_range = 8.0
 		light.position = at + Vector3(0.0, 1.8, 0.0)
 		add_child(light)
+
+
+## Pista de música que suena ahora (0 = fase 1, 1 = fase 2, -1 = ninguna).
+func music_track() -> int:
+	for i in _music.size():
+		if _music[i].playing and _music[i].volume_db > SILENT_DB + 1.0:
+			return i
+	return -1
+
+
+func _build_music() -> void:
+	for path in MUSIC:
+		var player := AudioStreamPlayer.new()
+		if ResourceLoader.exists(path):
+			var stream := (load(path) as AudioStreamWAV).duplicate() as AudioStreamWAV
+			stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+			stream.loop_begin = 0
+			stream.loop_end = int(stream.get_length() * stream.mix_rate)
+			player.stream = stream
+		player.volume_db = SILENT_DB
+		add_child(player)
+		_music.append(player)
+
+
+## Pasa a la pista `index` en `seconds` (si ya sonaba otra, sigue en el mismo punto del compás).
+func _play_music(index: int, seconds: float) -> void:
+	var position: float = 0.0
+	for player in _music:
+		if player.playing:
+			position = player.get_playback_position()
+	var target: AudioStreamPlayer = _music[index]
+	if target.stream == null:
+		return
+	if not target.playing:
+		target.play(position)
+	if _music_tween:
+		_music_tween.kill()
+	_music_tween = create_tween().set_parallel()
+	for i in _music.size():
+		_music_tween.tween_property(_music[i], "volume_db", MUSIC_DB if i == index else SILENT_DB, seconds)
+
+
+func _stop_music(seconds: float) -> void:
+	if _music_tween:
+		_music_tween.kill()
+	_music_tween = create_tween().set_parallel()
+	for player in _music:
+		_music_tween.tween_property(player, "volume_db", SILENT_DB, seconds)
+	_music_tween.chain().tween_callback(func() -> void:
+		for player in _music:
+			player.stop())
+
+
+## La ropa de los enfermos ardiendo: un montón de telas grises y llamas, con su humo (las capas de niebla
+## ya dan el ambiente). Nada que ver con quemar aldeas: es para frenar el contagio.
+func _build_pyre() -> void:
+	for i in 7:
+		var cloth := _box(PYRE_AT + Vector3(randf_range(-0.5, 0.5), 0.1 + i * 0.06, randf_range(-0.5, 0.5)),
+			Vector3(randf_range(0.5, 0.8), 0.08, randf_range(0.3, 0.6)), Color(0.45, 0.45, 0.47).darkened(randf() * 0.3))
+		cloth.rotation.y = randf() * TAU
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(1.0, 0.5, 0.12)
+	for i in 4:
+		var flame := MeshInstance3D.new()
+		var cone := CylinderMesh.new()
+		cone.top_radius = 0.0
+		cone.bottom_radius = 0.22 - i * 0.03
+		cone.height = 0.8 - i * 0.1
+		cone.material = mat
+		flame.mesh = cone
+		flame.position = PYRE_AT + Vector3((i % 2) * 0.3 - 0.15, 0.7, (i / 2) * 0.3 - 0.15)
+		add_child(flame)
+	var light := OmniLight3D.new()
+	light.light_color = Color(1.0, 0.55, 0.25)
+	light.light_energy = 2.2
+	light.omni_range = 9.0
+	light.position = PYRE_AT + Vector3(0.0, 1.4, 0.0)
+	add_child(light)
 
 
 func _static_box(at: Vector3, size: Vector3, color: Color) -> StaticBody3D:

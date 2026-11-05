@@ -87,6 +87,18 @@
       "text": "Who are they, my lord?"
     },
     {
+      "event": "varga_1",
+      "id": "kael_scene_varga_1",
+      "phrase": true,
+      "text": "The Regent says you burn villages."
+    },
+    {
+      "event": "varga_2",
+      "id": "kael_scene_varga_2",
+      "phrase": true,
+      "text": "I have my orders."
+    },
+    {
       "event": "prologue_answer",
       "id": "kael_scene_prologue_answer",
       "phrase": true,
@@ -447,6 +459,24 @@
       "id": "varga_broken_1",
       "phrase": false,
       "text": "Hah... hah..."
+    },
+    {
+      "event": "intro_1",
+      "id": "varga_intro_1",
+      "phrase": true,
+      "text": "Stop there. That smoke is not a village burning. It's their clothes. The sick ones."
+    },
+    {
+      "event": "intro_2",
+      "id": "varga_intro_2",
+      "phrase": true,
+      "text": "And did he tell you why his wagons are in such a hurry to cross a closed pass?"
+    },
+    {
+      "event": "intro_3",
+      "id": "varga_intro_3",
+      "phrase": true,
+      "text": "Then come. I hope you live long enough to regret them."
     },
     {
       "event": "phase",

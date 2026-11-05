@@ -116,7 +116,8 @@ func close() -> void:
 
 
 func _unpause() -> void:
-	if not _open:
+	# Si entretanto empezó una escena (p. ej. el prólogo tras "Empezar de nuevo"), la pausa es suya.
+	if not _open and get_tree().get_node_count_in_group("cutscene") == 0:
 		get_tree().paused = false
 
 

@@ -123,6 +123,7 @@ material = SubResource("arena_material")
 
 [node name="TrainingSoldier" parent="." instance=ExtResource("4_soldier")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17)
+aggro_range = 6.0
 
 [node name="HUD" parent="." instance=ExtResource("2_hud")]
 

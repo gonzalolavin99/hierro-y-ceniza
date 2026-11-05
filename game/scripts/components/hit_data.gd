@@ -19,6 +19,8 @@ var kind: Kind = Kind.NORMAL
 var ranged: bool = false
 ## Si golpea al enemigo mientras prepara o lanza un ataque, se lo interrumpe.
 var interrupts: bool = false
+## Golpe con todo el peso del cuerpo (p. ej. el salto de Varga): el que lo recibe sale despedido.
+var heavy: bool = false
 
 
 func is_perilous() -> bool:

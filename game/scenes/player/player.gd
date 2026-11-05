@@ -502,15 +502,19 @@ func receive_hit(hit: HitData) -> int:
 
 	health.take_damage(hit.damage)
 	posture.add(hit.posture_damage * 0.5)
-	Sfx.play(&"hit", contact)
+	# Cuanto más fuerte el golpe, más se nota: pausa del impacto, temblor y reacción (ver Hitstun).
+	var strength: int = PlayerHitstun.strength_of(hit.damage, hit.is_perilous() or hit.heavy)
+	Sfx.play(&"hit", contact, 2.0 if strength == PlayerHitstun.Strength.HEAVY else 0.0)
 	CombatFX.blood(contact)
-	CombatFX.hitstop(0.06)
-	body.flinch(to_attacker, 1.0)
-	CombatFX.shake(0.4)
+	if strength == PlayerHitstun.Strength.HEAVY:
+		CombatFX.blood(contact)
+	CombatFX.hitstop([0.05, 0.08, 0.12][strength])
+	body.flinch(to_attacker, [0.8, 1.1, 1.4][strength])
+	CombatFX.shake([0.3, 0.5, 0.8][strength])
 	if health.current <= 0.0:
 		state_machine.transition_to(&"Dead")
 	elif state_machine.current.name != &"Stagger":
-		state_machine.transition_to(&"Hitstun", {"from": to_attacker})
+		state_machine.transition_to(&"Hitstun", {"from": to_attacker, "strength": strength})
 	return HitData.Result.HIT
 
 

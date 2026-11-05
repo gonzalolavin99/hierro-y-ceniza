@@ -20,7 +20,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 5 · IA inteligente y enemigos | ✅ **OK del jugador: Hito 5 cerrado.** IA que lee al jugador, pelea en grupo con turnos, patrulla y sigilo, bandido, lancero y arquero, grupo mixto. Caminar agachado fabricado a partir de caminar (sin descargas) |
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
-| 8 · Primer jefe | 🔨 Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Sigue: pulir reacciones a los golpes, historia y escena antes del duelo, música |
+| 8 · Primer jefe | 🔨 Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Paso 4 (reacciones a los golpes, escena previa, música, estandarte) hecho y probado (OK) |
 | 9 | Pendiente (vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -166,6 +166,20 @@ cambiar de objetivo con el stick derecho.
   `voice` (personaje de voz), `evade_counters`, `counter_pattern`, `ranged_patterns` + `ranged_cooldown`
   (los usa `Chase` a 4,5–14 m). La fase 2 la aplica la arena (`VargaArena.PHASE_2`) al recibir
   `phase_changed`, y vuelve a la fase 1 en `reset_arena()`.
+- **Reacciones a los golpes**: `PlayerHitstun.strength_of(daño, peligroso o hit.heavy)` → LIGHT/MEDIUM/HEAVY
+  (umbrales 18 y 34 de daño); cada fuerza con su empujón, frenado (`BRAKE`), duración y animación; por la
+  espalda no se gira. `HitData.heavy` lo ponen los ataques `leap`. Enemigos: fuera de `Attack`/`Broken`/`Rally`
+  reciben `push` y `play_reaction` (hit/hit_light). Prueba `hit_react_test`.
+- **Pausa y escenas**: el menú de pausa quita su pausa 0,08 s después de cerrarse; no lo hace si hay una
+  escena en el grupo "cutscene" (si no, tras "Empezar de nuevo" el prólogo corría con el juego en marcha).
+  El soldado de práctica junto al inicio tiene `aggro_range` 6 (no ataca nada más aparecer).
+- **Escenas en el nivel** (`scenes/cutscenes/varga_intro.gd`, `VargaIntro`): bandas negras, cámara propia,
+  Kael y Varga en el estado `Scripted` (jugador y enemigo; el del enemigo acepta `walk_velocity`), subtítulos
+  propios, mantener A la salta. La lanza la arena la primera vez (`Story` "scene_varga"). Capturas
+  `tests/varga_intro_shot`.
+- **Música** (`tools/gen_music.py` → `assets/audio/music/varga_duel_1/2.wav`, bucles de 40 s a 96 ppm): la
+  arena la pone en bucle (`AudioStreamWAV.LOOP_FORWARD`), cambia de pista en la fase 2 en el mismo punto
+  del compás y la apaga al reiniciar o al vencer.
 - **Escena del prólogo** (`scenes/cutscenes/prologue_scene.gd`, `PrologueScene`, CanvasLayer capa 70, grupo
   "cutscene"): mundo 3D propio (SubViewport `own_world_3d`) con dos decorados hechos en código (fogata en el
   origen, sala del Regente en x = 200), maniquíes quietos (`Mannequin.Weapon.NONE`, `ribbon`), cámara con
@@ -233,7 +247,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `hit_react_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
@@ -289,7 +303,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 ## 7. Siguiente paso recomendado
 
 1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Escena del prólogo hecha (OK). **Hito 7 cerrado.**
-   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Hechos repertorio, fase 2 y voz (OK). Sigue: pulir reacciones, escena previa y música; después, Frank (guion §12).
+   **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Hechos repertorio, fase 2 y voz (OK). Pulido de Varga hecho (OK). Sigue: Frank (guion §12).
 2. **Ajustes tras la prueba del jugador (2026-11-05)**, con su OK: A / B del mando en los menús
    (`InputSetup._pad`: Godot no los trae en `ui_accept` / `ui_cancel`), pisotón más exigente (1,6 m, de cara
    al enemigo), la guardia corta los tajos ligeros en cualquier momento salvo en el impacto

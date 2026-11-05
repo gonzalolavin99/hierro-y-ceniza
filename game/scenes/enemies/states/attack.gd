@@ -392,6 +392,7 @@ func _set_phase(phase: Phase) -> void:
 			if hit.is_perilous():
 				hit.damage = DANGER_DAMAGE[hit.kind]
 			hit.damage *= enemy.damage_scale
+			hit.heavy = swing.get("leap", false)
 			enemy.hitbox.activate(hit)
 			enemy.body.set_trail(true)
 			Sfx.play(&"swing", enemy.lock_point())

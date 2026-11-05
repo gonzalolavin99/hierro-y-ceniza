@@ -339,8 +339,16 @@ func receive_hit(hit: HitData) -> int:
 	posture.add(hit.posture_damage * (1.0 if exposed else 0.5))
 	Sfx.play(&"bolt_hit" if hit.ranged else &"hit", contact)
 	CombatFX.blood(contact)
-	CombatFX.hitstop(0.05)
-	body.flinch(to_attacker, 0.8)
+	CombatFX.hitstop(0.05 if hit.damage < 18.0 else 0.08)
+	body.flinch(to_attacker, 0.8 if hit.damage < 18.0 else 1.2)
+	# Fuera de sus ataques (que aguantan el golpe, como en Sekiro), el golpe se nota: retrocede y se
+	# sacude, más cuanto más fuerte.
+	if state != &"Attack" and state != &"Broken" and state != &"Rally":
+		push = -to_attacker * (2.0 + hit.damage * 0.07)
+		if hit.damage >= 18.0:
+			body.play_reaction(&"hit", 0.45, 0.05, 1.6)
+		else:
+			body.play_reaction(&"hit_light", 0.32, 0.05, 1.7)
 	# El virote interrumpe el ataque que estaba preparando o lanzando.
 	if hit.interrupts and state == &"Attack" and not posture.is_broken:
 		state_machine.transition_to(&"Recoil")

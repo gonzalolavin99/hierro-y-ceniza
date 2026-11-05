@@ -117,6 +117,8 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
 |---|---|---|---|
 | `kael_scene_prologue_who.wav` | prologue_who | Who are they, my lord? | Subtítulo: ¿Quiénes son, mi señor? |
+| `kael_scene_varga_1.wav` | varga_1 | The Regent says you burn villages. | Subtítulo: El Regente dice que quemáis aldeas. |
+| `kael_scene_varga_2.wav` | varga_2 | I have my orders. | Subtítulo: Tengo mis órdenes. |
 | `kael_scene_prologue_answer.wav` | prologue_answer | It will be done. | Subtítulo: Así se hará. |
 
 ## Varga (`varga`)
@@ -134,6 +136,9 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `varga_hurt_1.wav` | hurt | Ugh! | pained grunt, adult woman, struck by a blade |
 | `varga_hurt_2.wav` | hurt | Ah! | sharp gasp of pain, adult woman |
 | `varga_broken_1.wav` | broken | Hah... hah... | out of breath, adult woman losing her balance |
+| `varga_intro_1.wav` | intro_1 | Stop there. That smoke is not a village burning. It's their clothes. The sick ones. | Subtítulo: Alto ahí. Ese humo no es una aldea ardiendo. Es su ropa. La de los enfermos. |
+| `varga_intro_2.wav` | intro_2 | And did he tell you why his wagons are in such a hurry to cross a closed pass? | Subtítulo: ¿Y te dijo por qué sus carros tienen tanta prisa por cruzar un paso cerrado? |
+| `varga_intro_3.wav` | intro_3 | Then come. I hope you live long enough to regret them. | Subtítulo: Entonces ven. Ojalá vivas lo bastante para arrepentirte de ellas. |
 | `varga_phase_1.wav` | phase | Not yet. Look at the smoke, soldier. Ask yourself what we are burning. | Subtítulo: Todavía no. Mira el humo, soldado. Pregúntate qué estamos quemando. |
 | `varga_death_1.wav` | death | He told you we burned villages? Look at the smoke... look at what we burn. | Subtítulo: ¿Te dijo que quemábamos aldeas? Mira el humo… mira qué quemamos. |
 | `varga_victory_1.wav` | victory | Stay down. You don't know what you're doing. | Subtítulo: No te levantes. No sabes lo que haces. |

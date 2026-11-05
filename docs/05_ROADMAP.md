@@ -170,7 +170,14 @@ de caminar agachado (Mixamo, las descarga el jugador).
       caer, salto atrás lanzando 3 cuchillos, cuchillos a distancia; esquiva el 50 % y contraataca con
       cuchillos o salto) y **fase 2** (más rápida, +daño, abanico de 3 cuchillos, combo largo de cinco).
       **Voz propia** (Kokoro `bf_isabella`): frases al verte, al cambiar de fase, al vencerte y al caer.
-      Falta: música del duelo (paso 4).
+      Paso 4 hecho y probado (OK del jugador), pulido pedido por el jugador:
+      **reacciones a los golpes** según fuerza y dirección (ligero ~0,3 m, medio ~0,6 m tambaleándose,
+      fuerte ~1,1 m despedido con los pies en el aire; por la espalda trastabilla sin girarse; más pausa de
+      impacto y temblor cuanto más fuerte; los enemigos retroceden y se sacuden fuera de sus ataques);
+      **escena antes del duelo** (solo la primera vez; Varga junto a la ropa de los enfermos que arde: "Ese
+      humo no es una aldea ardiendo…", Kael: "Tengo mis órdenes"); **música del duelo** propia
+      (tools/gen_music.py: taikos, bordón y cuerda pulsada en frigio; la fase 2 dobla los tambores); al caer
+      deja su **estandarte** (objeto clave) y enseña la **Ráfaga**.
 
 **🧪 PRUEBA:** ¿lo puedes vencer en 5–15 intentos aprendiendo patrones?
 

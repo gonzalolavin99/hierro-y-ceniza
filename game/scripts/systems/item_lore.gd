@@ -28,6 +28,8 @@ const ITEMS: Dictionary[StringName, Dictionary] = {
 	&"art_flurry": {"name": "Ráfaga", "kind": "Técnica",
 		"text": "Serie de tajos rápidos que no dejan respirar. Contra alguien que se cubre, es una invitación a que conteste. Varga la usaba así: para ver quién perdía antes la paciencia."},
 	# --- Objetos clave (se consiguen en la historia) ---
+	&"varga_banner": {"name": "Estandarte de Varga", "kind": "Objeto clave",
+		"text": "El Regente pidió sus estandartes. Este es de tela gris, sin emblema ni color: el mismo gris que se ataba en las puertas de los enfermos. Los soldados de Varga no defendían un señor. Defendían una línea que nadie debía cruzar."},
 	&"grey_cloth": {"name": "Tela gris", "kind": "Objeto clave",
 		"text": "Se ataba en las puertas de las casas con enfermos de la Ceniza. Para el soldado del Regente, marcaba un objetivo. Para el vecino, significaba «no entres»."},
 	&"bram_key": {"name": "Llave del Carcelero", "kind": "Objeto clave",
@@ -43,7 +45,7 @@ const ORDER: Array[StringName] = [
 	&"sword", &"lira_ribbon", &"bandage",
 	&"crossbow", &"smoke", &"powder",
 	&"art_whirlwind", &"art_hammer", &"art_flurry",
-	&"grey_cloth", &"bram_key", &"regent_letter", &"capital_register",
+	&"varga_banner", &"grey_cloth", &"bram_key", &"regent_letter", &"capital_register",
 ]
 const ALWAYS: Array[StringName] = [&"sword", &"lira_ribbon", &"bandage"]
 

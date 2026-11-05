@@ -53,6 +53,19 @@ func _run() -> void:
 	await _wait(1.6)
 	_check("La escena se quita del todo", get_tree().get_node_count_in_group("cutscene") == 0)
 
+	# 1b. Venir del menú de pausa ("Empezar de nuevo"): el menú quita su pausa un instante después de
+	# cerrarse; si para entonces ya empezó la escena, el juego debe seguir congelado.
+	Story.reset()
+	Camps.pause_menu.open()
+	Camps.pause_menu.close()
+	scene = Story.play_prologue()
+	await _wait(0.4)
+	_check("Tras cerrar el menú de pausa, la escena sigue con el juego congelado", get_tree().paused and not scene.is_done())
+	Input.action_press("ui_accept")
+	await _wait(1.3)
+	Input.action_release("ui_accept")
+	await _wait(1.6)
+
 	# 2. Entera (a velocidad x4): pasa por todos los planos y termina sola.
 	Story.reset()
 	Engine.time_scale = 4.0

@@ -198,6 +198,12 @@ const LINES: Dictionary = {
 		&"prologue_who": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_prologue_who", "en": "Who are they, my lord?", "es": "¿Quiénes son, mi señor?"},
 		]},
+		&"varga_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_varga_1", "en": "The Regent says you burn villages.", "es": "El Regente dice que quemáis aldeas."},
+		]},
+		&"varga_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_varga_2", "en": "I have my orders.", "es": "Tengo mis órdenes."},
+		]},
 		&"prologue_answer": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_prologue_answer", "en": "It will be done.", "es": "Así se hará."},
 		]},
@@ -222,6 +228,16 @@ const LINES: Dictionary = {
 		]},
 		&"broken": {"chance": 1.0, "cooldown": 1.0, "lines": [
 			{"id": "varga_broken_1", "say": "Hah... hah...", "effort": "out of breath, adult woman losing her balance"},
+		]},
+		# Escena antes del duelo (VargaIntro).
+		&"intro_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_intro_1", "en": "Stop there. That smoke is not a village burning. It's their clothes. The sick ones.", "es": "Alto ahí. Ese humo no es una aldea ardiendo. Es su ropa. La de los enfermos."},
+		]},
+		&"intro_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_intro_2", "en": "And did he tell you why his wagons are in such a hurry to cross a closed pass?", "es": "¿Y te dijo por qué sus carros tienen tanta prisa por cruzar un paso cerrado?"},
+		]},
+		&"intro_3": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_intro_3", "en": "Then come. I hope you live long enough to regret them.", "es": "Entonces ven. Ojalá vivas lo bastante para arrepentirte de ellas."},
 		]},
 		&"phase": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "varga_phase_1", "en": "Not yet. Look at the smoke, soldier. Ask yourself what we are burning.", "es": "Todavía no. Mira el humo, soldado. Pregúntate qué estamos quemando."},

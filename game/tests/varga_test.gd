@@ -37,7 +37,22 @@ func _run() -> void:
 	# 1. Kael entra en el patio: empieza el duelo.
 	_teleport(_arena.global_position + Vector3(-11.0, 0.0, 0.0))
 	await _wait(1.0)
-	_check("Al entrar empieza el duelo", _arena.is_active() and varga.has_target())
+	_check("La primera vez, antes del duelo, sale la escena con Varga", _arena.intro != null and get_tree().get_node_count_in_group("cutscene") == 1)
+	_check("…sin controles para Kael y con Varga quieta", _player.state_machine.current.name == &"Scripted" and varga.state_name() == &"Scripted")
+	var shots: Array[StringName] = []
+	var intro: VargaIntro = _arena.intro
+	for i in 300:  # La escena entera (unos 30 s).
+		await _wait(0.1)
+		if intro == null or not is_instance_valid(intro) or intro.is_done():
+			break
+		if not intro.shot in shots:
+			shots.append(intro.shot)
+	_check("Recorre sus planos %s" % str(shots), shots == [&"wide", &"varga", &"kael", &"walk", &"draw"])
+	await _wait(0.8)
+	_check("Al terminar empieza el duelo", _arena.is_active() and varga.has_target())
+	_check("…y Kael vuelve a moverse", _player.state_machine.current.name != &"Scripted")
+	await _wait(1.6)
+	_check("Suena la música del duelo (fase 1)", _arena.music_track() == 0)
 	_check("…bajan el rastrillo detrás", _arena.gate_closed())
 	var bar: BossBar = _arena.find_children("*", "BossBar", true, false)[0]
 	_check("…y aparece su barra con 2 puntos", bar.is_showing() and bar.dots_left() == 2)
@@ -50,6 +65,8 @@ func _run() -> void:
 	await _break_and_deathblow(varga)
 	_check("El primer golpe mortal no la vence (%s)" % varga.state_name(), not varga.is_dead() and varga.state_name() == &"Rally")
 	_check("…pasa a la fase 2 con 1 punto", varga.phase() == 2 and bar.dots_left() == 1)
+	await _wait(1.4)
+	_check("La música cambia a la de la fase 2", _arena.music_track() == 1)
 	_check("…con la vida y la postura llenas", varga.health.ratio() == 1.0 and varga.posture.current == 0.0)
 	_check("En la fase 2 cambia: más rápida, abanico de cuchillos y combo largo (%s)" % str(varga.moveset),
 		&"varga_fan" in varga.ranged_patterns and &"varga_combo_long" in varga.moveset and varga.walk_speed > 4.5)
@@ -62,12 +79,15 @@ func _run() -> void:
 	_check("Al morir Kael, el rastrillo sube", not _arena.gate_closed() and not _arena.is_active())
 	_check("Varga vuelve a su puesto, entera (2 puntos)", varga.deathblows_left == 2 and not varga.has_target())
 	_check("La barra se oculta", not bar.is_showing())
+	await _wait(1.2)
+	_check("…y la música se apaga", _arena.music_track() == -1)
 	_check("Vuelve a la fase 1 (sin el abanico)", not &"varga_fan" in varga.ranged_patterns and varga.walk_speed < 4.5)
 
 	# 4. Revancha: dos golpes mortales la vencen.
 	_teleport(_arena.global_position + Vector3(-11.0, 0.0, 0.0))
 	await _wait(1.0)
 	_check("Volver a entrar empieza otra vez el duelo", _arena.is_active() and _arena.gate_closed())
+	_check("…sin repetir la escena", _arena.intro == null and varga.has_target())
 	await _break_and_deathblow(varga)
 	await _wait(2.8)
 	await _break_and_deathblow(varga)
@@ -80,6 +100,7 @@ func _run() -> void:
 	Camps.reset_world()
 	await _wait(0.5)
 	_check("Descansar no la devuelve", varga.is_dead())
+	_check("Deja su estandarte y enseña la Ráfaga", &"varga_banner" in _player.key_items and &"art_flurry" in _player.arts.unlocked)
 
 
 ## Su repertorio propio: cada ataque termina bien; el salto acorta la distancia; los cuchillos hieren y se

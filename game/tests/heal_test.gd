@@ -105,9 +105,14 @@ func _run() -> void:
 	_enemy.state_machine.transition_to(&"Idle", {"wait": 100.0})
 	await _wait(0.3)
 	_player.health.take_damage(50.0)
+	var calm: Array[StringName] = []
+	var note := func(s: StringName) -> void: calm.append(s)
+	_enemy.state_machine.state_changed.connect(note)
 	await _tap("heal")
 	await _wait(0.6)
-	_check("En modo predecible no castiga (%s)" % _enemy.state_name(), _enemy.state_name() == &"Idle")
+	_enemy.state_machine.state_changed.disconnect(note)
+	# Puede acercarse (Chase), pero no lanzarse a castigar la curación.
+	_check("En modo predecible no castiga %s" % str(calm), not &"Attack" in calm)
 
 
 ## Jugador en el origen, quieto y con la vida llena.
