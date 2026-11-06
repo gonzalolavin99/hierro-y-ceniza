@@ -659,10 +659,28 @@
   ],
   "kael_scene": [
     {
-      "event": "prologue_who",
-      "id": "kael_scene_prologue_who",
+      "event": "prologue_need",
+      "id": "kael_scene_prologue_need",
       "phrase": true,
-      "text": "Who are they, my lord?"
+      "text": "What do you need of me, my lord?"
+    },
+    {
+      "event": "prologue_promise",
+      "id": "kael_scene_prologue_promise",
+      "phrase": true,
+      "text": "I promise."
+    },
+    {
+      "event": "prologue_choice_stop",
+      "id": "kael_scene_prologue_choice_stop",
+      "phrase": true,
+      "text": "I will stop them, my lord."
+    },
+    {
+      "event": "prologue_choice_end",
+      "id": "kael_scene_prologue_choice_end",
+      "phrase": true,
+      "text": "I will put an end to them."
     },
     {
       "event": "varga_1",
@@ -677,12 +695,6 @@
       "text": "I have my orders."
     },
     {
-      "event": "prologue_answer",
-      "id": "kael_scene_prologue_answer",
-      "phrase": true,
-      "text": "It will be done."
-    },
-    {
       "event": "frank_1",
       "id": "kael_scene_frank_1",
       "phrase": true,
@@ -693,6 +705,14 @@
       "id": "kael_scene_frank_2",
       "phrase": true,
       "text": "...Do as you like."
+    }
+  ],
+  "lira": [
+    {
+      "event": "memory_promise",
+      "id": "lira_memory_promise",
+      "phrase": true,
+      "text": "So you come back. Promise me."
     }
   ],
   "narrator": [
@@ -718,7 +738,7 @@
       "event": "player_death_2",
       "id": "narrator_player_death_2_1",
       "phrase": true,
-      "text": "No... he did not fall there. That much I remember. I think."
+      "text": "No... he did not fall there. Every version agrees on that. Almost every one."
     },
     {
       "event": "player_death_2",
@@ -766,19 +786,19 @@
       "event": "story_frank_meet",
       "id": "narrator_story_frank_meet",
       "phrase": true,
-      "text": "I never learned to speak monkey. But that look... that look, I understood."
+      "text": "The warrior never learned to speak monkey. But that look... that look, he understood."
     },
     {
       "event": "story_frank_left",
       "id": "narrator_story_frank_left",
       "phrase": true,
-      "text": "I walked right past him. I'm not proud of it. He followed me anyway."
+      "text": "The warrior walked right past him. He was not proud of it. The monkey followed him anyway."
     },
     {
       "event": "story_prologue_order",
       "id": "narrator_story_prologue_order",
       "phrase": true,
-      "text": "It began with an order, in a hall of cold stone."
+      "text": "It all began in the palace. To the warrior, it did not feel like an order. It felt like a promise."
     },
     {
       "event": "story_prologue_summon",
@@ -787,10 +807,16 @@
       "text": "They summoned the warrior at dawn. He had never stood so close to the Regent."
     },
     {
+      "event": "story_prologue_memory",
+      "id": "narrator_story_prologue_memory",
+      "phrase": true,
+      "text": "When he came home, the bed was empty. All he had left was the ribbon."
+    },
+    {
       "event": "story_prologue_ribbon",
       "id": "narrator_story_prologue_ribbon",
       "phrase": true,
-      "text": "The warrior did not ask a single question. He only looked at the ribbon on his wrist."
+      "text": "The warrior asked nothing more. He only looked at the ribbon on his wrist."
     },
     {
       "event": "story_prologue_end",
@@ -880,7 +906,7 @@
       "event": "story_frontier",
       "id": "narrator_story_frontier",
       "phrase": true,
-      "text": "The last cordon. I no longer know which part is mine and which part is the song."
+      "text": "The last cordon. No one knows anymore which part is true and which part is the song."
     },
     {
       "event": "story_aren_before",
@@ -903,28 +929,70 @@
   ],
   "regent": [
     {
-      "event": "prologue_order",
-      "id": "regent_prologue_order",
+      "event": "prologue_rise",
+      "id": "regent_prologue_rise",
       "phrase": true,
-      "text": "Five names. Five cordons. When they fall, the fever ends."
+      "text": "Rise, Kael. You don't kneel here. Not today."
     },
     {
-      "event": "prologue_rebels",
-      "id": "regent_prologue_rebels",
+      "event": "prologue_lira",
+      "id": "regent_prologue_lira",
       "phrase": true,
-      "text": "Traitors. They foul the wells and burn every village that will not feed them."
+      "text": "I heard about Lira. I'm sorry. Truly. The fever doesn't care whose daughter she was."
     },
     {
-      "event": "prologue_names",
-      "id": "regent_prologue_names",
+      "event": "prologue_grief",
+      "id": "regent_prologue_grief",
       "phrase": true,
-      "text": "Here are their names. Bring me their banners, one by one."
+      "text": "I have buried people this winter, too."
     },
     {
-      "event": "prologue_sister",
-      "id": "regent_prologue_sister",
+      "event": "prologue_hope",
+      "id": "regent_prologue_hope",
       "phrase": true,
-      "text": "The fever took your sister, Kael. The rebels brought it to us. Make them pay."
+      "text": "There is a way no one else loses their Lira. The fever travels with people. Five of them hold the roads, and let no help through."
+    },
+    {
+      "event": "prologue_bram",
+      "id": "regent_prologue_bram",
+      "phrase": true,
+      "text": "Bram. A huge man. A good one, once. Now he guards a door, and lets no one out."
+    },
+    {
+      "event": "prologue_varga",
+      "id": "regent_prologue_varga",
+      "phrase": true,
+      "text": "Varga. The finest captain I ever had. Something broke in her, up at the Pass. They say she burns villages."
+    },
+    {
+      "event": "prologue_ilse",
+      "id": "regent_prologue_ilse",
+      "phrase": true,
+      "text": "Ilse hunts in the mountains. The messengers I send up there... don't come back."
+    },
+    {
+      "event": "prologue_orme",
+      "id": "regent_prologue_orme",
+      "phrase": true,
+      "text": "Orme. The cleverest engineer in the kingdom. He holds the river dam in his hands."
+    },
+    {
+      "event": "prologue_aren",
+      "id": "regent_prologue_aren",
+      "phrase": true,
+      "text": "And Aren. Him... you will meet at the end."
+    },
+    {
+      "event": "prologue_vow_stop",
+      "id": "regent_prologue_vow_stop",
+      "phrase": true,
+      "text": "Stop them. Yes. Do whatever is necessary, Kael. I trust your judgement."
+    },
+    {
+      "event": "prologue_vow_end",
+      "id": "regent_prologue_vow_end",
+      "phrase": true,
+      "text": "Let them suffer no more than they must. I trust you, Kael."
     }
   ],
   "soldier": [

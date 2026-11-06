@@ -69,7 +69,7 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_death_1.wav` | player_death | No... no, that's not how it happened. | Subtítulo: No… no fue así. |
 | `narrator_death_2.wav` | player_death | Wait. Let me start again. | Subtítulo: Espera. Déjame empezar de nuevo. |
 | `narrator_death_3.wav` | player_death | No... I'm getting ahead of myself. | Subtítulo: No… me estoy adelantando. |
-| `narrator_player_death_2_1.wav` | player_death_2 | No... he did not fall there. That much I remember. I think. | Subtítulo: No… él no cayó ahí. Eso lo recuerdo bien. Creo. |
+| `narrator_player_death_2_1.wav` | player_death_2 | No... he did not fall there. Every version agrees on that. Almost every one. | Subtítulo: No… él no cayó ahí. En eso coinciden todas las versiones. Casi todas. |
 | `narrator_player_death_2_2.wav` | player_death_2 | Hm. My memory is not what it was. | Subtítulo: Mm. Mi memoria ya no es lo que era. |
 | `narrator_player_death_3_1.wav` | player_death_3 | No. Let me tell it right, at least this once. | Subtítulo: No. Deja que lo cuente bien, al menos esta vez. |
 | `narrator_player_death_3_2.wav` | player_death_3 | That is not how... no. Again. | Subtítulo: No fue así… no. Otra vez. |
@@ -77,11 +77,12 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_player_death_4_2.wav` | player_death_4 | Let me rest a moment. Then I'll go on. | Subtítulo: Déjame descansar un momento. Luego sigo. |
 | `narrator_story_prologue.wav` | story_prologue | This is the story of a warrior who saved a kingdom. Or so the songs say. | Subtítulo: Esta es la historia de un guerrero que salvó un reino. O eso dicen las canciones. |
 | `narrator_story_camp_first.wav` | story_camp_first | The warrior rested by the fire. He never slept well. Not even then. | Subtítulo: El guerrero descansó junto al fuego. Nunca dormía bien. Ni siquiera entonces. |
-| `narrator_story_frank_meet.wav` | story_frank_meet | I never learned to speak monkey. But that look... that look, I understood. | Subtítulo: Nunca aprendí a hablar mono. Pero aquella mirada… aquella sí la entendí. |
-| `narrator_story_frank_left.wav` | story_frank_left | I walked right past him. I'm not proud of it. He followed me anyway. | Subtítulo: Pasé de largo. No me enorgullece. Me siguió igual. |
-| `narrator_story_prologue_order.wav` | story_prologue_order | It began with an order, in a hall of cold stone. | Subtítulo: Todo empezó con una orden, en una sala de piedra fría. |
+| `narrator_story_frank_meet.wav` | story_frank_meet | The warrior never learned to speak monkey. But that look... that look, he understood. | Subtítulo: El guerrero nunca aprendió a hablar mono. Pero aquella mirada… aquella sí la entendió. |
+| `narrator_story_frank_left.wav` | story_frank_left | The warrior walked right past him. He was not proud of it. The monkey followed him anyway. | Subtítulo: El guerrero pasó de largo. No se sintió orgulloso. El mono lo siguió igual. |
+| `narrator_story_prologue_order.wav` | story_prologue_order | It all began in the palace. To the warrior, it did not feel like an order. It felt like a promise. | Subtítulo: Todo empezó en el palacio. Al guerrero no le pareció una orden. Le pareció una promesa. |
 | `narrator_story_prologue_summon.wav` | story_prologue_summon | They summoned the warrior at dawn. He had never stood so close to the Regent. | Subtítulo: Llamaron al guerrero al amanecer. Nunca había estado tan cerca del Regente. |
-| `narrator_story_prologue_ribbon.wav` | story_prologue_ribbon | The warrior did not ask a single question. He only looked at the ribbon on his wrist. | Subtítulo: El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca. |
+| `narrator_story_prologue_memory.wav` | story_prologue_memory | When he came home, the bed was empty. All he had left was the ribbon. | Subtítulo: Cuando volvió a casa, la cama estaba vacía. Solo le quedó la cinta. |
+| `narrator_story_prologue_ribbon.wav` | story_prologue_ribbon | The warrior asked nothing more. He only looked at the ribbon on his wrist. | Subtítulo: El guerrero no preguntó nada más. Solo miró la cinta de su muñeca. |
 | `narrator_story_prologue_end.wav` | story_prologue_end | His sister's ribbon. And at dawn, he set out for the Iron Pass. | Subtítulo: La cinta de su hermana. Y al amanecer partió hacia el Paso de Hierro. |
 | `narrator_story_pass_village.wav` | story_pass_village | The village at the Iron Pass. The rebels had burned it. Everyone knew that. | Subtítulo: La aldea del Paso de Hierro. Los rebeldes la habían quemado. Todos lo sabían. |
 | `narrator_story_pass_forest.wav` | story_pass_forest | Smoke rose above the trees. The warrior thought of his sister, and walked faster. | Subtítulo: Sobre los árboles subía humo. El guerrero pensó en su hermana y apuró el paso. |
@@ -96,21 +97,28 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `narrator_story_river.wav` | story_river | The River City. Its wells were sealed, with signs he did not stop to read. | Subtítulo: La Ciudad del Río. Sus pozos estaban tapiados, con carteles que no se paró a leer. |
 | `narrator_story_orme_before.wav` | story_orme_before | The Engineer and his great machine. A weapon against the capital. That is what they told him. | Subtítulo: El Ingeniero y su gran máquina. Un arma contra la capital. Eso le dijeron. |
 | `narrator_story_orme_after.wav` | story_orme_after | He did not read the letter on the Engineer's desk. No... he read it. He kept it. | Subtítulo: No leyó la carta de la mesa del Ingeniero. No… sí la leyó. La guardó. |
-| `narrator_story_frontier.wav` | story_frontier | The last cordon. I no longer know which part is mine and which part is the song. | Subtítulo: El último cordón. Ya no sé qué parte es mía y qué parte es la canción. |
+| `narrator_story_frontier.wav` | story_frontier | The last cordon. No one knows anymore which part is true and which part is the song. | Subtítulo: El último cordón. Ya nadie sabe qué parte es verdad y qué parte es canción. |
 | `narrator_story_aren_before.wav` | story_aren_before | General Aren did not draw his sword. He was waiting for him. He only wanted to talk. | Subtítulo: El general Aren no desenvainó. Lo estaba esperando. Solo quería hablar. |
 | `narrator_story_ending_legend.wav` | story_ending_legend | The warrior saved the kingdom. That is what the songs say. I was that warrior. And I saved no one. | Subtítulo: El guerrero salvó el reino. Eso dicen las canciones. Yo fui ese guerrero. Y no salvé a nadie. |
 | `narrator_story_ending_trial.wav` | story_ending_trial | I was that warrior. And at the end, I did the only thing left to me. I stopped obeying. | Subtítulo: Yo fui ese guerrero. Y al final hice lo único que me quedaba: dejé de obedecer. |
 
 ## El Regente (`regent`)
 
-*Voz:* El Regente Malcor: hombre maduro, culto y frío; habla bajo, sin prisa, sin levantar la voz. Kokoro: `bm_george`, algo más grave, con eco de sala de piedra.
+*Voz:* El Regente Malcor: hombre maduro, culto y cálido (prólogo, versión 2: tiene que parecer bueno); habla bajo, cercano, sin prisa. Kokoro: `bm_george`, con poco eco.
 
 | Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
 |---|---|---|---|
-| `regent_prologue_order.wav` | prologue_order | Five names. Five cordons. When they fall, the fever ends. | Subtítulo: Cinco nombres. Cinco cordones. Cuando caigan, la fiebre se acaba. |
-| `regent_prologue_rebels.wav` | prologue_rebels | Traitors. They foul the wells and burn every village that will not feed them. | Subtítulo: Traidores. Ensucian los pozos y queman cada aldea que no los alimenta. |
-| `regent_prologue_names.wav` | prologue_names | Here are their names. Bring me their banners, one by one. | Subtítulo: Aquí tienes sus nombres. Tráeme sus estandartes, uno por uno. |
-| `regent_prologue_sister.wav` | prologue_sister | The fever took your sister, Kael. The rebels brought it to us. Make them pay. | Subtítulo: La fiebre se llevó a tu hermana, Kael. Nos la trajeron los rebeldes. Haz que paguen. |
+| `regent_prologue_rise.wav` | prologue_rise | Rise, Kael. You don't kneel here. Not today. | Subtítulo: Levántate, Kael. Aquí no te arrodillas. Hoy no. |
+| `regent_prologue_lira.wav` | prologue_lira | I heard about Lira. I'm sorry. Truly. The fever doesn't care whose daughter she was. | Subtítulo: Supe lo de Lira. Lo siento. De verdad. A la fiebre no le importa de quién era hija. |
+| `regent_prologue_grief.wav` | prologue_grief | I have buried people this winter, too. | Subtítulo: Yo también he enterrado a gente este invierno. |
+| `regent_prologue_hope.wav` | prologue_hope | There is a way no one else loses their Lira. The fever travels with people. Five of them hold the roads, and let no help through. | Subtítulo: Hay una forma de que nadie más pierda a su Lira. La fiebre viaja con la gente. Hay cinco que cierran los caminos y no dejan pasar la ayuda. |
+| `regent_prologue_bram.wav` | prologue_bram | Bram. A huge man. A good one, once. Now he guards a door, and lets no one out. | Subtítulo: Bram. Un hombre enorme. Y bueno, en otro tiempo. Ahora guarda una puerta y no deja salir a nadie. |
+| `regent_prologue_varga.wav` | prologue_varga | Varga. The finest captain I ever had. Something broke in her, up at the Pass. They say she burns villages. | Subtítulo: Varga. La mejor capitana que tuve. Algo se le torció en el Paso. Dicen que quema aldeas. |
+| `regent_prologue_ilse.wav` | prologue_ilse | Ilse hunts in the mountains. The messengers I send up there... don't come back. | Subtítulo: Ilse caza en la montaña. Los mensajeros que envío allí… no vuelven. |
+| `regent_prologue_orme.wav` | prologue_orme | Orme. The cleverest engineer in the kingdom. He holds the river dam in his hands. | Subtítulo: Orme. El ingeniero más listo del reino. Tiene la presa del río en sus manos. |
+| `regent_prologue_aren.wav` | prologue_aren | And Aren. Him... you will meet at the end. | Subtítulo: Y Aren. A ese… lo conocerás al final. |
+| `regent_prologue_vow_stop.wav` | prologue_vow_stop | Stop them. Yes. Do whatever is necessary, Kael. I trust your judgement. | Subtítulo: Detenerlos. Sí. Haz lo que sea necesario, Kael. Confío en tu juicio. |
+| `regent_prologue_vow_end.wav` | prologue_vow_end | Let them suffer no more than they must. I trust you, Kael. | Subtítulo: Que no sufran más de lo necesario. Confío en ti, Kael. |
 
 ## Kael (`kael_scene`)
 
@@ -118,12 +126,22 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 
 | Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
 |---|---|---|---|
-| `kael_scene_prologue_who.wav` | prologue_who | Who are they, my lord? | Subtítulo: ¿Quiénes son, mi señor? |
+| `kael_scene_prologue_need.wav` | prologue_need | What do you need of me, my lord? | Subtítulo: ¿Qué necesitáis de mí, mi señor? |
+| `kael_scene_prologue_promise.wav` | prologue_promise | I promise. | Subtítulo: Lo prometo. |
+| `kael_scene_prologue_choice_stop.wav` | prologue_choice_stop | I will stop them, my lord. | Subtítulo: Los detendré, mi señor. |
+| `kael_scene_prologue_choice_end.wav` | prologue_choice_end | I will put an end to them. | Subtítulo: Acabaré con ellos. |
 | `kael_scene_varga_1.wav` | varga_1 | The Regent says you burn villages. | Subtítulo: El Regente dice que quemáis aldeas. |
 | `kael_scene_varga_2.wav` | varga_2 | I have my orders. | Subtítulo: Tengo mis órdenes. |
-| `kael_scene_prologue_answer.wav` | prologue_answer | It will be done. | Subtítulo: Así se hará. |
 | `kael_scene_frank_1.wav` | frank_1 | Go on. Back to your own kind. | Subtítulo: Anda, vete. Vuelve con los tuyos. |
 | `kael_scene_frank_2.wav` | frank_2 | ...Do as you like. | Subtítulo: …Haz lo que quieras. |
+
+## Lira (`lira`)
+
+*Voz:* Lira, la hermana de Kael, de niña (solo en el recuerdo del prólogo). Voz clara y dulce. Kokoro: `bf_emma`, más aguda.
+
+| Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
+|---|---|---|---|
+| `lira_memory_promise.wav` | memory_promise | So you come back. Promise me. | Subtítulo: Para que vuelvas. Prométemelo. |
 
 ## Varga (`varga`)
 

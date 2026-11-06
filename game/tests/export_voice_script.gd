@@ -10,7 +10,8 @@ const VOICE_DESCRIPTIONS: Dictionary = {
 	&"soldier": "Hombre de mediana edad, soldado raso curtido. Voz áspera y ruda. Kokoro: `am_onyx`, con algo de aspereza.",
 	&"kael_scene": "Kael en las escenas (la misma voz que en combate, sin eco): sereno, obediente. Kokoro: `bm_daniel`.",
 	&"varga": "La Capitana Varga: mujer de unos 40 años, duelista y soldado veterana. Voz firme y cortante, cansada de la guerra; nunca grita salvo en los ataques peligrosos. Kokoro: `bf_isabella`, algo más grave.",
-	&"regent": "El Regente Malcor: hombre maduro, culto y frío; habla bajo, sin prisa, sin levantar la voz. Kokoro: `bm_george`, algo más grave, con eco de sala de piedra.",
+	&"regent": "El Regente Malcor: hombre maduro, culto y cálido (prólogo, versión 2: tiene que parecer bueno); habla bajo, cercano, sin prisa. Kokoro: `bm_george`, con poco eco.",
+	&"lira": "Lira, la hermana de Kael, de niña (solo en el recuerdo del prólogo). Voz clara y dulce. Kokoro: `bf_emma`, más aguda.",
 	&"frank": "Frank, el tití: no habla, chilla. Chillidos sintetizados (tools/gen_frank.py, sin Kokoro): agudos, rápidos y tiernos. El subtítulo es lo que Kael entiende.",
 	&"narrator": "Kael anciano contando la historia junto a una fogata. Voz grave y gastada; habla despacio, dubitativo al corregirse. Kokoro: `bm_lewis`, más lenta y grave, con eco de sala.",
 }

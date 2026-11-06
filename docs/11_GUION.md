@@ -123,8 +123,8 @@ cuando Kael ya se ha ido, una nota grave que no cuadra (el que vuelva a jugar la
      tu juicio."
    - **"Acabaré con ellos."** → El Regente: "Que no sufran más de lo necesario. Confío en ti, Kael."
    Las dos acaban en lo mismo (el Regente está de acuerdo con todo: eso es lo inquietante). La elección
-   queda guardada: el anciano la recuerda más adelante ("Le dije que los detendría. No le dije cómo." /
-   "Le prometí acabar con ellos. Cumplí. Ojalá no lo hubiera hecho.").
+   queda guardada: el anciano la recuerda más adelante, en tercera persona ("Le dijo que los detendría. No le
+   dijo cómo." / "Le prometió acabar con ellos. Cumplió. Ojalá no lo hubiera hecho.").
 9. **La cinta** y **el título**, como ahora. Al irse Kael, la nota grave de la música.
 
 **Pistas escondidas para quien vuelva a jugar** (nadie las ve la primera vez): el Regente nunca dice "curar",
@@ -235,17 +235,22 @@ que cambia en el mundo (el desertor con agua, Dov a tu lado).
 
 ## 8. El narrador: cómo cambia su voz
 
+**Regla (decisión del jugador, 2026-11-06): el anciano cuenta la historia siempre en tercera persona.**
+Habla de "el guerrero" o de "Kael", nunca de "yo" ni de "me" cuando cuenta lo que pasó (nada de "no me pareció
+una orden" ni "cuando volví a casa"). Puede hablar como narrador de su propio relato y de su memoria ("No… no
+fue así", "Déjame empezar de nuevo", "supongo"), pero sin delatar que él estuvo allí.
+
 | Momento | Tono | Ejemplo (español; la voz en inglés) |
 |---|---|---|
 | Prólogo y Acto I | Seguro, épico, orgulloso | "Nadie blandía la espada como él." |
 | Al morir el jugador | Se corrige (ya existe) | "No… no fue así." / "Espera. Déjame empezar de nuevo." |
 | Acto II | Justifica lo que no encaja | "Huían del miedo, supongo." |
 | Acto III | Pausas, se contradice | "No leyó esa carta. No… sí la leyó." |
-| Acto IV | Cansado, en voz baja | "Ya no sé qué parte es mía y qué parte es la canción." |
-| Epílogo | Confesión | "Yo fui ese guerrero." |
+| Acto IV | Cansado, en voz baja | "Ya nadie sabe qué parte es verdad y qué parte es canción." |
+| Epílogo | Confesión (🔶 pendiente: con la regla de la tercera persona, ¿se mantiene la revelación final?) | "Yo fui ese guerrero." |
 
 **Nuevas frases de muerte por acto 🔶** (para que también envejezcan):
-- Acto II: "No… él no cayó ahí. Eso lo recuerdo bien. Creo."
+- Acto II: "No… él no cayó ahí. En eso coinciden todas las versiones. Casi todas."
 - Acto III: "No. Deja que lo cuente bien, al menos esta vez."
 - Acto IV: "Ojalá hubiera caído ahí. No… no fue así."
 

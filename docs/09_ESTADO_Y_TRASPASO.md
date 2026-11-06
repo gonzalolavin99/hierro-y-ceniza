@@ -21,6 +21,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
 | 8 · Primer jefe | ✅ **OK del jugador: Hito 8 cerrado.** Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Paso 4 (reacciones a los golpes, escena previa, música, estandarte) hecho y probado (OK) |
+| 9 · Vertical slice | Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho, **pendiente de prueba del jugador** |
 | Extra · Frank | Paso 1 (Frank, la red y su escena) hecho y probado (OK). Paso 2 (consejos y bromas) hecho y probado (OK). Paso 3 (avisos, escondites y la despensa) hecho y probado (OK). Paso 4 (fruta para distraer) hecho y probado (OK). **Frank completo** para el juego actual |
 | 9 | Pendiente (vertical slice) |
 
@@ -234,6 +235,14 @@ cambiar de objetivo con el stick derecho.
   (`scene_prologue` en `Story`); pausa el árbol; al terminar quita la pausa y guarda. Mantener A / Start 1 s
   la salta; el menú de pausa no se abre durante una escena. El Regente es un "narrador" (voz no posicional)
   en `VoiceLines.NARRATORS`. Prueba `prologue_test`; capturas `tests/prologue_shot`.
+  **Versión 2** (Hito 9, paso 2; guion "Un buen hombre"): salón con luz dorada y música cálida
+  (`assets/audio/music/prologue_hall.wav` en bucle; `prologue_sting.wav`, la nota que no cuadra, en el título;
+  ambas de `tools/gen_music.py`). Planos: fire, hall, regent (baja del estrado: "Levántate"), memory (decorados
+  en x = 400: mercado con Lira de niña y Kael chico; habitación con la cama vacía y una tela gris en la puerta;
+  tinte cálido con viñeta `_tint`, sol `_memory_sun`), kael, map (mesa con cinco fichas que se encienden al
+  nombrarlas, `TOKENS`), choice, ribbon, title. **Elección** (`_choose()`, cruz/stick para cambiar, A para
+  elegir; `choose(i)` para pruebas): `vow` = &"stop" / &"end", guardado en `Story` como "vow_stop" / "vow_end".
+  Voz nueva **Lira** (`bf_emma`, aguda; narradora). El Regente, con menos eco y tono normal.
 - **Descripciones de objetos** (`scripts/systems/item_lore.gd`, `ItemLore`): `ITEMS` (nombre, tipo, texto) y
   `ORDER`; `owned(player)` = siempre espada/cinta/vendaje + armas secundarias + técnicas desbloqueadas +
   `Player.key_items` (objetos clave, guardados en `save.json`). Se ven en Pausa → Inventario. Al añadir un arma,

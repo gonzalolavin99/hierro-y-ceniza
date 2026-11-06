@@ -227,6 +227,19 @@ de caminar agachado (Mixamo, las descarga el jugador).
       Pendiente para la fase de arte: mejorar el modelo de Frank.
 
 ## Hito 9 — Vertical slice "El Paso de Hierro" + diseño de personajes (6–10 semanas)
+Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
+- [x] Paso 1: el plan (mapa, zonas, decisiones del jugador). Aprobado (OK del jugador).
+- [ ] Paso 2: prólogo nuevo ("Un buen hombre"). Hecho (falta prueba del jugador): salón cálido con música
+      esperanzada; el Regente baja del estrado ("Levántate, Kael. Aquí no te arrodillas. Hoy no.") y habla
+      primero de Lira; **recuerdo**: Lira, de niña, le ata la cinta («Para que vuelvas. Prométemelo.») y la cama
+      vacía; la esperanza ("hay cinco que cierran los caminos"); **el mapa** con las cinco fichas, nombre a
+      nombre y con pena; **la primera elección** («Los detendré, mi señor» / «Acabaré con ellos»; el Regente
+      acepta las dos y queda guardada); al final, la nota grave que no cuadra. Unos 2,5 minutos.
+- [ ] Paso 3: el nivel en bloques (bosque obligatorio).
+- [ ] Paso 4: la gente de la aldea (aldeanos, soldados que avisan, desertor).
+- [ ] Paso 5: Bram, gigante de unos 3 m.
+- [ ] Paso 6: menú principal, opciones y `.exe`.
+- [ ] Paso 7: arte (estilo, Kael, enemigos, jefes, Frank, iluminación).
 - [ ] Diseño final de Kael y enemigos.
 - [ ] Nivel completo con arte real, iluminación, 2 campamentos, 1 atajo, secretos.
 - [ ] Menú principal, opciones (gráficos, sangre, subtítulos). Exportar `.exe`.

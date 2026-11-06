@@ -11,10 +11,10 @@ extends RefCounted
 ## chillido que sintetiza tools/gen_frank.py y `es`, lo que Kael entiende (va entre «»).
 
 ## Nombre que aparece en los subtítulos.
-const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga", &"frank": "Frank"}
+const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga", &"frank": "Frank", &"lira": "Lira"}
 ## Voces que no salen de un personaje del nivel (el narrador; el Regente en las escenas): suenan igual en
 ## todas partes (no posicionales) y mandan sobre las demás.
-const NARRATORS: Array[StringName] = [&"narrator", &"regent", &"kael_scene"]
+const NARRATORS: Array[StringName] = [&"narrator", &"regent", &"kael_scene", &"lira"]
 ## Volumen propio (dB) de algunos personajes: Frank, más bajito (que acompañe, no que moleste).
 const VOLUME_DB: Dictionary = {&"frank": -7.0}
 ## Importancia de cada evento cuando varias voces coinciden: la más importante interrumpe a la menos
@@ -98,7 +98,7 @@ const LINES: Dictionary = {
 			{"id": "narrator_death_3", "en": "No... I'm getting ahead of myself.", "es": "No… me estoy adelantando."},
 		]},
 		&"player_death_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "narrator_player_death_2_1", "en": "No... he did not fall there. That much I remember. I think.", "es": "No… él no cayó ahí. Eso lo recuerdo bien. Creo."},
+			{"id": "narrator_player_death_2_1", "en": "No... he did not fall there. Every version agrees on that. Almost every one.", "es": "No… él no cayó ahí. En eso coinciden todas las versiones. Casi todas."},
 			{"id": "narrator_player_death_2_2", "en": "Hm. My memory is not what it was.", "es": "Mm. Mi memoria ya no es lo que era."},
 		]},
 		&"player_death_3": {"chance": 1.0, "cooldown": 0.0, "lines": [
@@ -119,20 +119,23 @@ const LINES: Dictionary = {
 		]},
 		# Frank (escena de la red, FrankMeet; o si Kael pasa de largo).
 		&"story_frank_meet": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "narrator_story_frank_meet", "en": "I never learned to speak monkey. But that look... that look, I understood.", "es": "Nunca aprendí a hablar mono. Pero aquella mirada… aquella sí la entendí."},
+			{"id": "narrator_story_frank_meet", "en": "The warrior never learned to speak monkey. But that look... that look, he understood.", "es": "El guerrero nunca aprendió a hablar mono. Pero aquella mirada… aquella sí la entendió."},
 		]},
 		&"story_frank_left": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "narrator_story_frank_left", "en": "I walked right past him. I'm not proud of it. He followed me anyway.", "es": "Pasé de largo. No me enorgullece. Me siguió igual."},
+			{"id": "narrator_story_frank_left", "en": "The warrior walked right past him. He was not proud of it. The monkey followed him anyway.", "es": "El guerrero pasó de largo. No se sintió orgulloso. El mono lo siguió igual."},
 		]},
 		# Escena del prólogo (PrologueScene), después de story_prologue.
 		&"story_prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "narrator_story_prologue_order", "en": "It began with an order, in a hall of cold stone.", "es": "Todo empezó con una orden, en una sala de piedra fría."},
+			{"id": "narrator_story_prologue_order", "en": "It all began in the palace. To the warrior, it did not feel like an order. It felt like a promise.", "es": "Todo empezó en el palacio. Al guerrero no le pareció una orden. Le pareció una promesa."},
 		]},
 		&"story_prologue_summon": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_prologue_summon", "en": "They summoned the warrior at dawn. He had never stood so close to the Regent.", "es": "Llamaron al guerrero al amanecer. Nunca había estado tan cerca del Regente."},
 		]},
+		&"story_prologue_memory": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "narrator_story_prologue_memory", "en": "When he came home, the bed was empty. All he had left was the ribbon.", "es": "Cuando volvió a casa, la cama estaba vacía. Solo le quedó la cinta."},
+		]},
 		&"story_prologue_ribbon": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "narrator_story_prologue_ribbon", "en": "The warrior did not ask a single question. He only looked at the ribbon on his wrist.", "es": "El guerrero no hizo ni una pregunta. Solo miró la cinta de su muñeca."},
+			{"id": "narrator_story_prologue_ribbon", "en": "The warrior asked nothing more. He only looked at the ribbon on his wrist.", "es": "El guerrero no preguntó nada más. Solo miró la cinta de su muñeca."},
 		]},
 		&"story_prologue_end": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_prologue_end", "en": "His sister's ribbon. And at dawn, he set out for the Iron Pass.", "es": "La cinta de su hermana. Y al amanecer partió hacia el Paso de Hierro."},
@@ -181,7 +184,7 @@ const LINES: Dictionary = {
 		]},
 		# Acto IV: la Frontera.
 		&"story_frontier": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "narrator_story_frontier", "en": "The last cordon. I no longer know which part is mine and which part is the song.", "es": "El último cordón. Ya no sé qué parte es mía y qué parte es la canción."},
+			{"id": "narrator_story_frontier", "en": "The last cordon. No one knows anymore which part is true and which part is the song.", "es": "El último cordón. Ya nadie sabe qué parte es verdad y qué parte es canción."},
 		]},
 		&"story_aren_before": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "narrator_story_aren_before", "en": "General Aren did not draw his sword. He was waiting for him. He only wanted to talk.", "es": "El general Aren no desenvainó. Lo estaba esperando. Solo quería hablar."},
@@ -195,24 +198,55 @@ const LINES: Dictionary = {
 		]},
 	},
 	# El Regente Malcor: solo habla en las escenas (no está en el nivel).
+	# El Regente (prólogo, versión 2): cálido, cercano, nunca dice "curar".
 	&"regent": {
-		&"prologue_order": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "regent_prologue_order", "en": "Five names. Five cordons. When they fall, the fever ends.", "es": "Cinco nombres. Cinco cordones. Cuando caigan, la fiebre se acaba."},
+		&"prologue_rise": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_rise", "en": "Rise, Kael. You don't kneel here. Not today.", "es": "Levántate, Kael. Aquí no te arrodillas. Hoy no."},
 		]},
-		&"prologue_rebels": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "regent_prologue_rebels", "en": "Traitors. They foul the wells and burn every village that will not feed them.", "es": "Traidores. Ensucian los pozos y queman cada aldea que no los alimenta."},
+		&"prologue_lira": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_lira", "en": "I heard about Lira. I'm sorry. Truly. The fever doesn't care whose daughter she was.", "es": "Supe lo de Lira. Lo siento. De verdad. A la fiebre no le importa de quién era hija."},
 		]},
-		&"prologue_names": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "regent_prologue_names", "en": "Here are their names. Bring me their banners, one by one.", "es": "Aquí tienes sus nombres. Tráeme sus estandartes, uno por uno."},
+		&"prologue_grief": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_grief", "en": "I have buried people this winter, too.", "es": "Yo también he enterrado a gente este invierno."},
 		]},
-		&"prologue_sister": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "regent_prologue_sister", "en": "The fever took your sister, Kael. The rebels brought it to us. Make them pay.", "es": "La fiebre se llevó a tu hermana, Kael. Nos la trajeron los rebeldes. Haz que paguen."},
+		&"prologue_hope": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_hope", "en": "There is a way no one else loses their Lira. The fever travels with people. Five of them hold the roads, and let no help through.", "es": "Hay una forma de que nadie más pierda a su Lira. La fiebre viaja con la gente. Hay cinco que cierran los caminos y no dejan pasar la ayuda."},
+		]},
+		&"prologue_bram": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_bram", "en": "Bram. A huge man. A good one, once. Now he guards a door, and lets no one out.", "es": "Bram. Un hombre enorme. Y bueno, en otro tiempo. Ahora guarda una puerta y no deja salir a nadie."},
+		]},
+		&"prologue_varga": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_varga", "en": "Varga. The finest captain I ever had. Something broke in her, up at the Pass. They say she burns villages.", "es": "Varga. La mejor capitana que tuve. Algo se le torció en el Paso. Dicen que quema aldeas."},
+		]},
+		&"prologue_ilse": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_ilse", "en": "Ilse hunts in the mountains. The messengers I send up there... don't come back.", "es": "Ilse caza en la montaña. Los mensajeros que envío allí… no vuelven."},
+		]},
+		&"prologue_orme": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_orme", "en": "Orme. The cleverest engineer in the kingdom. He holds the river dam in his hands.", "es": "Orme. El ingeniero más listo del reino. Tiene la presa del río en sus manos."},
+		]},
+		&"prologue_aren": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_aren", "en": "And Aren. Him... you will meet at the end.", "es": "Y Aren. A ese… lo conocerás al final."},
+		]},
+		&"prologue_vow_stop": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_vow_stop", "en": "Stop them. Yes. Do whatever is necessary, Kael. I trust your judgement.", "es": "Detenerlos. Sí. Haz lo que sea necesario, Kael. Confío en tu juicio."},
+		]},
+		&"prologue_vow_end": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "regent_prologue_vow_end", "en": "Let them suffer no more than they must. I trust you, Kael.", "es": "Que no sufran más de lo necesario. Confío en ti, Kael."},
 		]},
 	},
 	# Kael en las escenas (voz no posicional, como el narrador).
 	&"kael_scene": {
-		&"prologue_who": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "kael_scene_prologue_who", "en": "Who are they, my lord?", "es": "¿Quiénes son, mi señor?"},
+		&"prologue_need": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_prologue_need", "en": "What do you need of me, my lord?", "es": "¿Qué necesitáis de mí, mi señor?"},
+		]},
+		&"prologue_promise": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_prologue_promise", "en": "I promise.", "es": "Lo prometo."},
+		]},
+		&"prologue_choice_stop": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_prologue_choice_stop", "en": "I will stop them, my lord.", "es": "Los detendré, mi señor."},
+		]},
+		&"prologue_choice_end": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_prologue_choice_end", "en": "I will put an end to them.", "es": "Acabaré con ellos."},
 		]},
 		&"varga_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_varga_1", "en": "The Regent says you burn villages.", "es": "El Regente dice que quemáis aldeas."},
@@ -220,14 +254,17 @@ const LINES: Dictionary = {
 		&"varga_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_varga_2", "en": "I have my orders.", "es": "Tengo mis órdenes."},
 		]},
-		&"prologue_answer": {"chance": 1.0, "cooldown": 0.0, "lines": [
-			{"id": "kael_scene_prologue_answer", "en": "It will be done.", "es": "Así se hará."},
-		]},
 		&"frank_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_frank_1", "en": "Go on. Back to your own kind.", "es": "Anda, vete. Vuelve con los tuyos."},
 		]},
 		&"frank_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_frank_2", "en": "...Do as you like.", "es": "…Haz lo que quieras."},
+		]},
+	},
+	# Lira, la hermana de Kael, de niña (el recuerdo del prólogo).
+	&"lira": {
+		&"memory_promise": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "lira_memory_promise", "en": "So you come back. Promise me.", "es": "Para que vuelvas. Prométemelo."},
 		]},
 	},
 	# La Capitana Varga (jefa del Paso de Hierro). Duelista: segura, cortante, cansada de la guerra.

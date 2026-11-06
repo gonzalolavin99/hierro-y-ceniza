@@ -66,19 +66,58 @@ func _run() -> void:
 	Input.action_release("ui_accept")
 	await _wait(1.6)
 
-	# 2. Entera (a velocidad x4): pasa por todos los planos y termina sola.
+	# 2. Entera (a velocidad x4): pasa por todos los planos; en la elección, el jugador elige con el mando.
 	Story.reset()
+	var spoken: Array[String] = []
+	var on_spoken := func(speaker: StringName, event: StringName, _id: String) -> void: spoken.append("%s/%s" % [speaker, event])
+	Voice.spoken.connect(on_spoken)
 	Engine.time_scale = 4.0
 	scene = Story.play_prologue()
 	var shots: Array[StringName] = []
-	for i in 400:  # Hasta 40 s reales (la escena dura ~40 s a velocidad normal; aquí, ~10 s).
+	var music_in_hall: bool = false
+	var tinted_memory: bool = false
+	var chose: bool = false
+	var sting: bool = false
+	for i in 1200:  # Hasta 120 s reales (la escena dura ~2,5 min a velocidad normal; aquí, ~40 s).
 		await _wait(0.1)
 		if not scene.shot in shots:
 			shots.append(scene.shot)
+		if scene.shot == &"hall" and scene._music.playing:
+			music_in_hall = true
+		if scene.shot == &"memory" and scene._tint.visible:
+			tinted_memory = true
+		if scene.shot == &"title" and scene._sting.playing:
+			sting = true
+		if scene.is_choosing() and not chose:
+			chose = true
+			_check("En la elección se ven las dos respuestas", scene._choice_box.visible and scene._choice_labels[0].text.contains("Los detendré"))
+			await _tap(&"ui_down")
+			await _wait(0.1)
+			_check("La cruz cambia de respuesta", scene.choice_index == 1)
+			await _tap(&"ui_accept")
 		if scene.is_done():
 			break
 	Engine.time_scale = 1.0
-	_check("Recorre los planos en orden %s" % str(shots), shots == [&"fire", &"hall", &"kael", &"regent", &"ribbon", &"title"])
+	Voice.spoken.disconnect(on_spoken)
+	_check("Recorre los planos en orden %s" % str(shots),
+		shots == [&"fire", &"hall", &"regent", &"memory", &"kael", &"map", &"choice", &"ribbon", &"title"])
+	_check("Música cálida en el salón", music_in_hall)
+	_check("El Regente baja y le dice que se levante; habla de Lira antes que de nada",
+		spoken.find("regent/prologue_rise") >= 0 and spoken.find("regent/prologue_lira") < spoken.find("regent/prologue_hope"))
+	_check("El recuerdo: imagen cálida, Lira de niña y la cama vacía",
+		tinted_memory and spoken.has("lira/memory_promise") and spoken.has("narrator/story_prologue_memory"))
+	var names: Array[String] = ["bram", "varga", "ilse", "orme", "aren"]
+	var in_order: bool = true
+	var last: int = -1
+	for name in names:
+		var at: int = spoken.find("regent/prologue_" + name)
+		in_order = in_order and at > last
+		last = at
+	_check("Los cinco, uno a uno y en orden", in_order)
+	_check("Eligió «Acabaré con ellos» y el Regente estuvo de acuerdo",
+		scene.vow == &"end" and spoken.has("kael_scene/prologue_choice_end") and spoken.has("regent/prologue_vow_end"))
+	_check("La elección queda guardada en la partida", Story.heard(&"vow_end") and not Story.heard(&"vow_stop"))
+	_check("Al final, la nota grave que no cuadra", sting)
 	_check("Termina sola y devuelve el juego", scene.is_done() and not get_tree().paused)
 	await _wait(1.6)
 

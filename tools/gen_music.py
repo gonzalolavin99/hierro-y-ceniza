@@ -1,5 +1,6 @@
-"""Genera la música del duelo con la Capitana Varga por síntesis (100 % original, sin licencias).
-Ejecutar: python tools/gen_music.py  ->  game/assets/audio/music/varga_duel_1.wav y varga_duel_2.wav
+"""Genera la música del juego por síntesis (100 % original, sin licencias).
+Ejecutar: python tools/gen_music.py  ->  game/assets/audio/music/varga_duel_1.wav, varga_duel_2.wav,
+prologue_hall.wav (el salón del Regente) y prologue_sting.wav (la nota final que no cuadra)
 
 Mezcla de Europa y Japón (D3): tambores graves tipo taiko, un bordón grave de fondo y una melodía de
 cuerda pulsada en modo frigio (re, mi bemol, fa, sol, la, si bemol, do), tensa y oscura.
@@ -133,6 +134,89 @@ def build(phase):
     return mix / np.max(np.abs(mix)) * 0.85
 
 
+# --- Prólogo, versión 2: el salón del Regente (cálido, esperanzado) y la nota final que no cuadra ---------
+# Re mayor, 70 ppm, 16 compases. Cuerdas suaves de fondo, laúd en arpegios y una flauta sencilla en la
+# segunda mitad. Nada de tensión: el jugador tiene que creer al Regente. Bucle exacto.
+HALL_BPM = 70.0
+HALL_BEAT = 60.0 / HALL_BPM
+HALL_BARS = 16
+HALL_LENGTH = int(SR * HALL_BEAT * 4 * HALL_BARS)
+D3 = 146.83
+# Acordes (semitonos desde re3): I vi IV V I iii IV V | vi IV I V IV I V I
+HALL_CHORDS = [[0, 4, 7], [-3, 0, 4], [-7, -3, 0], [-5, -1, 2], [0, 4, 7], [-6, -3, 1], [-7, -3, 0], [-5, -1, 2],
+               [-3, 0, 4], [-7, -3, 0], [0, 4, 7], [-5, -1, 2], [-7, -3, 0], [0, 4, 7], [-5, -1, 2], [0, 4, 7]]
+# Melodía (semitonos desde re4, pulso, compás) para la segunda mitad.
+HALL_MELODY = [(4, 0, 8), (2, 2, 8), (0, 0, 9), (-1, 2, 9), (2, 0, 10), (4, 1, 10), (7, 2, 10),
+               (5, 0, 11), (4, 2, 11), (2, 0, 12), (0, 2, 12), (4, 0, 13), (2, 2, 13), (-1, 0, 14), (0, 0, 15)]
+
+
+def semi(base, n):
+    return base * 2 ** (n / 12.0)
+
+
+def place_in(track, sound, at_seconds, length, gain=1.0):
+    start = int(at_seconds * SR) % length
+    end = start + len(sound)
+    if end <= length:
+        track[start:end] += sound * gain
+    else:
+        first = length - start
+        track[start:] += sound[:first] * gain
+        track[:end - length] += sound[first:] * gain
+
+
+def soft_pad(freqs, seconds):
+    t = t_axis(seconds)
+    env = np.minimum(1.0, t / 0.9) * np.minimum(1.0, (seconds - t) / 0.9)
+    x = np.zeros(len(t))
+    for f in freqs:
+        for detune in (0.997, 1.003):
+            x += np.sin(2 * np.pi * f * detune * t + rng.uniform(0, 6)) * 0.5
+            x += np.sin(2 * np.pi * f * 2 * detune * t) * 0.12
+    return lowpass(x * env, 1800.0) / max(len(freqs), 1)
+
+
+def flute(freq, seconds):
+    t = t_axis(seconds)
+    vib = 1.0 + 0.006 * np.sin(2 * np.pi * 5.2 * t) * np.minimum(1.0, t / 0.4)
+    phase = 2 * np.pi * np.cumsum(freq * vib) / SR
+    env = np.minimum(1.0, t / 0.12) * np.exp(-np.maximum(t - seconds * 0.6, 0) / 0.25)
+    breath = lowpass(rng.standard_normal(len(t)), 3000.0) * 0.03
+    return (np.sin(phase) + 0.18 * np.sin(2 * phase) + breath) * env
+
+
+def build_hall():
+    mix = np.zeros(HALL_LENGTH)
+    bar_s = HALL_BEAT * 4
+    for bar, chord in enumerate(HALL_CHORDS):
+        at = bar * bar_s
+        place_in(mix, soft_pad([semi(D3, n) for n in chord] + [semi(D3, chord[0] - 12)], bar_s + 0.9), at, HALL_LENGTH, 0.55)
+        # Laúd: arpegio en corcheas (raíz, tercera, quinta, octava…).
+        notes = [chord[0], chord[1], chord[2], chord[0] + 12, chord[2], chord[1], chord[2], chord[0] + 12]
+        for k, n in enumerate(notes):
+            place_in(mix, pluck(semi(D3, n), 1.4, 0.995), at + k * HALL_BEAT * 0.5, HALL_LENGTH, 0.32)
+    for n, beat, bar in HALL_MELODY:
+        place_in(mix, flute(semi(D3 * 2, n), HALL_BEAT * 1.8), (bar * 4 + beat) * HALL_BEAT, HALL_LENGTH, 0.22)
+    echo = np.zeros(HALL_LENGTH)
+    d = int(SR * 0.31)
+    echo[d:] = mix[:-d] * 0.25
+    mix = mix + echo
+    return mix / np.max(np.abs(mix)) * 0.7
+
+
+def build_sting(seconds=7.0):
+    """La nota que no cuadra: re grave y mi bemol juntos, cuerdas con trémolo, que crecen y se apagan."""
+    t = t_axis(seconds)
+    env = np.minimum(1.0, t / 2.5) * np.exp(-np.maximum(t - 3.5, 0) / 1.2)
+    trem = 0.8 + 0.2 * np.sin(2 * np.pi * 6.0 * t)
+    x = np.zeros(len(t))
+    for f, a in [(73.42, 1.0), (77.78, 0.8), (36.71, 0.6), (155.56, 0.25)]:
+        for h, ha in [(1, 1.0), (2, 0.35), (3, 0.15)]:
+            x += a * ha * np.sin(2 * np.pi * f * h * t + rng.uniform(0, 6))
+    x = lowpass(x * env * trem, 900.0)
+    return x / np.max(np.abs(x)) * 0.6
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     for phase in (1, 2):
@@ -140,6 +224,10 @@ def main():
         path = os.path.join(OUT, "varga_duel_%d.wav" % phase)
         wavfile.write(path, SR, (data * 32767).astype(np.int16))
         print("  %s  %.1f s" % (os.path.basename(path), LENGTH / SR))
+    for name, data in (("prologue_hall", build_hall()), ("prologue_sting", build_sting())):
+        path = os.path.join(OUT, name + ".wav")
+        wavfile.write(path, SR, (data * 32767).astype(np.int16))
+        print("  %s  %.1f s" % (os.path.basename(path), len(data) / SR))
 
 
 if __name__ == "__main__":

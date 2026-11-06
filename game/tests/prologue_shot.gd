@@ -12,16 +12,19 @@ func _ready() -> void:
 	var since: float = 0.0
 	var index: int = 0
 	var count: int = 0
-	while not scene.is_done() and count < 500:
+	while not scene.is_done() and count < 900:
 		await get_tree().create_timer(0.25, true).timeout
 		count += 1
 		if scene.shot != last:
 			last = scene.shot
 			since = 0.0
 		since += 0.25
-		if is_equal_approx(since, 1.75):
+		# Una al poco de empezar cada plano y otra cada 3 s mientras dura.
+		if is_equal_approx(fmod(since, 3.0), 1.75):
 			index += 1
 			await _shot(out, "pro_%02d_%s" % [index, last])
+		if scene.is_choosing() and since > 2.5:
+			scene.choose(0)
 	await get_tree().create_timer(1.6, true).timeout
 	await _shot(out, "pro_after")
 	get_tree().quit()
