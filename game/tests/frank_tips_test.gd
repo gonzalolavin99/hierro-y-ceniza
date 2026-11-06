@@ -41,6 +41,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	_frank = _player.frank
+	_frank.chat_gap = 0.0  # Sin pausa entre comentarios: cada caso lo provoca la prueba.
 	_advisor = _frank.advisor
 	_check("Frank va en el hombro y tiene quien decide qué dice", _frank.mode == Frank.Mode.PERCHED and _advisor != null)
 	_advisor.idle_long_after = 1e9
@@ -146,6 +147,18 @@ func _run() -> void:
 	await _wait(0.3)
 	_check("En un momento serio no bromea al vendarse", _spoken.count("frank/heal") == heals)
 	await _wait(1.5)
+
+	# 9b. No agobia: entre dos comentarios de charla pasan al menos 30 s; los avisos no esperan.
+	_frank.chat_gap = 30.0
+	_frank._last_chat = -1000.0
+	_quiet()
+	var first_chat: bool = _frank.say(&"idle_long")
+	_quiet()
+	var second_chat: bool = _frank.say(&"rest")
+	_quiet()
+	var warning: bool = _frank.say(&"warn_behind")
+	_check("Entre dos comentarios de charla, al menos 30 s (avisos sí)", first_chat and not second_chat and warning)
+	_frank.chat_gap = 0.0
 
 	# 10. Sin Frank en el hombro (aún en la red), no dice nada.
 	Story.reset()

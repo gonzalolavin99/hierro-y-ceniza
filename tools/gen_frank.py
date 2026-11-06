@@ -29,15 +29,20 @@ SR = 44100
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 OUT = os.path.join(ROOT, "game", "assets", "audio", "voice", "frank")
 LINES = os.path.join(ROOT, "tools", "voice_lines.json")
+# Más grave y suave que un tití de verdad (el jugador lo encontró demasiado chillón): todo el tono se
+# multiplica por PITCH y se recortan los agudos por encima de SOFT_CUTOFF.
+PITCH = 0.62
+SOFT_CUTOFF = 3800.0
 
 
-def tone(f_curve, amp_curve, rng, breath=0.08, harmonics=(1.0, 0.35, 0.12)):
+def tone(f_curve, amp_curve, rng, breath=0.05, harmonics=(1.0, 0.25, 0.06)):
     """Silbido con armónicos que sigue una curva de frecuencia (Hz por muestra) y de volumen."""
+    f_curve = f_curve * PITCH
     vibrato = 1.0 + 0.012 * np.sin(2 * np.pi * rng.uniform(18, 26) * np.arange(len(f_curve)) / SR)
     phase = 2 * np.pi * np.cumsum(f_curve * vibrato) / SR
     x = sum(a * np.sin((k + 1) * phase) for k, a in enumerate(harmonics))
     noise = rng.standard_normal(len(x))
-    noise = signal.sosfilt(signal.butter(2, [2500, 9000], btype="band", fs=SR, output="sos"), noise)
+    noise = signal.sosfilt(signal.butter(2, [1200, 4500], btype="band", fs=SR, output="sos"), noise)
     return (x + breath * noise) * amp_curve
 
 
@@ -163,11 +168,12 @@ def length_for(line):
 
 
 def finish(x):
-    x = signal.sosfilt(signal.butter(2, 900, btype="high", fs=SR, output="sos"), x)
+    x = signal.sosfilt(signal.butter(2, 500, btype="high", fs=SR, output="sos"), x)
+    x = signal.sosfilt(signal.butter(4, SOFT_CUTOFF, btype="low", fs=SR, output="sos"), x)
     # Un poco de cuerpo (que no suene a pájaro): eco cortísimo, como el pecho de un animalito.
     d = int(0.004 * SR)
     x = x + np.pad(x, (d, 0))[: len(x)] * 0.3
-    return x / max(np.max(np.abs(x)), 1e-6) * 0.7
+    return x / max(np.max(np.abs(x)), 1e-6) * 0.55
 
 
 def main():

@@ -29,7 +29,11 @@ const TAIL_SEGMENT_LENGTH: float = 0.042
 const RUN_SPEED: float = 8.0
 const MOUTH_SIZE: Vector3 = Vector3(0.011, 0.005, 0.004)
 ## Rato (s) entre intentos de parlotear solo cuando va tranquilo en el hombro.
-const IDLE_CHATTER_EVERY: Vector2 = Vector2(35.0, 70.0)
+const IDLE_CHATTER_EVERY: Vector2 = Vector2(90.0, 180.0)
+## Comentarios "de charla" (no avisos ni pistas): entre dos de ellos pasan al menos `chat_gap` segundos,
+## para que Frank acompañe sin agobiar.
+const CHATTY: Array[StringName] = [&"idle", &"idle_long", &"heal", &"heal_danger", &"kill", &"rest", &"stagger",
+	&"scared", &"found_item", &"death_first", &"death_again", &"throw_hit", &"happy", &"bandages_out"]
 
 var mode: Mode = Mode.HIDDEN
 var pose: Pose = Pose.IDLE
@@ -70,9 +74,14 @@ var _run_then_hop: bool = true
 var _next_idle_chatter: float = 40.0
 var _last_health: float = -1.0
 var _gesture_until: float = 0.0
+## Segundos mínimos entre dos comentarios de charla (las pruebas lo ponen a 0).
+var chat_gap: float = 30.0
+var _last_chat: float = -1000.0
 var _point_turn: Basis = Basis.IDENTITY
 ## Quién decide cuándo habla (consejos, bromas, pistas).
 var advisor: FrankAdvisor
+## Lanzar fruta para distraer (cruz abajo).
+var thrower: FrankThrow
 
 
 func setup(player: Player) -> void:
@@ -94,6 +103,10 @@ func _ready() -> void:
 		advisor.name = "Advisor"
 		advisor.setup(self, _player)
 		add_child(advisor)
+		thrower = FrankThrow.new()
+		thrower.name = "Thrower"
+		thrower.setup(self, _player)
+		add_child(thrower)
 	sync_with_story.call_deferred()
 
 
@@ -188,7 +201,13 @@ func shake(seconds: float = 0.7) -> void:
 
 ## Chilla un evento de Frank (VoiceLines[&"frank"]). Devuelve true si sonó.
 func say(event: StringName) -> bool:
-	return Voice.say(&"frank", event, head_position())
+	var chatty: bool = event in CHATTY
+	if chatty and _time - _last_chat < chat_gap:
+		return false
+	var spoke: bool = Voice.say(&"frank", event, head_position())
+	if spoke and chatty:
+		_last_chat = _time
+	return spoke
 
 
 func head_position() -> Vector3:

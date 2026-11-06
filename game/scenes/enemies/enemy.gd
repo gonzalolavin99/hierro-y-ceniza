@@ -150,6 +150,9 @@ var _evade_in: float = -1.0
 var last_keep_away: float = -100.0
 var _spawn: Transform3D
 var _body_layer: int = 4
+var _body_mask: int = 7
+## Capa del escenario (suelo y muros): lo único con lo que choca mientras no se le puede golpear.
+const WORLD_LAYER: int = 1
 ## Si cae más que esto por debajo de su puesto (se salió del mapa), vuelve a él.
 const FALL_LIMIT: float = 20.0
 ## Distancias para los ataques a distancia (ranged_patterns).
@@ -166,6 +169,7 @@ func _ready() -> void:
 	add_to_group("enemies")
 	deathblows_left = deathblows
 	_body_layer = collision_layer
+	_body_mask = collision_mask
 	_spawn = global_transform
 	_base_posture_regen = posture.regen_rate
 	state_machine.setup(self)
@@ -428,6 +432,8 @@ func phase() -> int:
 func set_vulnerable(enabled: bool) -> void:
 	hurtbox.set_deferred("monitorable", enabled)
 	set_deferred("collision_layer", _body_layer if enabled else 0)
+	# Sin chocar con Kael ni con otros (si no, al rehacerse junto a él podía quedarse de pie sobre su cabeza).
+	set_deferred("collision_mask", _body_mask if enabled else WORLD_LAYER)
 
 
 func respawn() -> void:

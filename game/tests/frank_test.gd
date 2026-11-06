@@ -39,6 +39,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	_frank = _player.frank
+	_frank.chat_gap = 0.0  # Sin pausa entre comentarios: cada caso lo provoca la prueba.
 	_check("La red está en el nivel y Frank existe", _snare != null and _frank != null)
 	_check("Al empezar, Frank está atrapado en la red", _frank.mode == Frank.Mode.TRAPPED and _frank.visible)
 	_check("Frank está dentro de la red", _frank.global_position.distance_to(_snare.bag_position()) < 0.4)

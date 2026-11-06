@@ -458,6 +458,78 @@
     },
     {
       "chars": 0,
+      "chirp": "squeak",
+      "event": "throw_go",
+      "id": "frank_throw_go_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 19,
+      "chirp": "happy",
+      "event": "throw_hit",
+      "id": "frank_throw_hit_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 21,
+      "chirp": "happy",
+      "event": "throw_hit",
+      "id": "frank_throw_hit_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 33,
+      "chirp": "whisper",
+      "event": "throw_distract",
+      "id": "frank_throw_distract_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 28,
+      "chirp": "whisper",
+      "event": "throw_distract",
+      "id": "frank_throw_distract_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 22,
+      "chirp": "indignant",
+      "event": "throw_boss",
+      "id": "frank_throw_boss_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 31,
+      "chirp": "chatter",
+      "event": "throw_wait",
+      "id": "frank_throw_wait_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 30,
+      "chirp": "chatter",
+      "event": "throw_wait",
+      "id": "frank_throw_wait_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 38,
+      "chirp": "chatter",
+      "event": "throw_nobody",
+      "id": "frank_throw_nobody_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 0,
       "chirp": "happy",
       "event": "happy",
       "id": "frank_happy_1",

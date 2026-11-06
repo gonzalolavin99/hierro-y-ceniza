@@ -211,6 +211,15 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `frank_gate_locked_1.wav` | gate_locked | (chillido: chatter) | «Cerrado por dentro… Déjame a mí.» |
 | `frank_gate_go_1.wav` | gate_go | (chillido: chatter) | «Espera aquí. No toques nada.» |
 | `frank_gate_done_1.wav` | gate_done | (chillido: happy) | «¡Pestillo fuera! De nada, ¿eh?» |
+| `frank_throw_go_1.wav` | throw_go | (chillido: squeak) | little effort squeak, small monkey throwing something |
+| `frank_throw_hit_1.wav` | throw_hit | (chillido: happy) | «¡En toda la cara!» |
+| `frank_throw_hit_2.wav` | throw_hit | (chillido: happy) | «¡Ja! ¿Quieres otra?» |
+| `frank_throw_distract_1.wav` | throw_distract | (chillido: whisper) | «Ya mira para otro lado. ¡Ahora!» |
+| `frank_throw_distract_2.wav` | throw_distract | (chillido: whisper) | «Shh… Por detrás. Despacio.» |
+| `frank_throw_boss_1.wav` | throw_boss | (chillido: indignant) | «Ni la ha despeinado.» |
+| `frank_throw_wait_1.wav` | throw_wait | (chillido: chatter) | «Espera, que busco otra fruta.» |
+| `frank_throw_wait_2.wav` | throw_wait | (chillido: chatter) | «Me la comí. Dame un momento.» |
+| `frank_throw_nobody_1.wav` | throw_nobody | (chillido: chatter) | «¿A quién se la tiro? No veo a nadie.» |
 | `frank_happy_1.wav` | happy | (chillido: happy) | little rising trill of a happy small monkey |
 | `frank_happy_2.wav` | happy | (chillido: squeak) | short cheerful squeak |
 | `frank_idle_1.wav` | idle | (chillido: twitter) | soft twittering to himself, small monkey |

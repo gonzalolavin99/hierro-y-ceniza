@@ -27,6 +27,7 @@ var _xp_tween: Tween
 var _art_label: Label
 var _subtitle_label: Label
 var _subtitle_line: String = ""
+var _frank_label: Label
 var _subtitle_tween: Tween
 
 
@@ -57,6 +58,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _player == null:
 		return
+	_update_frank_label()
 	var camera: Camera3D = get_viewport().get_camera_3d()
 	var enemy: Enemy = _player.engaged_enemy
 	if enemy and (enemy.is_dead() or _player.global_position.distance_to(enemy.global_position) > 20.0):
@@ -144,6 +146,11 @@ func _build_tool_label() -> void:
 	_bandage_label = _tool_label.duplicate() as Label
 	add_child(_bandage_label)
 	_bandage_label.position = _art_label.position + Vector2(0.0, -32.0)
+	# Fruta de Frank (solo si va con Kael), encima de los vendajes.
+	_frank_label = _tool_label.duplicate() as Label
+	add_child(_frank_label)
+	_frank_label.position = _bandage_label.position + Vector2(0.0, -32.0)
+	_frank_label.visible = false
 
 
 ## Experiencia, abajo a la derecha; al ganarla aparece "+N" encima un momento.
@@ -225,3 +232,23 @@ func _set_posture_fill(bar: Control, fill: ColorRect, ratio: float) -> void:
 	fill.anchor_right = 0.5 + ratio * 0.5
 	var color_index: int = 0 if ratio < 0.5 else (1 if ratio < 0.8 else 2)
 	fill.color = POSTURE_COLORS[color_index]
+
+
+## "↓ Fruta de Frank" (lista) o con los segundos que faltan; oculto si Frank no va con Kael.
+func _update_frank_label() -> void:
+	if _frank_label == null:
+		return
+	var thrower: FrankThrow = _player.frank.thrower if _player.frank else null
+	_frank_label.visible = thrower != null and thrower.is_available()
+	if not _frank_label.visible:
+		return
+	if thrower.cooldown_left > 0.0:
+		_frank_label.text = "↓  Fruta de Frank  (%d s)" % ceili(thrower.cooldown_left)
+		_frank_label.modulate = Color(1.0, 1.0, 1.0, 0.5)
+	else:
+		_frank_label.text = "↓  Fruta de Frank"
+		_frank_label.modulate = Color.WHITE
+
+
+func frank_text() -> String:
+	return _frank_label.text if _frank_label and _frank_label.visible else ""

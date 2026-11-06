@@ -211,7 +211,20 @@ de caminar agachado (Mixamo, las descarga el jugador).
       hombro; queda abierta para siempre. Dentro, la **Nota de los cazadores** (objeto clave: el palacio
       compraba animales raros… y ya no compra, porque en la capital hay fiebre); Frank: «…Esa jaula era
       para mí.»
-- [ ] Paso 4: distrae (le tira fruta a un enemigo para abrir un golpe por la espalda).
+- [x] Paso 4: distrae. Hecho y probado (OK del jugador: "quedó súper bien"): **cruz abajo** (G en teclado) = Frank lanza una fruta
+      al enemigo fijado o al más centrado delante (hasta 16 m). A uno **desprevenido** la fruta le cae detrás:
+      va a mirar y le da la espalda a Kael (golpe por la espalda); Frank susurra «Ya mira para otro lado.
+      ¡Ahora!». **En plena pelea** le da en la cara y lo aturde 1,4 s («¡En toda la cara!»). A una **jefa**,
+      casi nada («Ni la ha despeinado.»). Recarga de 40 s; en pantalla «↓ Fruta de Frank» (con los segundos
+      que faltan); sin nadie a tiro no la gasta.
+      Arreglado de paso: mientras un jefe se rehacía, seguía chocando con Kael y a veces se quedaba de pie
+      sobre su cabeza (flotando de rodillas); ahora, mientras no se le puede golpear, solo choca con el
+      escenario.
+      Ajustes pedidos por el jugador: la fruta **persigue la cabeza** del enemigo en el vuelo (antes pasaba
+      cerca y aturdía igual); **chillidos más graves y suaves** (todo el tono ×0,62, sin agudos por encima de
+      3,8 kHz) y Frank suena 7 dB más bajo; **habla menos**: menos probabilidad y más espera en sus
+      comentarios, y entre dos comentarios de charla pasan al menos 30 s (avisos y pistas, no).
+      Pendiente para la fase de arte: mejorar el modelo de Frank.
 
 ## Hito 9 — Vertical slice "El Paso de Hierro" + diseño de personajes (6–10 semanas)
 - [ ] Diseño final de Kael y enemigos.

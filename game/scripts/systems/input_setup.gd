@@ -35,6 +35,7 @@ func _ready() -> void:
 	_button("item_next", JOY_BUTTON_DPAD_RIGHT, KEY_2)        # Cambiar de arma secundaria
 	_button("item_prev", JOY_BUTTON_DPAD_LEFT, KEY_1)
 	_button("art_next", JOY_BUTTON_DPAD_UP, KEY_3)            # Cambiar de técnica (LB + RB)
+	_button("frank_throw", JOY_BUTTON_DPAD_DOWN, KEY_G)       # Frank lanza una fruta (distrae)
 
 
 func _ensure(action: StringName) -> void:

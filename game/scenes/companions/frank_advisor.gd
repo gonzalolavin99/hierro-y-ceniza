@@ -17,7 +17,7 @@ extends Node
 
 const HEAL_DANGER_RANGE: float = 10.0
 ## Segundos quieto antes de la broma (variable para las pruebas).
-var idle_long_after: float = 25.0
+var idle_long_after: float = 45.0
 const AFTER_RESPAWN: float = 1.2
 const QUIET_AFTER_SAD: float = 25.0
 ## Pista según el enemigo que lo venció (por su nombre).
@@ -77,7 +77,7 @@ func _on_enemy_state(state_name: StringName, enemy: Enemy) -> void:
 			if enemy.target == _player:
 				_warn(&"warn_archer", enemy)
 		&"Suspicious":
-			if to_enemy.length() <= SUSPICIOUS_RANGE:
+			if to_enemy.length() <= SUSPICIOUS_RANGE and _frank.thrower.distracted != enemy:
 				_warn(&"warn_suspicious", enemy)
 		&"Chase":
 			if is_behind(enemy) and to_enemy.length() <= BEHIND_RANGE:

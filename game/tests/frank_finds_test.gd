@@ -37,6 +37,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	_frank = _player.frank
+	_frank.chat_gap = 0.0  # Sin pausa entre comentarios: cada caso lo provoca la prueba.
 	_check("Frank va en el hombro", _frank.mode == Frank.Mode.PERCHED)
 	var archer: Enemy = _enemy_named("Arquero")
 	var soldier: Enemy = _enemy_named("Soldado de práctica")

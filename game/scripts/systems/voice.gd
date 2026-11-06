@@ -161,6 +161,7 @@ func _play(speaker: StringName, id: String, at: Vector3) -> Array:
 	_next = (_next + 1) % POOL_SIZE
 	p.stream = stream
 	p.pitch_scale = randf_range(0.97, 1.03)
+	p.volume_db = VoiceLines.VOLUME_DB.get(speaker, 0.0)
 	p.global_position = at
 	p.play()
 	return [stream.get_length(), p]

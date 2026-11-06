@@ -15,6 +15,8 @@ const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"nar
 ## Voces que no salen de un personaje del nivel (el narrador; el Regente en las escenas): suenan igual en
 ## todas partes (no posicionales) y mandan sobre las demás.
 const NARRATORS: Array[StringName] = [&"narrator", &"regent", &"kael_scene"]
+## Volumen propio (dB) de algunos personajes: Frank, más bajito (que acompañe, no que moleste).
+const VOLUME_DB: Dictionary = {&"frank": -7.0}
 ## Importancia de cada evento cuando varias voces coinciden: la más importante interrumpe a la menos
 ## importante del mismo personaje o, si ya suenan demasiadas, a la menos importante de la escena.
 ## Los eventos que no aparecen valen 1 (esfuerzos de ataque, lanzar…).
@@ -26,7 +28,7 @@ const EVENT_PRIORITY: Dictionary = {
 	&"hint_soldier": 3, &"hint_spear": 3, &"hint_archer": 3, &"hint_bandit": 3, &"hint_varga": 3, &"hint_danger": 3,
 	&"death_first": 3, &"death_again": 3, &"heal_danger": 2, &"bandages_out": 2,
 	&"warn_archer": 3, &"warn_behind": 3, &"warn_suspicious": 3, &"find_item": 2, &"gate_go": 3, &"gate_locked": 3, &"gate_done": 3,
-	&"poacher_note": 3,
+	&"poacher_note": 3, &"throw_go": 2, &"throw_hit": 3, &"throw_distract": 3, &"throw_boss": 3,
 }
 
 const LINES: Dictionary = {
@@ -273,7 +275,7 @@ const LINES: Dictionary = {
 	# Frank, el tití: chilla; el subtítulo es lo que Kael entiende (D22). Suena desde su hombro.
 	&"frank": {
 		# Atrapado en la red, cuando Kael se acerca.
-		&"trapped": {"chance": 1.0, "cooldown": 7.0, "lines": [
+		&"trapped": {"chance": 1.0, "cooldown": 10.0, "lines": [
 			{"id": "frank_trapped_1", "chirp": "call", "es": "«¡Eh! ¡Tú, el de la espada! ¡Aquí arriba!»"},
 			{"id": "frank_trapped_2", "chirp": "call", "es": "«¡Sácame de aquí, por favor!»"},
 			{"id": "frank_trapped_3", "chirp": "chatter", "es": "«No muerdo. Casi nunca.»"},
@@ -297,25 +299,25 @@ const LINES: Dictionary = {
 		]},
 		# --- Consejos y bromas (FrankAdvisor). Nunca da la respuesta exacta: da pistas. ---
 		# Se venda con un enemigo alerta cerca: se tapa la cara.
-		&"heal_danger": {"chance": 1.0, "cooldown": 25.0, "lines": [
+		&"heal_danger": {"chance": 1.0, "cooldown": 60.0, "lines": [
 			{"id": "frank_heal_danger_1", "chirp": "indignant", "es": "«¿Ahora? ¿En serio?»"},
 			{"id": "frank_heal_danger_2", "chirp": "alarm_talk", "es": "«¡Que te está mirando!»"},
 			{"id": "frank_heal_danger_3", "chirp": "chatter", "es": "«Vendarse delante de él… Valiente. O tonto.»"},
 		]},
-		&"heal": {"chance": 0.35, "cooldown": 60.0, "lines": [
+		&"heal": {"chance": 0.15, "cooldown": 180.0, "lines": [
 			{"id": "frank_heal_1", "chirp": "chatter", "es": "«Aprieta fuerte. Así.»"},
 			{"id": "frank_heal_2", "chirp": "twitter", "es": "«Ya está. Como nuevo. Casi.»"},
 		]},
-		&"bandages_out": {"chance": 1.0, "cooldown": 90.0, "lines": [
+		&"bandages_out": {"chance": 1.0, "cooldown": 180.0, "lines": [
 			{"id": "frank_bandages_out_1", "chirp": "chatter", "es": "«No quedan vendas. En un campamento te dan más.»"},
 		]},
 		# Al reaparecer tras morir.
-		&"death_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
+		&"death_first": {"chance": 0.6, "cooldown": 0.0, "lines": [
 			{"id": "frank_death_first_1", "chirp": "chatter", "es": "«Bueno. Otra vez. Yo no he visto nada.»"},
 			{"id": "frank_death_first_2", "chirp": "twitter", "es": "«Te guardé el sitio en el hombro.»"},
 			{"id": "frank_death_first_3", "chirp": "chatter", "es": "«Eso dolió de mirar. Vamos otra vez.»"},
 		]},
-		&"death_again": {"chance": 1.0, "cooldown": 0.0, "lines": [
+		&"death_again": {"chance": 0.5, "cooldown": 0.0, "lines": [
 			{"id": "frank_death_again_1", "chirp": "chatter", "es": "«Respira. Míralo antes de pegarle.»"},
 			{"id": "frank_death_again_2", "chirp": "happy", "es": "«Cada vez aguantas más. Lo estoy contando.»"},
 		]},
@@ -356,37 +358,37 @@ const LINES: Dictionary = {
 		&"rest_first": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "frank_rest_first_1", "chirp": "happy", "es": "«Fuego, comida y nadie persiguiéndonos. Me gusta.»"},
 		]},
-		&"rest": {"chance": 0.35, "cooldown": 120.0, "lines": [
+		&"rest": {"chance": 0.2, "cooldown": 300.0, "lines": [
 			{"id": "frank_rest_1", "chirp": "twitter", "es": "«Duerme. Yo vigilo. …Un rato.»"},
 			{"id": "frank_rest_2", "chirp": "chatter", "es": "«¿Has comido algo hoy? Yo sí. Tu pan.»"},
 		]},
 		# Le rompen la guardia a Kael.
-		&"stagger": {"chance": 0.6, "cooldown": 25.0, "lines": [
+		&"stagger": {"chance": 0.3, "cooldown": 60.0, "lines": [
 			{"id": "frank_stagger_1", "chirp": "alarm_talk", "es": "«¡Respira, grandullón!»"},
 			{"id": "frank_stagger_2", "chirp": "alarm_talk", "es": "«¡Apártate, que viene otra!»"},
 		]},
 		# Después de un golpe mortal: la conciencia de Kael (nunca en un duelo con jefe).
-		&"kill": {"chance": 0.25, "cooldown": 90.0, "lines": [
+		&"kill": {"chance": 0.12, "cooldown": 240.0, "lines": [
 			{"id": "frank_kill_1", "chirp": "sad", "es": "«Ese también tenía a alguien esperándolo en casa…»"},
 			{"id": "frank_kill_2", "chirp": "sad", "es": "«¿Seguro que eran rebeldes?»"},
 			{"id": "frank_kill_3", "chirp": "chatter", "es": "«El Regente no se mancha las manos, ¿eh? Para eso estás tú.»"},
 		]},
 		# Kael lleva rato quieto.
-		&"idle_long": {"chance": 1.0, "cooldown": 90.0, "lines": [
+		&"idle_long": {"chance": 1.0, "cooldown": 240.0, "lines": [
 			{"id": "frank_idle_long_1", "chirp": "chatter", "es": "«¿Nos quedamos a vivir aquí?»"},
 			{"id": "frank_idle_long_2", "chirp": "chatter", "es": "«Si no vas tú, voy yo. …No. Mejor tú.»"},
 			{"id": "frank_idle_long_3", "chirp": "twitter", "es": "«Me aburro. Te voy a peinar.»"},
 		]},
 		# --- Avisos de peligro (FrankAdvisor): chilla y señala. ---
-		&"warn_archer": {"chance": 1.0, "cooldown": 12.0, "lines": [
+		&"warn_archer": {"chance": 1.0, "cooldown": 25.0, "lines": [
 			{"id": "frank_warn_archer_1", "chirp": "alarm_talk", "es": "«¡El del arco! ¡Te apunta!»"},
 			{"id": "frank_warn_archer_2", "chirp": "alarm_talk", "es": "«¡Flecha! ¡Cúbrete!»"},
 		]},
-		&"warn_behind": {"chance": 1.0, "cooldown": 10.0, "lines": [
+		&"warn_behind": {"chance": 1.0, "cooldown": 20.0, "lines": [
 			{"id": "frank_warn_behind_1", "chirp": "alarm_talk", "es": "«¡Detrás de ti!»"},
 			{"id": "frank_warn_behind_2", "chirp": "alarm_talk", "es": "«¡Por la espalda, grandullón!»"},
 		]},
-		&"warn_suspicious": {"chance": 1.0, "cooldown": 15.0, "lines": [
+		&"warn_suspicious": {"chance": 1.0, "cooldown": 40.0, "lines": [
 			{"id": "frank_warn_suspicious_1", "chirp": "whisper", "es": "«Shh… Ese ha oído algo.»"},
 			{"id": "frank_warn_suspicious_2", "chirp": "whisper", "es": "«Quieto. Agáchate.»"},
 		]},
@@ -395,7 +397,7 @@ const LINES: Dictionary = {
 			{"id": "frank_find_item_1", "chirp": "chatter", "es": "«¡Eh! Ahí hay algo.»"},
 			{"id": "frank_find_item_2", "chirp": "chatter", "es": "«Mira allí. ¿Lo ves? Yo sí.»"},
 		]},
-		&"found_item": {"chance": 0.7, "cooldown": 5.0, "lines": [
+		&"found_item": {"chance": 0.4, "cooldown": 30.0, "lines": [
 			{"id": "frank_found_item_1", "chirp": "happy", "es": "«¡La mitad es mía!»"},
 			{"id": "frank_found_item_2", "chirp": "happy", "es": "«¿Ves? Sin mí, ni lo encuentras.»"},
 		]},
@@ -411,16 +413,38 @@ const LINES: Dictionary = {
 		&"gate_done": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "frank_gate_done_1", "chirp": "happy", "es": "«¡Pestillo fuera! De nada, ¿eh?»"},
 		]},
+		# --- Distraer (FrankThrow): lanza una fruta. ---
+		&"throw_go": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_throw_go_1", "chirp": "squeak", "effort": "little effort squeak, small monkey throwing something"},
+		]},
+		&"throw_hit": {"chance": 0.6, "cooldown": 0.0, "lines": [
+			{"id": "frank_throw_hit_1", "chirp": "happy", "es": "«¡En toda la cara!»"},
+			{"id": "frank_throw_hit_2", "chirp": "happy", "es": "«¡Ja! ¿Quieres otra?»"},
+		]},
+		&"throw_distract": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_throw_distract_1", "chirp": "whisper", "es": "«Ya mira para otro lado. ¡Ahora!»"},
+			{"id": "frank_throw_distract_2", "chirp": "whisper", "es": "«Shh… Por detrás. Despacio.»"},
+		]},
+		&"throw_boss": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_throw_boss_1", "chirp": "indignant", "es": "«Ni la ha despeinado.»"},
+		]},
+		&"throw_wait": {"chance": 1.0, "cooldown": 8.0, "lines": [
+			{"id": "frank_throw_wait_1", "chirp": "chatter", "es": "«Espera, que busco otra fruta.»"},
+			{"id": "frank_throw_wait_2", "chirp": "chatter", "es": "«Me la comí. Dame un momento.»"},
+		]},
+		&"throw_nobody": {"chance": 1.0, "cooldown": 8.0, "lines": [
+			{"id": "frank_throw_nobody_1", "chirp": "chatter", "es": "«¿A quién se la tiro? No veo a nadie.»"},
+		]},
 		# Sonidos sin subtítulo.
-		&"happy": {"chance": 1.0, "cooldown": 1.0, "lines": [
+		&"happy": {"chance": 0.6, "cooldown": 3.0, "lines": [
 			{"id": "frank_happy_1", "chirp": "happy", "effort": "little rising trill of a happy small monkey"},
 			{"id": "frank_happy_2", "chirp": "squeak", "effort": "short cheerful squeak"},
 		]},
-		&"idle": {"chance": 0.5, "cooldown": 30.0, "lines": [
+		&"idle": {"chance": 0.3, "cooldown": 90.0, "lines": [
 			{"id": "frank_idle_1", "chirp": "twitter", "effort": "soft twittering to himself, small monkey"},
 			{"id": "frank_idle_2", "chirp": "squeak", "effort": "curious little squeak"},
 		]},
-		&"scared": {"chance": 0.6, "cooldown": 4.0, "lines": [
+		&"scared": {"chance": 0.2, "cooldown": 15.0, "lines": [
 			{"id": "frank_scared_1", "chirp": "alarm", "effort": "sharp startled shriek of a small monkey"},
 			{"id": "frank_scared_2", "chirp": "squeak", "effort": "frightened squeak"},
 		]},
