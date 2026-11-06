@@ -25,6 +25,8 @@ const EVENT_PRIORITY: Dictionary = {
 	&"offended": 3, &"offended_2": 3, &"meet_1": 3, &"meet_2": 3, &"meet_3": 3, &"scared": 2,
 	&"hint_soldier": 3, &"hint_spear": 3, &"hint_archer": 3, &"hint_bandit": 3, &"hint_varga": 3, &"hint_danger": 3,
 	&"death_first": 3, &"death_again": 3, &"heal_danger": 2, &"bandages_out": 2,
+	&"warn_archer": 3, &"warn_behind": 3, &"warn_suspicious": 3, &"find_item": 2, &"gate_go": 3, &"gate_locked": 3, &"gate_done": 3,
+	&"poacher_note": 3,
 }
 
 const LINES: Dictionary = {
@@ -374,6 +376,40 @@ const LINES: Dictionary = {
 			{"id": "frank_idle_long_1", "chirp": "chatter", "es": "«¿Nos quedamos a vivir aquí?»"},
 			{"id": "frank_idle_long_2", "chirp": "chatter", "es": "«Si no vas tú, voy yo. …No. Mejor tú.»"},
 			{"id": "frank_idle_long_3", "chirp": "twitter", "es": "«Me aburro. Te voy a peinar.»"},
+		]},
+		# --- Avisos de peligro (FrankAdvisor): chilla y señala. ---
+		&"warn_archer": {"chance": 1.0, "cooldown": 12.0, "lines": [
+			{"id": "frank_warn_archer_1", "chirp": "alarm_talk", "es": "«¡El del arco! ¡Te apunta!»"},
+			{"id": "frank_warn_archer_2", "chirp": "alarm_talk", "es": "«¡Flecha! ¡Cúbrete!»"},
+		]},
+		&"warn_behind": {"chance": 1.0, "cooldown": 10.0, "lines": [
+			{"id": "frank_warn_behind_1", "chirp": "alarm_talk", "es": "«¡Detrás de ti!»"},
+			{"id": "frank_warn_behind_2", "chirp": "alarm_talk", "es": "«¡Por la espalda, grandullón!»"},
+		]},
+		&"warn_suspicious": {"chance": 1.0, "cooldown": 15.0, "lines": [
+			{"id": "frank_warn_suspicious_1", "chirp": "whisper", "es": "«Shh… Ese ha oído algo.»"},
+			{"id": "frank_warn_suspicious_2", "chirp": "whisper", "es": "«Quieto. Agáchate.»"},
+		]},
+		# --- Hallazgos: señala lo escondido y abre pestillos desde el otro lado. ---
+		&"find_item": {"chance": 1.0, "cooldown": 6.0, "lines": [
+			{"id": "frank_find_item_1", "chirp": "chatter", "es": "«¡Eh! Ahí hay algo.»"},
+			{"id": "frank_find_item_2", "chirp": "chatter", "es": "«Mira allí. ¿Lo ves? Yo sí.»"},
+		]},
+		&"found_item": {"chance": 0.7, "cooldown": 5.0, "lines": [
+			{"id": "frank_found_item_1", "chirp": "happy", "es": "«¡La mitad es mía!»"},
+			{"id": "frank_found_item_2", "chirp": "happy", "es": "«¿Ves? Sin mí, ni lo encuentras.»"},
+		]},
+		&"poacher_note": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_poacher_note_1", "chirp": "sad", "es": "«…Esa jaula era para mí.»"},
+		]},
+		&"gate_locked": {"chance": 1.0, "cooldown": 30.0, "lines": [
+			{"id": "frank_gate_locked_1", "chirp": "chatter", "es": "«Cerrado por dentro… Déjame a mí.»"},
+		]},
+		&"gate_go": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_gate_go_1", "chirp": "chatter", "es": "«Espera aquí. No toques nada.»"},
+		]},
+		&"gate_done": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "frank_gate_done_1", "chirp": "happy", "es": "«¡Pestillo fuera! De nada, ¿eh?»"},
 		]},
 		# Sonidos sin subtítulo.
 		&"happy": {"chance": 1.0, "cooldown": 1.0, "lines": [

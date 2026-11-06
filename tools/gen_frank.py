@@ -15,6 +15,7 @@ Tipos (inspirados en los monitos pequeños de verdad: silbidos largos, trinos y 
   twitter    gorjeo bajito, hablando solo
   alarm      chillido agudo y áspero, susto
   alarm_talk susto y enseguida parloteo nervioso
+  whisper    parloteo bajito y con aire, para no delatarse
 """
 import json
 import os
@@ -141,6 +142,11 @@ def make(kind, seconds, rng):
         for k in range(3):
             parts.append((k * 0.12, sweep(4200, 3300, 0.09, rng, gain=1.0, breath=0.45)))
         return place(parts)
+    if kind == "whisper":  # Bajito y con aire, para no delatarse.
+        x = chatter(seconds, rng, loud=0.35, base=2200.0)
+        hiss = signal.sosfilt(signal.butter(2, [3000, 8000], btype="band", fs=SR, output="sos"),
+                              rng.standard_normal(len(x))) * 0.06
+        return x + hiss * np.convolve(np.abs(x), np.ones(400) / 400, mode="same") * 6.0
     if kind == "alarm_talk":  # Susto y, enseguida, parloteo nervioso.
         start = make("alarm", 0.0, rng)
         return place([(0.0, start), (len(start) / SR + 0.05, chatter(max(seconds - 0.45, 0.5), rng, base=3100.0))])

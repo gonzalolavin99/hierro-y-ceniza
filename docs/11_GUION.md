@@ -227,7 +227,7 @@ El jugador dejó la historia en manos de Claude. Se fijan así (D18–D21 en `07
 
 ---
 
-## 12. Frank, el tití (compañero) — en construcción 🔧 (pasos 1–2 hechos: él, la red, su escena, consejos y bromas)
+## 12. Frank, el tití (compañero) — en construcción 🔧 (pasos 1–3 hechos: él, la red, su escena, consejos, bromas, avisos y hallazgos)
 
 Pedido del jugador: un compañero al estilo de Pepe Grillo, alivio cómico, tierno, sabio y bromista,
 que da consejos. Decidido (D22): **Frank no habla**; chilla y hace gestos de mono, y los subtítulos dicen

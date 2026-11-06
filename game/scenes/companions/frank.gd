@@ -70,6 +70,7 @@ var _run_then_hop: bool = true
 var _next_idle_chatter: float = 40.0
 var _last_health: float = -1.0
 var _gesture_until: float = 0.0
+var _point_turn: Basis = Basis.IDENTITY
 ## Quién decide cuándo habla (consejos, bromas, pistas).
 var advisor: FrankAdvisor
 
@@ -172,6 +173,14 @@ func gesture(which: Pose, seconds: float) -> void:
 	_gesture_until = _time + seconds
 
 
+## Señala `at` (en el mundo) durante unos segundos: se gira en el hombro, estira el brazo y lo mira.
+func point_at(at: Vector3, seconds: float = 1.8) -> void:
+	point_direction = (at - head_position()).normalized()
+	if mode == Mode.PERCHED and pose != Pose.POINT:
+		_point_turn = global_basis.orthonormalized()
+	gesture(Pose.POINT, seconds)
+
+
 ## Sacudida de "perro mojado" (al caer de la red).
 func shake(seconds: float = 0.7) -> void:
 	_shake_until = _time + seconds
@@ -213,7 +222,14 @@ func _process(delta: float) -> void:
 				global_transform = _trap_anchor.global_transform.orthonormalized()
 		Mode.PERCHED:
 			if _shoulder:
-				global_transform = perch_transform()
+				var seat: Transform3D = perch_transform()
+				if pose == Pose.POINT:
+					# Se gira en el hombro hacia lo que señala.
+					_point_turn = _point_turn.slerp(_basis_facing(point_direction), minf(delta * 10.0, 1.0))
+					seat.basis = _point_turn
+				else:
+					_point_turn = seat.basis
+				global_transform = seat
 			_idle_chatter()
 		Mode.HOPPING:
 			_update_hop(delta)
@@ -335,7 +351,10 @@ func _pose_arms(which: Pose) -> Array[Vector2]:
 		Pose.COVER_EYES:
 			return [Vector2(2.35, 0.55), Vector2(2.35, -0.55)]
 		Pose.POINT:
-			return [Vector2(0.3, -0.1), Vector2(1.55, 0.0)]
+			# Brazo derecho estirado hacia el objetivo (más arriba si está alto: un arquero en un muro).
+			var flat: float = Vector2(point_direction.x, point_direction.z).length()
+			var lift: float = clampf(atan2(point_direction.y, maxf(flat, 0.001)), -0.5, 0.9)
+			return [Vector2(0.3, -0.1), Vector2(1.55 + lift, 0.0)]
 		Pose.SAD:
 			return [Vector2(0.9, 0.7), Vector2(0.9, -0.7)]
 		Pose.TOUCH_CURLS:

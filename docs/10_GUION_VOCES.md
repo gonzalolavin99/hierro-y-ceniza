@@ -197,6 +197,20 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `frank_idle_long_1.wav` | idle_long | (chillido: chatter) | «¿Nos quedamos a vivir aquí?» |
 | `frank_idle_long_2.wav` | idle_long | (chillido: chatter) | «Si no vas tú, voy yo. …No. Mejor tú.» |
 | `frank_idle_long_3.wav` | idle_long | (chillido: twitter) | «Me aburro. Te voy a peinar.» |
+| `frank_warn_archer_1.wav` | warn_archer | (chillido: alarm_talk) | «¡El del arco! ¡Te apunta!» |
+| `frank_warn_archer_2.wav` | warn_archer | (chillido: alarm_talk) | «¡Flecha! ¡Cúbrete!» |
+| `frank_warn_behind_1.wav` | warn_behind | (chillido: alarm_talk) | «¡Detrás de ti!» |
+| `frank_warn_behind_2.wav` | warn_behind | (chillido: alarm_talk) | «¡Por la espalda, grandullón!» |
+| `frank_warn_suspicious_1.wav` | warn_suspicious | (chillido: whisper) | «Shh… Ese ha oído algo.» |
+| `frank_warn_suspicious_2.wav` | warn_suspicious | (chillido: whisper) | «Quieto. Agáchate.» |
+| `frank_find_item_1.wav` | find_item | (chillido: chatter) | «¡Eh! Ahí hay algo.» |
+| `frank_find_item_2.wav` | find_item | (chillido: chatter) | «Mira allí. ¿Lo ves? Yo sí.» |
+| `frank_found_item_1.wav` | found_item | (chillido: happy) | «¡La mitad es mía!» |
+| `frank_found_item_2.wav` | found_item | (chillido: happy) | «¿Ves? Sin mí, ni lo encuentras.» |
+| `frank_poacher_note_1.wav` | poacher_note | (chillido: sad) | «…Esa jaula era para mí.» |
+| `frank_gate_locked_1.wav` | gate_locked | (chillido: chatter) | «Cerrado por dentro… Déjame a mí.» |
+| `frank_gate_go_1.wav` | gate_go | (chillido: chatter) | «Espera aquí. No toques nada.» |
+| `frank_gate_done_1.wav` | gate_done | (chillido: happy) | «¡Pestillo fuera! De nada, ¿eh?» |
 | `frank_happy_1.wav` | happy | (chillido: happy) | little rising trill of a happy small monkey |
 | `frank_happy_2.wav` | happy | (chillido: squeak) | short cheerful squeak |
 | `frank_idle_1.wav` | idle | (chillido: twitter) | soft twittering to himself, small monkey |

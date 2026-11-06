@@ -10,6 +10,9 @@ extends Node
 ##   golpe mortal: la conciencia de Kael ("¿Seguro que eran rebeldes?").
 ## - Momentos serios: en los duelos con jefes no bromea (solo pistas), y tras la muerte de Varga se queda
 ##   quieto y cabizbajo un buen rato.
+## - Avisos (paso 3): un arquero tensa el arco contra Kael, un enemigo lo descubre por la espalda, o uno
+##   sospecha ("?"): chilla y señala hacia él.
+## - Hallazgos: cerca de un escondite (HiddenCache) lo señala y el escondite brilla.
 ## Solo habla si Frank va con Kael y no hay ninguna escena.
 
 const HEAL_DANGER_RANGE: float = 10.0
@@ -27,6 +30,10 @@ const ZONES: Dictionary = {
 	&"story_pass_fortress": &"zone_fortress",
 }
 const REST_FIRST: StringName = &"frank_rest_first"
+## Enemigo "por la espalda": más allá de este ángulo respecto a donde mira Kael, y a esta distancia o menos.
+const BEHIND_DOT: float = -0.25
+const BEHIND_RANGE: float = 15.0
+const SUSPICIOUS_RANGE: float = 20.0
 
 ## Muertes de Kael por enemigo (nombre -> veces), en esta sesión.
 var deaths_by: Dictionary = {}
@@ -50,6 +57,60 @@ func _ready() -> void:
 	_player.bandages_changed.connect(_on_bandages_changed)
 	_player.posture.broken.connect(_on_guard_broken)
 	Voice.spoken.connect(_on_spoken)
+	_watch_enemies.call_deferred()
+
+
+## Escucha a cada enemigo del nivel (cuándo apunta, sospecha o se lanza a por Kael).
+func _watch_enemies() -> void:
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var enemy := node as Enemy
+		if enemy and not enemy.state_machine.state_changed.is_connected(_on_enemy_state):
+			enemy.state_machine.state_changed.connect(_on_enemy_state.bind(enemy))
+
+
+func _on_enemy_state(state_name: StringName, enemy: Enemy) -> void:
+	if not can_talk() or enemy.is_dead():
+		return
+	var to_enemy: Vector3 = enemy.global_position - _player.global_position
+	match state_name:
+		&"Shoot":
+			if enemy.target == _player:
+				_warn(&"warn_archer", enemy)
+		&"Suspicious":
+			if to_enemy.length() <= SUSPICIOUS_RANGE:
+				_warn(&"warn_suspicious", enemy)
+		&"Chase":
+			if is_behind(enemy) and to_enemy.length() <= BEHIND_RANGE:
+				_warn(&"warn_behind", enemy)
+
+
+## ¿Está el enemigo a la espalda de Kael (fuera de lo que ve)?
+func is_behind(enemy: Enemy) -> bool:
+	var to_enemy: Vector3 = enemy.global_position - _player.global_position
+	to_enemy.y = 0.0
+	var facing: Vector3 = -_player.camera_rig.global_basis.z
+	facing.y = 0.0
+	return to_enemy.length() > 0.01 and facing.normalized().dot(to_enemy.normalized()) < BEHIND_DOT
+
+
+func _warn(event: StringName, enemy: Enemy) -> void:
+	if _frank.say(event):
+		_frank.point_at(enemy.lock_point(), 1.8)
+
+
+## Escondites: el más cercano sin encontrar, a su alcance, lo señala.
+func _look_for_caches() -> void:
+	if not can_talk() or _player.lock_target != null:
+		return
+	for node in get_tree().get_nodes_in_group("hidden_caches"):
+		var cache := node as HiddenCache
+		if cache == null or cache.revealed or cache.is_taken():
+			continue
+		if cache.global_position.distance_to(_player.global_position) <= HiddenCache.FIND_RANGE:
+			if _frank.say(&"find_item"):
+				cache.reveal()
+				_frank.point_at(cache.global_position + Vector3.UP * 0.2, 2.0)
+			return
 
 
 ## ¿Puede hablar Frank ahora? (va con Kael y no hay escena)
@@ -71,6 +132,7 @@ func in_boss_fight() -> bool:
 
 func _process(delta: float) -> void:
 	_time += delta
+	_look_for_caches()
 	# Rato quieto sin pelear: una broma.
 	var calm: bool = _player.state_machine.current.name == &"Ground" and _player.lock_target == null \
 		and Vector2(_player.velocity.x, _player.velocity.z).length() < 0.2

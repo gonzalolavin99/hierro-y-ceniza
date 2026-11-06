@@ -116,6 +116,7 @@ G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path ga
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/hit_react_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/frank_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/frank_tips_test.tscn
+G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --path game res://tests/frank_finds_test.tscn
 G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe --headless --fixed-fps 60 --path game res://tests/anim_audit.tscn
 ```
 

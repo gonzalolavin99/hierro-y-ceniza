@@ -36,6 +36,8 @@ const ITEMS: Dictionary[StringName, Dictionary] = {
 		"text": "Una llave de hierro grande, gastada de tanto girar. Abre el portón de la fortaleza del Paso. Bram la llevaba colgada del cuello y dormía con ella en la mano. Quien la tenga decide si esa puerta se abre."},
 	&"regent_letter": {"name": "Carta del Regente a Orme", "kind": "Objeto clave",
 		"text": "«Maestro Orme: abra la presa y retire a sus hombres antes del invierno. La Corona sabrá agradecerlo en oro y en tierras. Si se niega, la Corona sabrá también qué hacer.» Lleva el sello del Regente. Está arrugada, como si alguien la hubiera querido tirar y no se hubiera atrevido."},
+	&"poacher_note": {"name": "Nota de los cazadores", "kind": "Objeto clave",
+		"text": "«Monito de pelo rizado, cola larga: el palacio paga el doble por los raros. Que no se escape como el último. Volver en tres días con la jaula buena.» Debajo, con otra letra: «El palacio ya no compra. Dicen que en la capital hay fiebre.»"},
 	&"capital_register": {"name": "Registro de la capital", "kind": "Objeto clave",
 		"text": "Libro de defunciones del barrio del mercado. Una línea, con letra apretada: «Lira, hija de Doran. Fiebre gris. Dentro de las murallas.» La fecha es de un mes antes de que se cerrara el primer cordón."},
 }
@@ -45,7 +47,7 @@ const ORDER: Array[StringName] = [
 	&"sword", &"lira_ribbon", &"bandage",
 	&"crossbow", &"smoke", &"powder",
 	&"art_whirlwind", &"art_hammer", &"art_flurry",
-	&"varga_banner", &"grey_cloth", &"bram_key", &"regent_letter", &"capital_register",
+	&"varga_banner", &"poacher_note", &"grey_cloth", &"bram_key", &"regent_letter", &"capital_register",
 ]
 const ALWAYS: Array[StringName] = [&"sword", &"lira_ribbon", &"bandage"]
 

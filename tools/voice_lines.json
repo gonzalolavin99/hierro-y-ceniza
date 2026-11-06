@@ -345,6 +345,118 @@
       "text": ""
     },
     {
+      "chars": 27,
+      "chirp": "alarm_talk",
+      "event": "warn_archer",
+      "id": "frank_warn_archer_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 20,
+      "chirp": "alarm_talk",
+      "event": "warn_archer",
+      "id": "frank_warn_archer_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 16,
+      "chirp": "alarm_talk",
+      "event": "warn_behind",
+      "id": "frank_warn_behind_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 30,
+      "chirp": "alarm_talk",
+      "event": "warn_behind",
+      "id": "frank_warn_behind_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 24,
+      "chirp": "whisper",
+      "event": "warn_suspicious",
+      "id": "frank_warn_suspicious_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 19,
+      "chirp": "whisper",
+      "event": "warn_suspicious",
+      "id": "frank_warn_suspicious_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 20,
+      "chirp": "chatter",
+      "event": "find_item",
+      "id": "frank_find_item_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 28,
+      "chirp": "chatter",
+      "event": "find_item",
+      "id": "frank_find_item_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 19,
+      "chirp": "happy",
+      "event": "found_item",
+      "id": "frank_found_item_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 33,
+      "chirp": "happy",
+      "event": "found_item",
+      "id": "frank_found_item_2",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 25,
+      "chirp": "sad",
+      "event": "poacher_note",
+      "id": "frank_poacher_note_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 34,
+      "chirp": "chatter",
+      "event": "gate_locked",
+      "id": "frank_gate_locked_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 30,
+      "chirp": "chatter",
+      "event": "gate_go",
+      "id": "frank_gate_go_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
+      "chars": 32,
+      "chirp": "happy",
+      "event": "gate_done",
+      "id": "frank_gate_done_1",
+      "phrase": false,
+      "text": ""
+    },
+    {
       "chars": 0,
       "chirp": "happy",
       "event": "happy",

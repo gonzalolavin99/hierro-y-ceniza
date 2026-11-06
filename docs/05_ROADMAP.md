@@ -202,7 +202,15 @@ de caminar agachado (Mixamo, las descarga el jugador).
       descanso; broma tras 25 s quieto; a veces, tras un golpe mortal, **la conciencia de Kael** («¿Seguro que
       eran rebeldes?»). **Momentos serios**: en el duelo con un jefe no bromea (solo pistas); en la escena de
       la ropa ardiendo y tras la muerte de Varga se queda cabizbajo y callado. 35 chillidos nuevos.
-- [ ] Paso 3: avisa de peligros (arqueros, enemigos escondidos) y encuentra cosas (secretos, atajos).
+- [x] Paso 3: avisa y encuentra. Hecho y probado (OK del jugador): **avisos** chillando y señalando (se gira en
+      el hombro y estira el brazo): un arquero tensa el arco contra Kael («¡El del arco! ¡Te apunta!»), un
+      enemigo se lanza a por él por la espalda («¡Detrás de ti!»), uno sospecha («Shh… Ese ha oído algo.»).
+      **Escondites**: a 8 m los huele, los señala y brillan; "Y  Recoger" (experiencia y, a veces, un objeto
+      clave). Dos en el escenario: detrás del bloque alto y dentro de la despensa. **Despensa de los
+      cazadores** cerrada por dentro: "Y  Que Frank abra el pestillo" → salta el muro, abre y vuelve al
+      hombro; queda abierta para siempre. Dentro, la **Nota de los cazadores** (objeto clave: el palacio
+      compraba animales raros… y ya no compra, porque en la capital hay fiebre); Frank: «…Esa jaula era
+      para mí.»
 - [ ] Paso 4: distrae (le tira fruta a un enemigo para abrir un golpe por la espalda).
 
 ## Hito 9 — Vertical slice "El Paso de Hierro" + diseño de personajes (6–10 semanas)
