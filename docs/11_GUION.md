@@ -87,6 +87,66 @@ cada zona nueva, antes de cada jefe y al morir.
 - **Jugable:** tutorial en el camino al Paso de Hierro (lo que ya existe: patio de pruebas).
 - **Narrador:** "Esta es la historia de un guerrero que salvó un reino. O eso me contaron…"
 
+### Prólogo, versión 2 — "Un buen hombre" (propuesta 🔶, pedida por el jugador)
+
+Problema de la versión 1: el Regente suena frío desde el principio ("cinco nombres, haz que paguen"), así
+que el jugador sospecha de él demasiado pronto. **La idea nueva: que el Regente parezca bueno de verdad.**
+El jugador tiene que salir del prólogo queriendo ayudarlo, para que la verdad duela después.
+
+**Música:** nada de tensión. Un tema cálido y esperanzado (cuerdas suaves, laúd, modo mayor). Solo al final,
+cuando Kael ya se ha ido, una nota grave que no cuadra (el que vuelva a jugar la reconocerá).
+
+**Plano a plano:**
+1. **Fogata** (igual que ahora): el anciano empieza la historia.
+2. **El salón**: luz cálida de ventanales, no piedra fría. Kael entra y se arrodilla.
+3. **El Regente se levanta del trono y baja hasta él.** No espera a que suba: "Levántate, Kael. Aquí no te
+   arrodillas. Hoy no." Le pone la mano en el hombro.
+4. **Habla de Lira primero, antes que de ningún enemigo**: "Supe lo de Lira. Lo siento. De verdad. La fiebre no
+   distingue entre la hija de un soldado y la de un rey. Yo también he enterrado a gente este invierno."
+5. **Recuerdo (flashback)**: la imagen se vuelve cálida y borrosa por los bordes.
+   - Un mercado de la capital, de día. Lira, de niña, le ata la cinta azul a la muñeca a Kael, un chico
+     joven: "Para que vuelvas. Prométemelo."
+   - Corte rápido: la misma cinta en la mano de Kael, ya adulto, junto a una cama vacía.
+   - Vuelta al salón. Kael aprieta la cinta.
+6. **El Regente ofrece esperanza, no venganza**: "Hay una forma de que nadie más pierda a una Lira. La fiebre
+   viaja con la gente. Hay cinco hombres y mujeres que cierran los caminos, que no dejan pasar la ayuda.
+   Mientras ellos sigan ahí, no puedo salvar a nadie."
+7. **Los cinco, uno a uno**, sobre un mapa de la mesa (una ficha por nombre). El Regente habla de cada uno con
+   pena, como si los hubiera querido:
+   - **Bram**: "Un hombre enorme y bueno, en otro tiempo. Ahora guarda una puerta y no deja salir a nadie."
+   - **Varga**: "La mejor capitana que tuve. Algo se le torció en el Paso. Dicen que quema aldeas."
+   - **Ilse**: "Caza en la montaña. Los mensajeros que subo… no vuelven."
+   - **Orme**: "El ingeniero más listo del reino. Tiene la presa del río en sus manos."
+   - **Aren**: "Y el último. A ese lo conocerás al final."
+8. **La elección del jugador** (la primera del juego; el juego no dice que importe):
+   - **"Los detendré, mi señor."** → El Regente: "Detenerlos. Sí. Haz lo que sea necesario, Kael. Confío en
+     tu juicio."
+   - **"Acabaré con ellos."** → El Regente: "Que no sufran más de lo necesario. Confío en ti, Kael."
+   Las dos acaban en lo mismo (el Regente está de acuerdo con todo: eso es lo inquietante). La elección
+   queda guardada: el anciano la recuerda más adelante ("Le dije que los detendría. No le dije cómo." /
+   "Le prometí acabar con ellos. Cumplí. Ojalá no lo hubiera hecho.").
+9. **La cinta** y **el título**, como ahora. Al irse Kael, la nota grave de la música.
+
+**Pistas escondidas para quien vuelva a jugar** (nadie las ve la primera vez): el Regente nunca dice "curar",
+siempre "acabar", "cerrar", "detener"; el mapa de la mesa tiene las cinco fichas sobre **los cinco pozos y
+pasos de agua** del reino; y en el recuerdo, la puerta de la casa de Lira tiene una tela gris atada.
+
+### Ideas para dar más profundidad (propuesta 🔶)
+
+- **Frank le tiene miedo al sello del Regente.** Creció en la colección de animales del palacio. Cada vez que
+  Kael recoge algo con el sello (cartas, la espada al mirarla en el inventario), Frank se esconde detrás de su
+  cuello. Es la primera pista, y no tiene palabras: el jugador la nota antes que Kael.
+- **La cinta azul no es solo un recuerdo.** En Vaelmar, las familias de los enfermos atan una cinta azul al que
+  se va, para que vuelva ("Para que vuelvas. Prométemelo."). Lira se la ató a Kael **porque ella ya estaba
+  enferma**, antes de que existiera ningún cordón. Al vencer a Varga, Kael ve que ella lleva una cinta igual,
+  vieja y descolorida: Varga también perdió a alguien. Ninguno de los dos lo dice.
+- **Cartas del Regente en los campamentos.** Tras cada jefe llega un mensajero con una carta. La primera es
+  cariñosa ("Sabía que podía contar contigo"); cada una es un poco más corta y más fría. La última solo
+  pregunta por los estandartes.
+- **La elección del prólogo vuelve.** El anciano la recuerda en voz alta en momentos clave, y los aldeanos
+  reaccionan distinto si Kael prometió "detenerlos" (alguno se atreve a hablarle) o "acabar con ellos" (se
+  apartan a su paso).
+
 ### Acto I — El Paso de Hierro (la vertical slice)
 - Aldea en ruinas, bosque y la puerta de una fortaleza (GDD §7). Jefes: **Bram** y **Varga**.
 - **Grietas:** soldados de Varga que dicen "atrás, no te acerques a las casas" (Kael lo lee como
