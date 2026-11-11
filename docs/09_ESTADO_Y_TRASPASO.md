@@ -401,7 +401,12 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 - **Registro de errores** en el `.exe` (`debug/file_logging`): se guarda en `user://logs` (en Windows,
   `%APPDATA%\Godotpp_userdata\Hierro y Ceniza\logs`).
 - **Exportación**: `game/export_presets.cfg` (Windows, todo en un `.exe`, sin las pruebas) → `build/HierroYCeniza.exe`
-  (fuera de Git). **Faltan las plantillas de exportación de Godot 4.7.2** (no están instaladas). Hay que
+  (fuera de Git). **El `.exe` ya se exporta** (2026-11-11). Las plantillas oficiales de 4.7.2 (solo las de Windows) están en
+  `G:\Herramientas\Godot\templates` (no en C:) y el preset las usa como `custom_template`. Para exportar, desde
+  `G:\Game\game`: `Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-release "Windows"
+  ../build/HierroYCeniza.exe` (unos 143 MB). `build/LEEME.txt` es la hoja para los probadores y
+  `docs/17_FALLOS.md`, el registro de fallos. El `.exe` no acepta una escena por la línea de órdenes: siempre
+  empieza en el menú.
   descargarlas de godotengine.org, así que antes hace falta el permiso del jugador.
 
 **Cimientos (2026-11-11, doc 15 B):**

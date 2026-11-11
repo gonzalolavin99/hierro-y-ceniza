@@ -272,7 +272,7 @@ Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
       (`docs/16_GUIA_DE_ESTILO.md`) con una escena de prueba y el OK del jugador; cuerpo base CC0 y siluetas de
       Kael y Bram.
 - [ ] **Paso 6a, `.exe` de prueba** (2026-11-11: menú, versión, registro de errores y configuración de exportación hechos;
-      falta descargar las plantillas de exportación, con permiso del jugador, y dárselo a probar): menú mínimo, registro de errores, versión visible; 3–5 amigos o familiares
+      `.exe` exportado en `build/` con su hoja para probadores; falta dárselo a 3–5 personas): menú mínimo, registro de errores, versión visible; 3–5 amigos o familiares
       lo juegan (hoja de 5 preguntas; fallos en `docs/17_FALLOS.md`); se arreglan los 3 problemas más repetidos.
 - [ ] **Paso 4: la gente de la aldea**: aldeanos con frases de antes y después de Varga, soldados que avisan
       antes de atacar, el desertor (perdonarlo → después aparece llevando agua), la carta de raciones; bus de
