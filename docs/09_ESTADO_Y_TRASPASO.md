@@ -389,6 +389,21 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
   probar con F5: doc 15, sección A.
 - **Falta**: la prueba del jugador con F5 y su OK → commit. Después, los Cimientos (doc 15, B).
 
+**Paso 6a, `.exe` de prueba (2026-11-11, en curso):**
+- **Música de fondo** en el Paso (`Ambience`): `pass_explore.wav`, muy suave, y la capa `pass_tension.wav`, que
+  entra cuando un enemigo cercano te descubre (`in_danger()`) y siempre en el mismo punto del compás. Calla en el
+  duelo con un jefe. Las dos salen de `tools/gen_music.py`.
+- **Menú principal** (`scenes/ui/main_menu.tscn`, `MainMenu`): ahora es la escena con la que arranca el juego
+  (F5). Tiene Continuar (si hay partida), Partida nueva (si ya hay una, pide confirmar y la borra) y Salir, y
+  muestra la versión. La pausa no se abre en el menú. **`GameInfo`** guarda `VERSION` (subirla en cada `.exe`),
+  `GAME_SCENE` y `MENU_SCENE`. `SaveGame.active()` y `Story.should_play_prologue()` comparan con
+  `GAME_SCENE`, no con la escena principal. Prueba `main_menu_test`.
+- **Registro de errores** en el `.exe` (`debug/file_logging`): se guarda en `user://logs` (en Windows,
+  `%APPDATA%\Godotpp_userdata\Hierro y Ceniza\logs`).
+- **Exportación**: `game/export_presets.cfg` (Windows, todo en un `.exe`, sin las pruebas) → `build/HierroYCeniza.exe`
+  (fuera de Git). **Faltan las plantillas de exportación de Godot 4.7.2** (no están instaladas). Hay que
+  descargarlas de godotengine.org, así que antes hace falta el permiso del jugador.
+
 **Cimientos (2026-11-11, doc 15 B):**
 - **Canales de sonido** (`game/default_bus_layout.tres`, `AudioMix`): Musica, Voz, Efectos y Ambiente. `Voice`
   baja la música y el ambiente 6 dB mientras alguien habla (`_update_duck`). `Sfx` usa un reproductor libre y

@@ -6,7 +6,10 @@ extends Node3D
 ## - Rumor del arroyo junto al sendero del atajo (sonido 3D: se oye más cerca de él).
 ## - Pájaros lejanos de vez en cuando, en el camino, la aldea y el bosque (solo se oyen; aprobado por el
 ##   jugador el 2026-11-09). Callan en el duelo con un jefe.
-## Sonidos de tools/gen_ambient.py.
+## - Música de exploración muy suave, y una capa de tensión que entra cuando un enemigo cercano te descubre y se
+##   va al calmarse (mismo tempo: entra en el mismo punto del compás). Calla en el duelo con un jefe, que pone
+##   su propia música. (Aviso del jugador, 2026-11-11: "no sentí música de fondo".)
+## Sonidos de tools/gen_ambient.py; música de tools/gen_music.py.
 
 const DIR: String = "res://assets/audio/ambient/"
 const WIND_DB: float = -17.0
@@ -19,10 +22,19 @@ const BIRD_DISTANCE: Vector2 = Vector2(18.0, 40.0)
 ## Por encima de esta altura (la fortaleza) sopla más el viento y no hay pájaros.
 const HIGH_Y: float = 3.0
 
+const MUSIC_DIR: String = "res://assets/audio/music/"
+const EXPLORE_DB: float = -13.0
+const TENSION_DB: float = -11.0
+const SILENT_DB: float = -60.0
+## Un enemigo alerta y con Kael a esta distancia (o menos) pone la capa de tensión.
+const TENSION_RANGE: float = 16.0
+
 ## Dónde suena el arroyo.
 @export var river_points: PackedVector3Array = PackedVector3Array()
 
 var wind: AudioStreamPlayer
+var explore: AudioStreamPlayer
+var tension: AudioStreamPlayer
 var birds_sung: int = 0
 var _birds: Array[AudioStream] = []
 var _bird_player: AudioStreamPlayer3D
@@ -40,6 +52,8 @@ func _ready() -> void:
 	wind.volume_db = WIND_DB
 	wind.autoplay = true
 	add_child(wind)
+	explore = _music_player("pass_explore.wav", EXPLORE_DB)
+	tension = _music_player("pass_tension.wav", SILENT_DB)
 	for at in river_points:
 		var river := AudioStreamPlayer3D.new()
 		river.bus = AudioMix.AMBIENT
@@ -69,11 +83,37 @@ func _process(delta: float) -> void:
 			return
 	var high: bool = _player.global_position.y > HIGH_Y
 	wind.volume_db = move_toward(wind.volume_db, WIND_HIGH_DB if high else WIND_DB, delta * 3.0)
+	var fight: bool = _boss_fight()
+	var target_explore: float = SILENT_DB if fight else EXPLORE_DB
+	var target_tension: float = TENSION_DB if (not fight and in_danger()) else SILENT_DB
+	explore.volume_db = move_toward(explore.volume_db, target_explore, delta * 20.0)
+	tension.volume_db = move_toward(tension.volume_db, target_tension, delta * (30.0 if target_tension > tension.volume_db else 12.0))
+	if tension.playing and absf(tension.get_playback_position() - explore.get_playback_position()) > 0.1:
+		tension.seek(explore.get_playback_position())  # Siempre en el mismo punto del compás.
 	_bird_left -= delta
 	if _bird_left <= 0.0:
 		_bird_left = _rng.randf_range(BIRD_EVERY.x, BIRD_EVERY.y)
 		if not high and not _boss_fight():
 			sing()
+
+
+## ¿Hay un enemigo cerca que ya ha visto a Kael y va a por él?
+func in_danger() -> bool:
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var enemy := node as Enemy
+		if enemy and not enemy.boss and not enemy.is_dead() and not enemy.asleep and enemy.has_target() 				and enemy.distance_to_target() <= TENSION_RANGE:
+			return true
+	return false
+
+
+func _music_player(file: String, db: float) -> AudioStreamPlayer:
+	var p := AudioStreamPlayer.new()
+	p.bus = AudioMix.MUSIC
+	p.stream = _loop(MUSIC_DIR + file)
+	p.volume_db = db
+	p.autoplay = true
+	add_child(p)
+	return p
 
 
 ## Un pájaro canta en algún sitio lejos de Kael.

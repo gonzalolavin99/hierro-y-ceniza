@@ -52,11 +52,26 @@ func _ready() -> void:
 		var rivers: int = ambience.get_children().filter(func(n: Node) -> bool: return n is AudioStreamPlayer3D and n.playing).size()
 		_check("Suena el arroyo (%d puntos)" % rivers, rivers >= 3)
 		_check("Canta un pájaro lejos", ambience.sing() and ambience._bird_player.global_position.distance_to(get_tree().get_first_node_in_group("player").global_position) >= 18.0)
+		_check("Suena la música de exploración, suave y en el canal Música", ambience.explore.playing and ambience.explore.bus == AudioMix.MUSIC and ambience.explore.volume_db < -8.0)
+		_check("Sin peligro, la capa de tensión calla (%.0f dB)" % ambience.tension.volume_db, ambience.tension.volume_db <= Ambience.SILENT_DB + 1.0)
+		# Un soldado ve a Kael de cerca: entra la tensión.
+		var player := get_tree().get_first_node_in_group("player") as Player
+		var soldier: Enemy
+		for node in get_tree().get_nodes_in_group("enemies"):
+			if (node as Enemy).display_name == "Soldado de práctica":
+				soldier = node
+		player.set_spawn(soldier.global_position + Vector3(0, 0, 5), 180.0)
+		player.respawn()
+		await _wait(2.5)
+		_check("Un enemigo te descubre cerca: entra la capa de tensión (%.0f dB)" % ambience.tension.volume_db, ambience.in_danger() and ambience.tension.volume_db > -20.0)
+		_check("…en el mismo punto del compás que la exploración", absf(ambience.tension.get_playback_position() - ambience.explore.get_playback_position()) < 0.15)
 		var before: int = ambience.birds_sung
 		arena.start_fight()
 		ambience._bird_left = 0.0
 		await _wait(0.3)
 		_check("En el duelo con un jefe no cantan pájaros", ambience.birds_sung == before)
+		await _wait(2.0)
+		_check("…y calla la música de exploración (la pone el jefe)", ambience.explore.volume_db < -40.0)
 	Voice.always_speak = false
 	print("RESULTADO: %s" % ("TODO OK" if _failures == 0 else "%d FALLOS" % _failures))
 	get_tree().quit(_failures)

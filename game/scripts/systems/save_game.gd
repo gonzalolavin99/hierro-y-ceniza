@@ -27,7 +27,7 @@ func active() -> bool:
 	if force_active:
 		return true
 	var scene: Node = get_tree().current_scene
-	return scene != null and scene.scene_file_path == ProjectSettings.get_setting("application/run/main_scene", "")
+	return scene != null and scene.scene_file_path == GameInfo.GAME_SCENE
 
 
 func exists() -> bool:

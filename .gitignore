@@ -12,3 +12,6 @@ desktop.ini
 game/assets/animations/mixamo/
 game/assets/animations/*.res
 game/assets/animations/*.tres
+
+# El .exe exportado (se genera, no se guarda en Git)
+build/

@@ -35,7 +35,7 @@ func mark_heard(event: StringName) -> void:
 ## ¿Toca la escena del prólogo? Solo en la partida real (la escena principal) y si aún no se vio.
 func should_play_prologue() -> bool:
 	var scene: Node = get_tree().current_scene
-	var main: String = ProjectSettings.get_setting("application/run/main_scene")
+	var main: String = GameInfo.GAME_SCENE
 	return scene != null and scene.scene_file_path == main and not heard(&"scene_prologue")
 
 

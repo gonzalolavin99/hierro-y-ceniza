@@ -124,7 +124,8 @@ func _unpause() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not _open:
 		var in_cutscene: bool = get_tree().get_node_count_in_group("cutscene") > 0
-		if event.is_action_pressed("pause") and not Camps.level_menu.is_open() and not in_cutscene:
+		var playing: bool = get_tree().get_first_node_in_group("player") != null  # No en el menú principal.
+		if event.is_action_pressed("pause") and playing and not Camps.level_menu.is_open() and not in_cutscene:
 			get_viewport().set_input_as_handled()
 			open()
 		return

@@ -217,6 +217,48 @@ def build_sting(seconds=7.0):
     return x / np.max(np.abs(x)) * 0.6
 
 
+# --- Exploración del Paso de Hierro (Cimientos): muy suave, y una capa de tensión aparte que entra cuando un
+# enemigo te descubre. Mismo tempo y duración: la capa encaja encima en el mismo punto del compás.
+EXPLORE_BPM = 72.0
+EXPLORE_BEAT = 60.0 / EXPLORE_BPM
+EXPLORE_LENGTH = int(SR * EXPLORE_BEAT * 4 * 16)
+# Acordes (semitonos sobre re3) de 2 compases cada uno: re menor, si bemol, sol menor, la (frigio, sobrio).
+EXPLORE_CHORDS = [[0, 3, 7], [-4, 0, 3], [-7, -4, 0], [-5, -1, 2]]
+
+
+def build_explore():
+    mix = np.zeros(EXPLORE_LENGTH)
+    bar_s = EXPLORE_BEAT * 4
+    for i in range(8):
+        chord = EXPLORE_CHORDS[i % 4]
+        at = i * 2 * bar_s
+        place_in(mix, soft_pad([semi(D3, n) for n in chord], bar_s * 2 + 0.9), at, EXPLORE_LENGTH, 0.35)
+        # Unas pocas notas de laúd, sueltas (mucho silencio entre ellas).
+        for k, (n, beat) in enumerate([(chord[0] + 12, 0), (chord[2], 2.5), (chord[1] + 12, 5), (chord[0], 6.5)]):
+            if (i + k) % 3 != 2:
+                place_in(mix, pluck(semi(D3, n), 2.2, 0.996), at + beat * EXPLORE_BEAT, EXPLORE_LENGTH, 0.22)
+    echo = np.zeros(EXPLORE_LENGTH)
+    d = int(SR * 0.42)
+    echo[d:] = mix[:-d] * 0.3
+    mix = lowpass(mix + echo, 2600.0)
+    return mix / np.max(np.abs(mix)) * 0.55
+
+
+def build_tension():
+    """Capa de tensión: tambor grave en cada compás, pulso de aro y un zumbido bajo que respira."""
+    mix = np.zeros(EXPLORE_LENGTH)
+    t = np.arange(EXPLORE_LENGTH) / SR
+    hum = sum(a * np.sin(2 * np.pi * f * t + rng.uniform(0, 6)) for f, a in [(D2 / 2, 0.5), (D2, 0.3), (D2 * 1.06, 0.15)])
+    mix += lowpass(hum, 300.0) * (0.7 + 0.3 * np.sin(2 * np.pi * t / (EXPLORE_BEAT * 8))) * 0.4
+    for bar in range(16):
+        at = bar * 4 * EXPLORE_BEAT
+        place_in(mix, taiko(True), at, EXPLORE_LENGTH, 0.7)
+        place_in(mix, taiko(False), at + 2.5 * EXPLORE_BEAT, EXPLORE_LENGTH, 0.5)
+        for beat in (1, 3):
+            place_in(mix, rim(), at + beat * EXPLORE_BEAT, EXPLORE_LENGTH, 0.8)
+    return mix / np.max(np.abs(mix)) * 0.6
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     for phase in (1, 2):
@@ -224,7 +266,8 @@ def main():
         path = os.path.join(OUT, "varga_duel_%d.wav" % phase)
         wavfile.write(path, SR, (data * 32767).astype(np.int16))
         print("  %s  %.1f s" % (os.path.basename(path), LENGTH / SR))
-    for name, data in (("prologue_hall", build_hall()), ("prologue_sting", build_sting())):
+    for name, data in (("prologue_hall", build_hall()), ("prologue_sting", build_sting()),
+                       ("pass_explore", build_explore()), ("pass_tension", build_tension())):
         path = os.path.join(OUT, name + ".wav")
         wavfile.write(path, SR, (data * 32767).astype(np.int16))
         print("  %s  %.1f s" % (os.path.basename(path), len(data) / SR))
