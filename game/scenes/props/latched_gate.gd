@@ -4,6 +4,8 @@ extends Node3D
 ## lado"). Kael no puede entrar: los muros son altos y la puerta no cede. Con Frank en el hombro, junto a la
 ## puerta: "Y  Que Frank abra el pestillo": Frank salta al muro, se cuela dentro, quita el pestillo, la puerta
 ## se abre y vuelve al hombro. Queda abierta para siempre (Story "gate_<id>"). Sin Frank: "Cerrado por dentro".
+## Con `needs_frank = false` es una puerta atrancada que Kael abre él mismo desde su lado ("Y  Quitar la tranca"),
+## como los atajos de los souls. En un portón de paso, desde el otro lado (+Z) se lee "Cerrado por el otro lado".
 ## La puerta está en el lado -Z. Se construye en código (muros con colisión).
 
 const SIZE: Vector3 = Vector3(3.6, 3.0, 3.6)
@@ -15,6 +17,11 @@ const USE_RANGE: float = 2.4
 const NOTICE_RANGE: float = 6.0
 
 @export var gate_id: StringName = &"gate"
+## Portón de paso (un atajo): solo el muro de delante con la puerta, sin cuarto detrás. Desde el otro lado
+## no hay pestillo que valga: solo se abre desde fuera (el lado −Z), con Frank.
+@export var passage: bool = false
+## Si es false, Kael quita la tranca él mismo (sin Frank).
+@export var needs_frank: bool = true
 
 var _player: Player
 var _hinge: Node3D
@@ -26,6 +33,7 @@ var _noticed: bool = false
 
 func _ready() -> void:
 	add_to_group("latched_gates")
+	add_to_group("interactables")
 	_build()
 	Story.changed.connect(_sync)
 	_sync.call_deferred()
@@ -62,8 +70,21 @@ func near_door(player: Player) -> bool:
 	return local.z < -SIZE.z * 0.5 and Vector2(local.x, local.z + SIZE.z * 0.5).length() <= USE_RANGE
 
 
+## ¿Está Kael junto a la puerta pero por el otro lado (el de dentro)?
+func near_back(player: Player) -> bool:
+	if player == null or not passage:
+		return false
+	var local: Vector3 = global_transform.affine_inverse() * player.global_position
+	return local.z > -SIZE.z * 0.5 and Vector2(local.x, local.z + SIZE.z * 0.5).length() <= USE_RANGE
+
+
+## ¿Ofrece ahora algo que hacer con Y / E? (Si es así, Y no da una patada: ver Player.interaction_nearby.)
+func offers_interaction(player: Player) -> bool:
+	return can_open(player)
+
+
 func can_open(player: Player) -> bool:
-	return not is_open() and not _busy and near_door(player) and frank_ready() \
+	return not is_open() and not _busy and near_door(player) and (frank_ready() or not needs_frank) \
 		and player.state_machine.current.name == &"Ground"
 
 
@@ -72,14 +93,39 @@ func _process(_delta: float) -> void:
 		_prompt.visible = false
 		return
 	var near: bool = near_door(_player)
-	_prompt.visible = near
-	if near:
-		_prompt.text = "Y  Que Frank abra el pestillo" if frank_ready() else "Cerrado por dentro"
+	var back: bool = near_back(_player)
+	_prompt.visible = near or back
+	_prompt.position.z = -SIZE.z * 0.5 + (0.4 if back else -0.4)
+	if back:
+		_prompt.text = "Cerrado por el otro lado"
+	elif near and not needs_frank:
+		_prompt.text = InputSetup.label(&"interact") + "  Quitar la tranca"
+	elif near:
+		_prompt.text = InputSetup.label(&"interact") + "  Que Frank abra el pestillo" if frank_ready() else "Cerrado por dentro"
+	if near and not needs_frank:
+		if can_open(_player) and Input.is_action_just_pressed("interact"):
+			kael_opens()
+		return
 	# Frank se ofrece la primera vez que se acercan.
 	if not _noticed and frank_ready() and _player.frank.advisor.can_talk() 			and _player.global_position.distance_to(outside_point()) <= NOTICE_RANGE:
 		_noticed = _player.frank.say(&"gate_locked")  # Si estaba hablando, lo intenta otra vez luego.
 	if near and can_open(_player) and Input.is_action_just_pressed("interact"):
 		frank_opens()
+
+
+## Kael quita la tranca él mismo (puerta sin Frank).
+func kael_opens() -> void:
+	if is_open() or _busy:
+		return
+	_busy = true
+	_prompt.visible = false
+	Sfx.play(&"block", global_transform * Vector3(0.4, 1.1, -SIZE.z * 0.5), -6.0)  # La tranca.
+	Story.mark_heard(story_flag())
+	var tween := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_hinge, "rotation:y", deg_to_rad(-100.0), 0.9)
+	await tween.finished
+	_busy = false
+	SaveGame.save(_player)
 
 
 ## Frank salta el muro, quita el pestillo y vuelve al hombro.
@@ -120,10 +166,11 @@ func _build() -> void:
 	walls.name = "Walls"
 	add_child(walls)
 	var half: Vector3 = SIZE * 0.5
-	# Atrás, izquierda y derecha.
-	_wall(walls, Vector3(0.0, half.y, half.z), Vector3(SIZE.x, SIZE.y, WALL), stone)
-	_wall(walls, Vector3(-half.x, half.y, 0.0), Vector3(WALL, SIZE.y, SIZE.z), stone)
-	_wall(walls, Vector3(half.x, half.y, 0.0), Vector3(WALL, SIZE.y, SIZE.z), stone)
+	# Atrás, izquierda y derecha (un portón de paso no tiene cuarto).
+	if not passage:
+		_wall(walls, Vector3(0.0, half.y, half.z), Vector3(SIZE.x, SIZE.y, WALL), stone)
+		_wall(walls, Vector3(-half.x, half.y, 0.0), Vector3(WALL, SIZE.y, SIZE.z), stone)
+		_wall(walls, Vector3(half.x, half.y, 0.0), Vector3(WALL, SIZE.y, SIZE.z), stone)
 	# Delante, con el hueco de la puerta.
 	var side: float = (SIZE.x - DOOR_WIDTH) * 0.5
 	_wall(walls, Vector3(-half.x + side * 0.5, half.y, -half.z), Vector3(side, SIZE.y, WALL), stone)

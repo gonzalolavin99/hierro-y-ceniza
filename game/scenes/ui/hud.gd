@@ -29,6 +29,10 @@ var _subtitle_label: Label
 var _subtitle_line: String = ""
 var _frank_label: Label
 var _subtitle_tween: Tween
+## Avisos que solo salen las primeras veces (ataques rojos, golpe mortal, curarse).
+var hints: TutorialHints
+## Enemigo desprevenido que se puede rematar por la espalda ahora mismo (para avisar una vez por ocasión).
+var _stealth_target: Enemy
 
 
 func _ready() -> void:
@@ -53,6 +57,18 @@ func _ready() -> void:
 	_on_xp_changed(_player.xp, 0)
 	_player.arts.changed.connect(_on_arts_changed)
 	_on_arts_changed()
+	InputSetup.device_changed.connect(_on_device_changed)
+	hints = TutorialHints.new()
+	hints.name = "TutorialHints"
+	add_child(hints)
+	hints.setup(_player)
+
+
+## Mando ↔ teclado: los nombres de los botones del HUD cambian.
+func _on_device_changed(_pad: bool) -> void:
+	_on_bandages_changed(_player.bandages)
+	_on_arts_changed()
+	_on_tools_changed()
 
 
 func _process(_delta: float) -> void:
@@ -189,7 +205,7 @@ func xp_text() -> String:
 
 
 func _on_bandages_changed(count: int) -> void:
-	_bandage_label.text = "X  Vendajes  ×%d" % count
+	_bandage_label.text = "%s  Vendajes  ×%d" % [InputSetup.label(&"heal"), count]
 	_bandage_label.modulate = Color(1, 1, 1, 1) if count > 0 else Color(1, 0.45, 0.4, 0.8)
 
 
@@ -199,21 +215,31 @@ func bandage_text() -> String:
 
 
 func _on_arts_changed() -> void:
-	_art_label.text = "LB+RB  %s" % _player.arts.display_name()
+	_art_label.text = "%s  %s" % [InputSetup.label(&"art"), _player.arts.display_name()]
 
 
 func _on_tools_changed() -> void:
 	var tools: PlayerTools = _player.tools
 	var left: int = tools.ammo[tools.current]
-	_tool_label.text = "LT  %s  ×%d" % [tools.display_name(), left]
+	_tool_label.text = "%s  %s  ×%d" % [InputSetup.label(&"item"), tools.display_name(), left]
 	_tool_label.modulate = Color(1, 1, 1, 1) if left > 0 else Color(1, 0.45, 0.4, 0.8)
 
 
+## Enemigo al que se le puede dar ya un golpe mortal: con la postura rota, o desprevenido con Kael a su espalda
+## y a distancia (aviso del jugador: por la espalda no se sabía desde dónde se le podía matar de un golpe).
 func _find_exposed_enemy() -> Enemy:
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
-		if enemy and enemy.can_be_deathblowed() and _player.global_position.distance_to(enemy.global_position) < 6.0:
+		if enemy == null:
+			continue
+		if enemy.can_be_deathblowed() and _player.global_position.distance_to(enemy.global_position) < 6.0:
 			return enemy
+		if enemy.can_be_stealth_killed(_player):
+			if hints and enemy != _stealth_target:
+				hints.show_hint(&"stealth")  # Una vez por cada ocasión, no en cada fotograma.
+			_stealth_target = enemy
+			return enemy
+	_stealth_target = null
 	return null
 
 

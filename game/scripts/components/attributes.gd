@@ -91,5 +91,6 @@ func to_dict() -> Dictionary:
 
 func from_dict(data: Dictionary) -> void:
 	for key in ORDER:
-		_values[key] = clampi(int(data.get(key, 1)), 1, MAX_VALUE)
+		var value: Variant = data.get(key, 1)
+		_values[key] = clampi(int(value), 1, MAX_VALUE) if (value is int or value is float) else 1
 	changed.emit()

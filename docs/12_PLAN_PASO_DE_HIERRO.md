@@ -143,3 +143,34 @@ Si una zona pasa del presupuesto, se separa en dos.
 - En la aldea hay **aldeanos** que cuentan lo que pasa sin decirlo.
 - **Prólogo nuevo**: el Regente tiene que parecer bueno; recuerdo de Kael con su hermana; los nombres uno a
   uno y una elección que el Regente acepta siempre.
+
+## 7. Lo que entra y lo que no entra en la vertical slice (alcance congelado, 2026-11-09)
+
+Lo pidió el estudio para no seguir sumando cosas sin quitar otras: **lo que no está en la primera lista va a
+"después"**, aunque la idea sea buena. Para cambiar esta lista hace falta el OK del jugador.
+
+**Entra (y nada más):**
+- Prólogo "Un buen hombre", con la primera elección.
+- Las 5 zonas del Paso: camino (tutorial), aldea, bosque, fortaleza y patio de Varga. **2 fogatas**: aldea y
+  campamento de los cazadores. **1 atajo**: el portón de la fortaleza y la puerta de la aldea.
+- Enemigos: soldado, centinela, bandido, lancero y arquero. Mini-jefe **Bram** y jefa **Varga**.
+- Repertorio actual de Kael, **sin movimientos nuevos**. Torbellino de serie; el Martillo lo da Bram y la
+  Ráfaga, Varga.
+- Frank tal como está: consejos, avisos, escondites y fruta.
+- La gente de la aldea: aldeanos, soldados que avisan, el desertor y la carta de raciones.
+- Menú, opciones, `.exe` y el arte en partes (paso 7).
+
+**No entra (va a "después"):** zonas o enemigos nuevos, armas secundarias nuevas, técnicas nuevas, más
+mecánicas de Frank, misiones secundarias, comercio, mejorar armas, el Acto II y los finales.
+
+## 8. Cambios tras la revisión del estudio (2026-11-09)
+
+- **Tutorial**: una idea por tramo. El soldado de práctica solo da golpes normales y a ritmo fijo. El 2.º es
+  el **soldado del barrido**, que solo hace barridos rojos ("¡ROJO! … SALTA"). El bandido pasa a guardar el
+  escondite del fondo del bosque (opcional). Carteles nuevos: la patada (a la entrada de la aldea) y agacharse
+  y el golpe por la espalda (a la entrada del bosque).
+- **Avisos que solo salen las primeras veces** (`scenes/ui/tutorial_hints.gd`): cada ataque rojo, el golpe
+  mortal (al romper una postura cerca) y curarse (la primera vez que Kael está herido).
+- **Fogatas**: la 2.ª pasa al **campamento de los cazadores**; el patio de Varga ya no tiene fogata a la
+  entrada. Con el atajo abierto, de la fogata de la aldea a la puerta de Varga se tarda unos 30 s corriendo.
+  Como mucho hay 6 enemigos obligatorios entre dos fogatas (`iron_pass_test` lo comprueba).

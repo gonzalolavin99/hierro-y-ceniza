@@ -235,17 +235,73 @@ Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
       vacía; la esperanza ("hay cinco que cierran los caminos"); **el mapa** con las cinco fichas, nombre a
       nombre y con pena; **la primera elección** («Los detendré, mi señor» / «Acabaré con ellos»; el Regente
       acepta las dos y queda guardada); al final, la nota grave que no cuadra. Unos 2,5 minutos.
-- [ ] Paso 3: el nivel en bloques (bosque obligatorio).
-- [ ] Paso 4: la gente de la aldea (aldeanos, soldados que avisan, desertor).
-- [ ] Paso 5: Bram, gigante de unos 3 m.
-- [ ] Paso 6: menú principal, opciones y `.exe`.
-- [ ] Paso 7: arte (estilo, Kael, enemigos, jefes, Frank, iluminación).
-- [ ] Diseño final de Kael y enemigos.
-- [ ] Nivel completo con arte real, iluminación, 2 campamentos, 1 atajo, secretos.
-- [ ] Menú principal, opciones (gráficos, sangre, subtítulos). Exportar `.exe`.
+- [ ] Paso 3: el nivel en bloques (bosque obligatorio). Hecho (falta prueba del jugador): `scenes/levels/iron_pass.tscn`
+      es ahora la **escena principal** (F5); el patio de pruebas se queda para las pruebas automáticas. Camino del
+      Paso con carteles de controles (solo se ven de cerca), tronco que saltar, soldado de práctica, la red de
+      Frank y un bandido; arco de piedra → **aldea** (campamento 1, casas con tela gris, casa del pozo, hoguera de
+      ropa con humo, 2 grupos, lancero y arquero en una azotea) → **bosque** (70 árboles, rocas, 4 centinelas
+      desprevenidos con una patrulla, arquero, campamento de los cazadores con la despensa, escondite al fondo,
+      grupo al pie de la rampa) → **fortaleza** en alto (rampa, dos torres con arqueros, patio de armas,
+      lazareto con hueco para Bram) → **patio de Varga** (su campamento a la entrada). **Atajo**: portón en el
+      muro este que abre Frank; un sendero baja hasta la aldea (desde abajo está cerrado). Una partida guardada
+      del patio de pruebas no se carga aquí (se empieza de cero).
+      Tras la primera prueba del jugador (2026-11-08): **farolillos** que marcan el camino principal y un
+      **sendero de tierra** por el bosque; el atajo acaba en la aldea en una **puerta atrancada** ("Cerrado por el
+      otro lado"; se abre desde el sendero con "Y  Quitar la tranca"); los carteles y avisos muestran **solo los
+      botones de lo que se esté usando** (mando o teclado, `InputSetup.label`). Combate: la guardia corta
+      **cualquier** golpe de Kael (no las técnicas) en cualquier momento, también en el impacto, y el paso
+      rápido fuera del impacto; los soldados **bajan el arma** tras su último golpe en vez de seguir el clip
+      hasta el tajo siguiente (`EnemyAttackState.CLIP_STRIKES`).
+      Tras la revisión del estudio (2026-11-09): guardado v2 seguro, técnicas bloqueadas en el nivel real (solo
+      Torbellino; la Ráfaga, al vencer a Varga) y retrasos de la IA fijos por ataque (`EnemyAttackState.HOLDS`).
 
-**🧪 PRUEBA FINAL:** otra persona lo juega de principio a fin.
+**Orden nuevo del Hito 9 (aprobado por el jugador, 2026-11-09).** El detalle de cada paso, con lo que hace cada
+área y cuándo está "hecho", está en `docs/15_PLAN_DEL_ESTUDIO.md`.
+
+- [ ] **Paso 3, cierre** (sigue siendo el paso 3; se cierra con el OK del jugador): tutorial nuevo (una idea por
+      tramo; un 2.º soldado que enseña el barrido rojo; aviso de golpe mortal; bandido al bosque; avisos la primera
+      vez que se ve cada ataque rojo); ritmo (la fogata 2 pasa al campamento de los cazadores, se quita la de la
+      entrada de Varga, el atajo es la vuelta rápida); pose de "aguantar la espada" en lo alto; FPS medidos en el
+      Paso de Hierro; ejecutor de pruebas rápido ("N/N OK", 4 a la vez); `save_iron_pass_test` y
+      `respawn_clean_test`; lista F5 del jugador; lista de lo que entra y lo que no entra en la slice.
+      **Hecho (2026-11-09), falta la prueba del jugador con F5 y su OK.** 34/34 pruebas OK; peor zona: 82 FPS.
+- [ ] **Cimientos**: esqueleto común (`BoneMap`, sin `mixamorig_` escrito a mano); canales de sonido (Música, Voz,
+      Efectos, Ambiente; la música baja cuando alguien habla; ambiente del Paso con viento, río y pájaros lejanos, que
+      el jugador aprobó); enemigos lejanos que "duermen"; **guía de estilo**
+      (`docs/16_GUIA_DE_ESTILO.md`) con una escena de prueba y el OK del jugador; cuerpo base CC0 y siluetas de
+      Kael y Bram.
+- [ ] **Paso 6a, `.exe` de prueba**: menú mínimo, registro de errores, versión visible; 3–5 amigos o familiares
+      lo juegan (hoja de 5 preguntas; fallos en `docs/17_FALLOS.md`); se arreglan los 3 problemas más repetidos.
+- [ ] **Paso 4: la gente de la aldea**: aldeanos con frases de antes y después de Varga, soldados que avisan
+      antes de atacar, el desertor (perdonarlo → después aparece llevando agua), la carta de raciones; bus de
+      eventos y lista de marcas de la historia; gestos cotidianos; voces y murmullo de la aldea.
+- [ ] **Paso 5: Bram**, gigante de unos 3 m: antes, los ataques pasan a archivos de datos (`.tres`) y se crea la
+      base `BossArena`; golpes lentos que se esquivan mejor que se paran, cadena y grillete; 2–6 intentos;
+      **da el Golpe de Martillo** y la llave.
+- [ ] **Paso 6b: menú y opciones completos**: gráficos, sangre, subtítulos, volumen por canal (`settings.cfg`);
+      pausa automática al desconectar el mando.
+- [ ] **Paso 7: arte, en partes**: 7b prueba de belleza (una esquina) → 7c Kael (y reacciones nuevas a los
+      golpes) → 7d enemigos, Varga y Bram (silueta reconocible a 15 m) → 7e Frank → 7f vestir el nivel por zonas
+      (cada zona en su escena) → 7g iluminación y efectos; y el audio del 7 (gritos y acero CC0, sin
+      grabaciones caseras; variantes, roce de la ropa).
+
+**🧪 PRUEBA FINAL:** 2 personas nuevas lo juegan de principio a fin sin ayuda, en 25–40 minutos.
 
 ---
 
-Después: nuevas regiones, jefes y capítulos de la historia, con el mismo método.
+## Hito 10 — Pulido de la vertical slice
+- [ ] Segunda ronda con gente de fuera y arreglos; documentos al día; versión "1.0 de la slice" marcada en Git.
+
+**🧪 PRUEBA:** no queda ningún fallo grave en el registro.
+
+## Hitos 11–13 — Los actos siguientes
+Cada acto se hace como una slice propia (plan → bloques → prueba con amigos → gente → jefe → arte), con la
+regla de **1 zona, 1 jefe y como mucho 1 mecánica nueva**. Cada región trae su paleta de colores, su ambiente
+sonoro, su prueba de "se llega a pie", su prueba de guardado y la de su jefe.
+- [ ] **Hito 11 · Acto II, la Montaña Alta**: Ilse, Dov, el primer enemigo que se rinde, como mucho 2 tipos de
+      enemigo nuevos.
+- [ ] **Hito 12 · Acto III, la Ciudad del Río**: Orme, la carta del Regente, los pozos tapiados.
+- [ ] **Hito 13 · Acto IV y los finales**: Aren, el registro, los dos finales y el epílogo (antes, decidir si se
+      dice "Yo fui ese guerrero").
+
+Si falta tiempo, se recorta a 3 actos antes que bajar la calidad.

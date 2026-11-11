@@ -41,7 +41,7 @@ func _run() -> void:
 	_check("…sin controles para Kael y con Varga quieta", _player.state_machine.current.name == &"Scripted" and varga.state_name() == &"Scripted")
 	var shots: Array[StringName] = []
 	var intro: VargaIntro = _arena.intro
-	for i in 300:  # La escena entera (unos 30 s).
+	for i in 600:  # La escena entera (unos 50 s con la conversación ampliada).
 		await _wait(0.1)
 		if intro == null or not is_instance_valid(intro) or intro.is_done():
 			break
@@ -65,13 +65,14 @@ func _run() -> void:
 	await _break_and_deathblow(varga)
 	_check("El primer golpe mortal no la vence (%s)" % varga.state_name(), not varga.is_dead() and varga.state_name() == &"Rally")
 	_check("…pasa a la fase 2 con 1 punto", varga.phase() == 2 and bar.dots_left() == 1)
-	await _wait(1.4)
+	var rally_height: float = await _rally_height(varga, 1.4)
 	_check("La música cambia a la de la fase 2", _arena.music_track() == 1)
 	_check("…con la vida y la postura llenas", varga.health.ratio() == 1.0 and varga.posture.current == 0.0)
 	_check("En la fase 2 cambia: más rápida, abanico de cuchillos y combo largo (%s)" % str(varga.moveset),
 		&"varga_fan" in varga.ranged_patterns and &"varga_combo_long" in varga.moveset and varga.walk_speed > 4.5)
-	await _wait(1.2)
-	_check("Mientras se rehace sigue sobre el suelo (altura %.2f)" % _height(varga), absf(_height(varga)) < 0.3)
+	rally_height = maxf(rally_height, await _rally_height(varga, 1.2))
+	# Solo mientras se rehace: luego, en la fase 2, puede atacar saltando (y estar en el aire es normal).
+	_check("Mientras se rehace sigue sobre el suelo (altura máx. %.2f)" % rally_height, rally_height < 0.3)
 	await _wait(1.6)
 	_check("Se levanta y sigue peleando (%s)" % varga.state_name(), varga.state_name() != &"Rally" and not varga.is_dead())
 	_check("…en el patio, no bajo el suelo (altura %.2f)" % _height(varga), absf(_height(varga)) < 0.3)
@@ -169,6 +170,16 @@ func _face_off(varga: Enemy, distance: float) -> void:
 
 
 ## Altura de Varga respecto al suelo del patio (0 = de pie en el suelo).
+## Espera `seconds` y devuelve la mayor altura (sobre el patio) que tuvo mientras se rehacía.
+func _rally_height(varga: Enemy, seconds: float) -> float:
+	var top: float = 0.0
+	for i in roundi(seconds / 0.1):
+		if varga.state_name() == &"Rally":
+			top = maxf(top, absf(_height(varga)))
+		await _wait(0.1)
+	return top
+
+
 func _height(varga: Enemy) -> float:
 	return varga.global_position.y - _arena.global_position.y
 

@@ -689,6 +689,18 @@
       "text": "The Regent says you burn villages."
     },
     {
+      "event": "varga_1b",
+      "id": "kael_scene_varga_1b",
+      "phrase": true,
+      "text": "It's closed because you close it. His wagons bring grain and physicians, and you turn them back while those people die behind your grey cloths."
+    },
+    {
+      "event": "varga_1c",
+      "id": "kael_scene_varga_1c",
+      "phrase": true,
+      "text": "I don't need him to. My sister died of this same fever. Nobody came for her. I won't let you make anyone else wait."
+    },
+    {
       "event": "varga_2",
       "id": "kael_scene_varga_2",
       "phrase": true,
@@ -1135,6 +1147,18 @@
       "id": "varga_intro_1",
       "phrase": true,
       "text": "Stop there. That smoke is not a village burning. It's their clothes. The sick ones."
+    },
+    {
+      "event": "intro_1b",
+      "id": "varga_intro_1b",
+      "phrase": true,
+      "text": "The Regent says many things. Did he also tell you why this pass is closed?"
+    },
+    {
+      "event": "intro_2b",
+      "id": "varga_intro_2b",
+      "phrase": true,
+      "text": "...Then you know what it does. And still you can't see what I'm doing here."
     },
     {
       "event": "intro_2",

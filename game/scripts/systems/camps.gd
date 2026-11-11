@@ -56,8 +56,10 @@ func fade_alpha() -> float:
 
 ## Todos los enemigos vuelven vivos y tranquilos a su puesto; sin flechas en el aire ni turnos pendientes.
 func reset_world() -> void:
-	for node in get_tree().get_nodes_in_group("enemy_projectiles"):
-		node.queue_free()
+	# Todo lo que vuela (flechas y cuchillos enemigos; virotes, bombas, humo y la fruta de Frank).
+	for group: String in ["enemy_projectiles", "projectiles"]:
+		for node in get_tree().get_nodes_in_group(group):
+			node.queue_free()
 	for node in get_tree().get_nodes_in_group("enemies"):
 		(node as Enemy).reset_to_post()
 	Squad.reset()

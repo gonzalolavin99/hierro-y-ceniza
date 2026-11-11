@@ -27,9 +27,11 @@ func _run() -> void:
 	# 1. Desvíos seguidos: empieza a retrasar golpes; si le das, lo olvida.
 	_check("De partida casi no retrasa (%.2f)" % mind.delay_chance(), mind.delay_chance() <= 0.15)
 	for i in 3:
+		mind.begin_attack()
 		mind.on_player_deflect()
-	_check("Tras 3 desvíos seguidos retrasa a menudo (%.2f)" % mind.delay_chance(), mind.delay_chance() >= 0.5)
+	_check("Tras 3 ataques desviados seguidos retrasa a menudo (%.2f)" % mind.delay_chance(), mind.delay_chance() >= 0.5)
 	for i in 3:
+		mind.begin_attack()
 		mind.on_player_deflect()
 	_check("Con 6 desvíos, a veces amaga (%.2f)" % mind.feint_chance(), mind.feint_chance() > 0.0)
 	mind.on_player_hit()
@@ -91,6 +93,7 @@ func _run() -> void:
 	await _reset()
 	_enemy.mind.rng.seed = 3
 	for i in 6:
+		_enemy.mind.begin_attack()
 		_enemy.mind.on_player_deflect()
 	_enemy.state_machine.transition_to(&"Attack", {"pattern": &"single"})
 	attack = _enemy.state_machine.current as EnemyAttackState
@@ -107,6 +110,37 @@ func _run() -> void:
 	await _wait(1.6)
 	_check("Amago: no golpea", _player.health.current == _player.health.max_health)
 	_check("Amago: vuelve a la guardia", _enemy.state_name() != &"Attack")
+
+	# 8. Desviar todos los tajos de un mismo combo cuenta UN ataque desviado, no cinco.
+	var combo := EnemyMind.new()
+	combo.begin_attack()
+	for i in 5:
+		combo.on_player_deflect()
+	_check("Cinco desvíos en un mismo combo cuentan uno (racha %d)" % combo.deflect_streak, combo.deflect_streak == 1)
+
+	# 9. El retraso es SIEMPRE el mismo para cada ataque (se puede aprender): mismo tajo, mismos segundos.
+	await _reset()
+	_enemy.mind.predictable = false
+	var seen: Dictionary = {}
+	for i in 12:
+		_enemy.mind.deflect_streak = 8  # Racha alta: casi siempre usa la versión retrasada.
+		_enemy.state_machine.transition_to(&"Attack", {"pattern": &"single"})
+		attack = _enemy.state_machine.current as EnemyAttackState
+		if attack.current_delay() > 0.0:
+			seen[snappedf(attack.current_delay(), 0.001)] = true
+		_enemy.state_machine.transition_to(&"Idle", {"wait": 100.0})
+		await get_tree().physics_frame
+	var fixed: float = EnemyAttackState.HOLDS[&"single"][1]
+	_check("El tajo retrasado siempre aguanta lo mismo (%s; esperado %.2f)" % [str(seen.keys()), fixed],
+			seen.size() == 1 and is_equal_approx(seen.keys()[0], fixed))
+
+	# 10. Los ataques de Varga nunca se retrasan al azar: su ritmo está hecho a mano.
+	var varga_ok: bool = true
+	for p: StringName in EnemyAttackState.PATTERNS:
+		if String(p).begins_with("varga_") and EnemyAttackState.HOLDS.has(p):
+			varga_ok = false
+	_check("Ningún ataque de Varga tiene versión retrasada", varga_ok)
+	_enemy.mind.deflect_streak = 0
 
 
 func _count_patterns(mind: EnemyMind, wanted: Array, distance: float) -> int:

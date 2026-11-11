@@ -25,6 +25,7 @@ var _time: float = 0.0
 
 func _ready() -> void:
 	add_to_group("hidden_caches")
+	add_to_group("interactables")
 	_build()
 	Story.changed.connect(_sync)
 	_sync.call_deferred()
@@ -47,6 +48,11 @@ func _sync() -> void:
 ## Frank lo ha encontrado: brilla para que se vea.
 func reveal() -> void:
 	revealed = true
+
+
+## ¿Ofrece ahora algo que hacer con Y / E? (Si es así, Y no da una patada.)
+func offers_interaction(player: Player) -> bool:
+	return can_pick(player)
 
 
 func can_pick(player: Player) -> bool:
@@ -162,7 +168,8 @@ func _build() -> void:
 	_prompt.pixel_size = 0.0012
 	_prompt.font_size = 28
 	_prompt.outline_size = 8
-	_prompt.text = "Y  Recoger"
+	_prompt.text = InputSetup.label(&"interact") + "  Recoger"
+	InputSetup.device_changed.connect(func(_pad: bool) -> void: _prompt.text = InputSetup.label(&"interact") + "  Recoger")
 	_prompt.modulate = Color(1.0, 0.92, 0.75)
 	_prompt.position = Vector3(0.0, 0.8, 0.0)
 	_prompt.visible = false

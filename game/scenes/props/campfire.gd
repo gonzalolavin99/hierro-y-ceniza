@@ -89,7 +89,7 @@ func _update_prompt() -> void:
 			and player.state_machine.current.name != &"Rest"
 	_prompt.visible = near
 	if near:
-		_prompt.text = "Hay enemigos cerca" if threatened() else "Y  Descansar"
+		_prompt.text = "Hay enemigos cerca" if threatened() else InputSetup.label(&"interact") + "  Descansar"
 		_prompt.modulate = Color(1.0, 0.55, 0.45) if threatened() else Color(1.0, 0.92, 0.75)
 
 

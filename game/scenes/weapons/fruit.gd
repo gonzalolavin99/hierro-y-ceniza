@@ -36,6 +36,7 @@ func flight_time() -> float:
 
 
 func _ready() -> void:
+	add_to_group("projectiles")  # Camps.reset_world la quita si Kael muere o descansa con ella en el aire.
 	var skin := StandardMaterial3D.new()
 	skin.albedo_color = Color(0.93, 0.5, 0.12)
 	skin.roughness = 0.6

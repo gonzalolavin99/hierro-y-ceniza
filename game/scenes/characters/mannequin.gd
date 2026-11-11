@@ -368,6 +368,15 @@ func action_time() -> float:
 	return _action_time
 
 
+## Cuánto se ve la acción (0 = nada, 1 = entera) y cuál es.
+func action_weight() -> float:
+	return _action
+
+
+func action_name() -> StringName:
+	return _action_name
+
+
 ## Inclinación breve al recibir un golpe, alejándose de donde vino (reacción según dirección).
 func flinch(from_direction: Vector3, strength: float = 1.0) -> void:
 	var local := global_basis.inverse() * from_direction

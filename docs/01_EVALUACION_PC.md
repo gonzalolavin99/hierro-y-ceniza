@@ -48,3 +48,23 @@ presupuesto lo veremos al momento, no al final.
 - **Portátil enchufado** mientras se trabaja/prueba (la batería limita la GPU).
 - **Todo en G:\\** — Godot, Blender y el proyecto. C: tiene muy poco espacio.
 - Drivers NVIDIA al día (los actuales parecen recientes, OK).
+
+## Mediciones del Paso de Hierro (cifras de partida antes del arte, 2026-11-09)
+
+Medido con `Godot --path game res://tests/perf_probe.tscn -- iron_pass`: con ventana a 1920×1080 y **sin
+vsync** (lo que da de sí la tarjeta), en la GTX 1050, con los 21 enemigos del nivel quietos. Al vestir el
+nivel (paso 7) se vuelve a medir: si una zona baja más de un 10 %, hay que revisarla.
+
+| Zona | FPS medio | Peor fotograma | Llamadas de dibujo | VRAM |
+|---|---|---|---|---|
+| Camino (tutorial) | 111 | 25 ms | 52 | 206 MB |
+| Arco → aldea | 88 | 32 ms | 279 | 206 MB |
+| **Aldea (centro)** | **82** (la peor) | 36 ms | 374 | 206 MB |
+| Bosque | 111 | 40 ms | 535 | 206 MB |
+| Pie de la rampa | 114 | 26 ms | 622 | 206 MB |
+| Fortaleza (patio) | 107 | 22 ms | 640 | 206 MB |
+| Patio de Varga | 130 | 13 ms | 291 | 206 MB |
+
+Todas las zonas pasan de sobra el mínimo de 45 FPS. Los picos de "peor fotograma" coinciden con el salto de
+Kael de una zona a otra (carga de lo que se ve por primera vez), no con el juego normal. Las llamadas de
+dibujo son las cosas que se dibujan por separado; el arte tiene que mantenerlas por debajo de unas 1.000.

@@ -74,14 +74,56 @@ func _run() -> void:
 		data = SaveGame.read()
 		_check("Recoger el morral guarda (exp %s, morral %s)" % [str(data.get("xp")), str(data.has("satchel"))], int(data.get("xp", -1)) == xp_left and not data.has("satchel"))
 
-	# 6. Un archivo roto no rompe el juego: empieza de cero.
+	# 6. Guardado seguro: queda una copia de la partida anterior y no queda ningún resto a medio escribir.
+	_check("Hay copia de la partida anterior (.bak)", FileAccess.file_exists(SaveGame.backup_path()))
+	_check("No queda archivo temporal a medio escribir", not FileAccess.file_exists(TEST_PATH + ".tmp"))
+	_check("El archivo lleva la versión %d y el nivel por su nombre (%s)" % [SaveGame.VERSION, str(data.get("level"))],
+			int(data.get("version", 0)) == SaveGame.VERSION and str(data.get("level", "")) == SaveGame.level_id() and not "/" in str(data.get("level", "")))
+	_check("…y las técnicas aprendidas (%s)" % str(data.get("arts")), data.get("arts") is Array and not (data["arts"] as Array).is_empty())
+
+	# 7. Partida rota pero con copia buena: se carga la copia (no se pierde el progreso).
 	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
 	file.store_string("{esto no es json")
 	file.close()
 	await _load_level()
-	_check("Con un archivo roto empieza de cero sin errores", _player.attributes.level() == 1 and _player.xp == 0)
+	_check("Con la partida rota se carga la copia (Vigor %d, nota '%s')" % [_player.attributes.get_value(&"vigor"), SaveGame.last_read_note],
+			_player.attributes.get_value(&"vigor") == 2 and SaveGame.last_read_note == "backup")
 
-	# 7. Fuera de las pruebas y del juego normal no guarda.
+	# 8. Partida y copia rotas: empieza de cero sin errores.
+	for p: String in [TEST_PATH, SaveGame.backup_path()]:
+		file = FileAccess.open(p, FileAccess.WRITE)
+		file.store_string("{esto no es json")
+		file.close()
+	await _load_level()
+	_check("Con todo roto empieza de cero sin errores", _player.attributes.level() == 1 and _player.xp == 0)
+
+	# 9. Datos raros (tipos equivocados) no rompen la carga: se ignoran.
+	SaveGame.erase()
+	_write_raw({"version": SaveGame.VERSION, "level": SaveGame.level_id(), "xp": "mucho", "story": [1, 2],
+			"attributes": 5, "spawn": [1, "a"], "satchel": {"at": [1, 2], "amount": 50}, "key_items": "x", "arts": 7})
+	await _load_level()
+	_check("Datos de tipo equivocado: carga sin errores y sin morral (%d morrales)" % get_tree().get_nodes_in_group("xp_satchels").size(),
+			_player.xp == 0 and get_tree().get_nodes_in_group("xp_satchels").is_empty())
+
+	# 10. Partida de la versión 1 (ruta completa del nivel, sin técnicas): se adapta y se carga.
+	var scene_path: String = get_tree().current_scene.scene_file_path
+	_write_raw({"version": 1, "level": scene_path, "xp": 77, "attributes": {"vigor": 3}})
+	await _load_level()
+	_check("Una partida v1 se adapta y se carga (exp %d, Vigor %d)" % [_player.xp, _player.attributes.get_value(&"vigor")],
+			_player.xp == 77 and _player.attributes.get_value(&"vigor") == 3)
+
+	# 11. Partida de una versión más nueva que el juego: no se toca.
+	SaveGame.erase()
+	_write_raw({"version": SaveGame.VERSION + 1, "level": SaveGame.level_id(), "xp": 55})
+	await _load_level()
+	_check("Una partida de una versión futura no se carga (exp %d, nota '%s')" % [_player.xp, SaveGame.last_read_note],
+			_player.xp == 0 and SaveGame.last_read_note == "newer")
+
+	# 12. Empezar de nuevo borra también la copia (si no, la copia "resucitaría" la partida).
+	SaveGame.erase()
+	_check("Borrar la partida borra también su copia", not SaveGame.exists() and not FileAccess.file_exists(SaveGame.backup_path()))
+
+	# 13. Fuera de las pruebas y del juego normal no guarda.
 	SaveGame.erase()
 	SaveGame.force_active = false
 	_player.xp = 999
@@ -116,6 +158,12 @@ func _load_level() -> void:
 	for node in get_tree().get_nodes_in_group("enemies"):
 		(node as Enemy).aggro_range = 0.0
 	await _wait(0.4)
+
+
+func _write_raw(data: Dictionary) -> void:
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(data))
+	file.close()
 
 
 func _flat(a: Vector3, b: Vector3) -> float:

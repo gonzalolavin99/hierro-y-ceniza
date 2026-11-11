@@ -3,7 +3,8 @@
 Resumen para retomar el trabajo en una sesión nueva. **Leer primero esto**, después
 [00_LEEME](00_LEEME.md), [05_ROADMAP](05_ROADMAP.md) y [08_MEJORAS](08_MEJORAS_FLUIDEZ_Y_ANIMACION.md).
 
-Última actualización: 2026-10-20 · Último commit: `8636b93` · Repositorio público:
+Última actualización: 2026-11-08 · Último commit: `d9767af` (los commits `01277a8`, `f6c4768` y `d9767af` aún
+no están subidos a GitHub; subir solo cuando el jugador lo diga) · Repositorio público:
 https://github.com/gonzalolavin99/hierro-y-ceniza
 
 ---
@@ -21,12 +22,13 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
 | 8 · Primer jefe | ✅ **OK del jugador: Hito 8 cerrado.** Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Paso 4 (reacciones a los golpes, escena previa, música, estandarte) hecho y probado (OK) |
-| 9 · Vertical slice | Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho, **pendiente de prueba del jugador** |
+| 9 · Vertical slice | Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho (el jugador siguió adelante). Paso 3 (nivel en bloques, `scenes/levels/iron_pass.tscn`, escena principal) hecho y corregido tras la primera prueba, **pendiente de la segunda prueba y OK del jugador**. Faltan pasos 4 (aldeanos), 5 (Bram), 6 (menú y `.exe`) y 7 (arte) |
 | Extra · Frank | Paso 1 (Frank, la red y su escena) hecho y probado (OK). Paso 2 (consejos y bromas) hecho y probado (OK). Paso 3 (avisos, escondites y la despensa) hecho y probado (OK). Paso 4 (fruta para distraer) hecho y probado (OK). **Frank completo** para el juego actual |
-| 9 | Pendiente (vertical slice) |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
-El mundo, por ahora, solo es el escenario de pruebas.
+El mundo: **El Paso de Hierro en bloques** (`scenes/levels/iron_pass.tscn`, escena principal; todo se construye
+en `iron_pass_layout.gd`, el primer nodo, antes que Kael). El patio de pruebas (`test_level.tscn`) sigue para las
+pruebas automáticas. El guardado anota el nivel: una partida de otro nivel no se carga.
 
 ## 2. Lo que funciona hoy (F5 en Godot)
 
@@ -302,11 +304,11 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 
 | Para qué | Comando (desde `G:\Game\game`) |
 |---|---|
-| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `hit_react_test.tscn` · `frank_test.tscn` · `frank_tips_test.tscn` · `frank_finds_test.tscn` · `frank_throw_test.tscn` · `anim_audit.tscn` (con `--fixed-fps 60`) |
+| Pruebas (ejecutar SIEMPRE tras cambios) | `--headless --path . res://tests/movement_test.tscn` · `combat_test.tscn` · `moveset_test.tscn` · `camera_test.tscn` · `danger_test.tscn` · `tools_test.tscn` · `arts_test.tscn` · `voice_test.tscn` · `ai_test.tscn` · `group_test.tscn` · `stealth_test.tscn` · `enemy_types_test.tscn` · `heal_test.tscn` · `campfire_test.tscn` · `xp_test.tscn` · `attributes_test.tscn` · `save_test.tscn` · `pause_test.tscn` · `story_test.tscn` · `lore_test.tscn` · `prologue_test.tscn` · `varga_test.tscn` · `hit_react_test.tscn` · `frank_test.tscn` · `frank_tips_test.tscn` · `frank_finds_test.tscn` · `frank_throw_test.tscn` · `iron_pass_test.tscn` (el nivel: piezas, enemigos sobre suelo firme, se llega a pie a cada zona, farolillos, atajo y su puerta) · `combo_settle_test.tscn` (el soldado baja el arma tras su último golpe; la guardia corta el ataque de Kael y desvía) · `anim_audit.tscn` (con `--fixed-fps 60`) |
 | Regenerar biblioteca de animaciones | `--headless --path . --script res://tests/build_anim_library.gd` |
 | Medir impactos (mano / pie) | `--script res://tests/measure_swings.gd` · `measure_feet.gd` |
 | Verificar el taller de animación | `--script res://tests/polish_check.gd` |
-| Capturas (con ventana) | `res://tests/visual_check.tscn -- <carpeta>` · `polish_preview.tscn` · `anim_preview.tscn` · `ramp_shot.tscn` |
+| Capturas (con ventana) | `res://tests/visual_check.tscn -- <carpeta>` · `polish_preview.tscn` · `anim_preview.tscn` · `ramp_shot.tscn` · `iron_pass_shot.tscn` (el Paso de Hierro desde 8 sitios y el mapa desde arriba) |
 | Medir pies | `res://tests/feet_probe.tscn` (con ventana) |
 | Regenerar escenario / sonidos | `python tools/gen_test_level.py` · `python tools/gen_sounds.py` (desde `G:\Game`) |
 | Voces (tras cambiar `voice_lines.gd`) | `--headless --path . --script res://tests/export_voice_script.gd` y luego, desde `G:\Game`: `G:\Herramientas	tsenv\Scripts\python tools/gen_voices.py` (`--all` rehace todas) |
@@ -343,6 +345,17 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
   de github.com/thewh1teagle/kokoro-onnx, release model-files-v1.0). En un PC nuevo: crear el venv e instalar
   `kokoro-onnx soundfile`, y descargar esos dos archivos en `models/`.
 
+- **Nivel construido en código**: los bordes de cajas que se tocan deben solaparse un poco; si una caja acaba
+  justo donde empieza otra (la meseta y la rampa, el patio de Varga), un rayo hacia abajo en ese borde no toca
+  nada y queda una "grieta". `iron_pass_test` lo detecta (búsqueda a pie por una rejilla de 1 m, con la rampa y el
+  suelo de debajo como sitios distintos).
+
+- **Clips de Mixamo con varios tajos** (`combo_one_hand`, `combo_two_hand`): si un patrón acaba a mitad del
+  clip, el clip sigue hacia el tajo siguiente y parece un golpe más que nunca llega. Anotar dónde empieza cada
+  tajo en `EnemyAttackState.CLIP_STRIKES`.
+- **Mando o teclado**: `InputSetup.using_pad` cambia con lo último que se tocó (señal `device_changed`); los textos
+  con botones usan `InputSetup.label(acción)`. Las pruebas usan InputEventAction, que no cambia el aparato.
+
 ## 6. Reglas del proyecto (resumen)
 
 - El jugador no tiene experiencia: explicar en español simple. Él prueba y da OK; no se avanza de hito sin OK.
@@ -356,6 +369,79 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 - TDD: para cada ajuste medible, primero una prueba que falla; documentar en `08_MEJORAS`.
 
 ## 7. Siguiente paso recomendado
+
+### Para retomar en una conversación nueva (2026-11-08)
+
+**Actualización 2026-11-09 (cierre del paso 3, plan del estudio):**
+- **Tutorial nuevo**: soldado de práctica a ritmo fijo, solo con golpes normales; luego el soldado del barrido,
+  que solo hace barridos rojos; el bandido pasa al escondite del bosque. Carteles nuevos: patada y agacharse.
+- **Avisos de las primeras veces** (`TutorialHints`, lo crea el HUD: `hud.hints`).
+- **Fogatas**: la 2.ª está en el campamento de los cazadores; `VargaArena.with_campfire = false` en el Paso.
+- **Pose de aguantar la espada** en lo alto (`EnemyAttackState`: `HOLD_RISE`, `HOLD_EARLIEST`, `HOLD_CREEP`
+  0,005; prueba `hold_pose_test`).
+- `Camps.reset_world()` también borra los proyectiles de Kael y la fruta de Frank.
+- Pruebas nuevas: `tutorial_hints`, `hold_pose`, `save_iron_pass` y `respawn_clean`.
+- **Ejecutor nuevo**: `bash game/tests/run_all.sh` (todas, 4 a la vez, ≈ 4,5 min, termina con "N/N OK";
+  encuentra solas las pruebas `*_test.tscn`). `run_all.sh rapido` lanza 6 pruebas en unos 30 s, y
+  `run_all.sh ai save` solo esas dos.
+- **FPS del Paso** medidos con `perf_probe.tscn -- iron_pass`: la peor zona, la aldea, da 82 FPS (ver doc 01).
+- Alcance congelado de la slice y lista de cambios: doc 12, §7–8. Lista de comprobación del paso 3 para
+  probar con F5: doc 15, sección A.
+- **Falta**: la prueba del jugador con F5 y su OK → commit. Después, los Cimientos (doc 15, B).
+
+**Arreglos tras la 2.ª prueba del jugador (2026-11-11):**
+- **La cámara ya no se mete en los muros**: el SpringArm tiene una esfera de 0,3 m (`camera_probe`). Kael no
+  atravesaba la roca: `walls_test` lo empuja contra las paredes del camino de 50 maneras.
+- **Escenas en el nivel**: `LevelCutscene.clear_view()` adelanta la cámara si hay un muro entre ella y lo que se
+  mira. El rincón de la red de Frank es más grande (x 5,5–14, z 94–104) y la red cuelga en (10, 0, 99).
+- **Soltar a Frank**: Y / E ya no da una patada junto a algo con lo que se puede interactuar
+  (`Player.interaction_nearby()`, grupo "interactables", `offers_interaction()` en la red, las puertas y los
+  escondites). En la escena, Kael levanta la espada y corta la cuerda (`slash_a` con `play_shaped`).
+- **Golpe por la espalda**: si un enemigo desprevenido tiene a Kael a su espalda a distancia de remate, sale la
+  marca roja ◆ sobre él (`hud._find_exposed_enemy`), y las 3 primeras ocasiones un aviso (`TutorialHints`
+  "stealth").
+- **Bram**: el cartel del lazareto dice claro que aún no está hecho (paso 5) y que se sigue hacia Varga.
+- **Varga, conversación ampliada** (doc 11): 4 frases nuevas (`intro_1b`, `intro_2b`, `kael_scene varga_1b`,
+  `varga_1c`), con la voz de Kokoro. Kael cree que ella deja morir a la gente, y su hermana murió de la fiebre.
+- **Nadie se queda encima de otro**: `Enemy._slide_off_player()` y `Player._slide_off_enemy()`. Si uno queda
+  apoyado en el otro, deja de chocar con él 0,35 s y resbala hacia fuera (`stack_test`).
+- Las rampas de las torres entran 0,4 m en la torre (había una "grieta" en el borde).
+- 36/36 pruebas OK (nuevas: `walls`, `stack`).
+
+**Dónde quedamos (antes):** Hito 9, **paso 3** (nivel en bloques del Paso de Hierro) hecho, con los arreglos de la
+primera prueba del jugador: la guardia corta cualquier ataque de Kael (no las técnicas), los soldados ya no
+amagan un tercer golpe, los carteles muestran solo los botones del aparato en uso, farolillos y sendero que
+guían, y la puerta atrancada del atajo en la aldea. Las 30 pruebas pasan (`bash game/tests/run_all.sh`, ≈ 12 min; al añadir una prueba nueva, sumarla a su lista).
+**Falta:** que el jugador lo pruebe con F5 y dé el OK → entonces **commit** (nada de esto está en Git aún:
+nivel nuevo, `combo_settle_test`, cambios en `attack.gd`, `input_setup.gd`, `latched_gate.gd`,
+`save_game.gd`, etc.). El paso 2 (prólogo nuevo) ya está en `d9767af`; el jugador siguió adelante sin
+objeciones.
+
+**Pasos que faltan del Hito 9** (detalle en `05_ROADMAP.md` y `12_PLAN_PASO_DE_HIERRO.md`):
+1. **Paso 4 — la gente de la aldea** (el siguiente): aldeanos con frases sutiles que hagan sospechar lo que
+   pasa de verdad; los soldados de la aldea son **de Varga y guardan la cuarentena** (Kael cree que son
+   rebeldes): primero avisan ("¡Atrás! No te acerques a las casas") y solo luego atacan; el desertor. Quitar
+   el cartel provisional "(Aldeanos: paso 4)".
+2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).
+3. **Paso 6 — menú principal, opciones** (gráficos, sangre, subtítulos) **y exportar el `.exe`**.
+4. **Paso 7 — arte**: estilo, Kael, enemigos, jefes, Frank (mejorar su modelo), iluminación; vestir el nivel.
+
+**Pendiente de decidir por el jugador:** ¿se mantiene la revelación final "Yo fui ese guerrero"? (ver
+memoria del narrador: siempre en tercera persona hasta entonces). Pulido fino de audio y diálogo, más
+adelante.
+
+**Referencia:** los puestos de un estudio de videojuegos y quién cubre cada uno aquí están en
+[13_EQUIPO_DE_UN_ESTUDIO](13_EQUIPO_DE_UN_ESTUDIO.md). La revisión de un experto por departamento
+(2026-11-09: notas, problemas y recomendaciones) está en [14_REVISION_DEL_ESTUDIO](14_REVISION_DEL_ESTUDIO.md), y el plan por hito que propusieron
+(**aprobado por el jugador el 2026-11-09**; el orden ya está en el roadmap) en [15_PLAN_DEL_ESTUDIO](15_PLAN_DEL_ESTUDIO.md).
+Orden: cierre del paso 3 → Cimientos → `.exe` de prueba (6a) → aldeanos (4) → Bram (5) → menú completo (6b) →
+arte en partes (7) → prueba final → Hitos 10–13. **El juego no se va a
+vender** (proyecto personal): no se planifica marketing ni localización.
+Arreglos de 2026-11-09: guardado v2 seguro (`.tmp` + `.bak`, migración, validación), técnicas bloqueadas en el
+nivel real (`start_with_all_arts = false`; las técnicas se guardan) y retrasos de la IA fijos por ataque
+(`EnemyAttackState.HOLDS`; la racha cuenta ataques, `EnemyMind.begin_attack`).
+
+### Historial
 
 1. **Hito 7 — historia**: borrador del guion en `docs/11_GUION.md` (OK del jugador; decisiones D18–D21 tomadas). Textos del narrador hechos (OK). Descripciones de objetos hechas (OK). Escena del prólogo hecha (OK). **Hito 7 cerrado.**
    **Hito 8** (Capitana Varga) empezado: ver `05_ROADMAP.md`. Hechos repertorio, fase 2 y voz (OK). Pulido de Varga hecho (OK). **Hito 8 cerrado.** Frank, paso 1 (crearlo, la red y su escena) hecho y probado (OK); paso 2 (consejos y bromas) hecho y probado (OK); paso 3 (avisos y hallazgos) hecho y probado (OK); paso 4 (fruta para distraer) hecho y probado (OK). Con él, Frank queda completo para el juego actual (guion §12; la carta y el registro llegarán con sus zonas).

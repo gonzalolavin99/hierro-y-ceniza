@@ -31,8 +31,11 @@ var can_grab: bool = true
 ## Solo para pruebas que no tratan de la IA: no se adapta al jugador (ni retrasa, ni amaga, ni cambia
 ## de ataques o de cuándo contraataca); se comporta como un soldado de ritmo fijo y repetible.
 var predictable: bool = false
-## Desvíos seguidos del jugador sin que le acierte un golpe.
+## Ataques seguidos que el jugador le ha desviado sin que le acierte un golpe. Cuenta ATAQUES, no tajos:
+## desviar los cinco tajos de un mismo combo cuenta uno (si no, los combos largos lo disparaban solos).
 var deflect_streak: int = 0
+## ¿Ya se contó un desvío en el ataque actual?
+var _deflect_counted: bool = false
 
 var _clock: float = 0.0
 var _dash_times: Array[float] = []
@@ -58,7 +61,15 @@ func observe_guard(guarding: bool, delta: float) -> void:
 	_guard_time = _guard_time + delta if guarding else 0.0
 
 
+## Empieza un ataque nuevo (lo llama EnemyAttackState): su primer desvío contará para la racha.
+func begin_attack() -> void:
+	_deflect_counted = false
+
+
 func on_player_deflect() -> void:
+	if _deflect_counted:
+		return
+	_deflect_counted = true
 	deflect_streak += 1
 
 
@@ -90,7 +101,9 @@ func is_reckless() -> bool:
 	return _blocked_times.size() >= 5 and not predictable
 
 
-## Probabilidad de retrasar un golpe normal (aguantar la espada arriba antes de soltarla).
+## Probabilidad de usar la versión RETRASADA del ataque elegido. Cada ataque tiene una sola versión
+## retrasada, siempre igual (mismo tajo, mismos segundos; ver EnemyAttackState.HOLDS), como en Sekiro:
+## se puede aprender. La IA solo decide si la usa, no deforma el ritmo al azar (revisión del estudio).
 func delay_chance() -> float:
 	if predictable:
 		return 0.0
@@ -141,9 +154,9 @@ func pick_pattern(distance: float) -> StringName:
 	return normal_patterns[rng.randi() % normal_patterns.size()]
 
 
-## Segundos que aguantará un golpe normal antes de soltarlo (0 = sin retraso).
-func choose_delay() -> float:
-	return rng.randf_range(0.25, 0.5) if rng.randf() < delay_chance() else 0.0
+## ¿Usa la versión retrasada del ataque que empieza?
+func wants_delay() -> bool:
+	return rng.randf() < delay_chance()
 
 
 func choose_feint() -> bool:

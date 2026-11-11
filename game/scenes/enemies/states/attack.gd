@@ -136,14 +136,40 @@ const COUNTER_POSTURE: float = 45.0
 enum Phase { WINDUP, ACTIVE, AFTER }
 
 ## Embestida: desde qué fracción de la preparación se lanza, dónde se para y velocidad máxima.
+## Clips de Mixamo con varios tajos seguidos: dónde empieza cada tajo siguiente. Tras el ÚLTIMO golpe de un
+## patrón, el enemigo baja el arma antes de llegar al siguiente tajo del clip (si no, parece que va a dar
+## un golpe más que nunca llega; aviso del jugador, 2026-11-08).
+const CLIP_STRIKES: Dictionary = {&"combo_one_hand": [1.7, 2.7], &"combo_two_hand": [0.95, 1.8]}
+## Margen antes del tajo siguiente y lo que tarda en volver a la postura de guardia.
+const SETTLE_LEAD: float = 0.12
+const SETTLE_FADE: float = 0.45
 const LUNGE_FROM: float = 0.45
 const LUNGE_STOP: float = 1.4
 const LUNGE_MAX_SPEED: float = 11.0
 
-## Golpe retrasado: poco antes del impacto la espada se queda arriba (casi quieta) y luego cae.
+## Versión retrasada de cada ataque: [qué tajo se aguanta, segundos]. SIEMPRE la misma, para que el
+## jugador la aprenda (como en Sekiro). La mente decide si usa esta versión (EnemyMind.wants_delay).
+## Los ataques que no están aquí nunca se retrasan: los de Varga ya tienen su ritmo hecho a mano.
+const HOLDS: Dictionary = {
+	&"single": [0, 0.4],
+	&"double": [1, 0.35],
+	&"thrust_combo": [1, 0.3],  # El 2.º tajo (alto); el 1.º es una estocada, que no tiene "lo alto".
+	&"slash_thrust": [0, 0.35],
+	&"quick": [0, 0.3],
+	&"flurry": [2, 0.3],
+	&"spear_thrust": [0, 0.4],
+	&"spear_swing": [0, 0.35],
+}
+## Golpe retrasado: la espada se queda ARRIBA (en lo alto de la preparación, cuando la punta deja de subir)
+## casi quieta, y luego cae. Si la punta no llega a bajar antes, aguanta como tarde HOLD_LEAD s antes del impacto.
+## Es la pose que el jugador aprende a leer (revisión del estudio, animación).
 const HOLD_LEAD: float = 0.22
+## La punta tiene que haber subido al menos esto antes de considerar que "deja de subir".
+const HOLD_RISE: float = 0.08
+## No aguanta antes de esta parte de la preparación.
+const HOLD_EARLIEST: float = 0.3
 ## Mientras aguanta, la animación sigue avanzando muy despacio: congelarla del todo queda robótico.
-const HOLD_CREEP: float = 0.06
+const HOLD_CREEP: float = 0.005
 
 var _swings: Array
 var _index: int
@@ -155,9 +181,19 @@ var _delay: float
 var _feint: bool
 var _holding: bool
 var _held: bool
+## Ya ha bajado el arma tras el último golpe.
+var _settled: bool
 var _hold_left: float
+## Momento de la preparación en que empezó a aguantar, y altura de la punta (para ver cuándo deja de subir).
+var _hold_started_at: float
+var _tip_low: float
+var _tip_last: float
 var _forced_delay: float = -1.0
 var _forced_feint: bool = false
+## Este ataque usa su versión retrasada (HOLDS) y, en ella, si el tajo aguantado es un amago.
+var _pattern: StringName
+var _use_hold: bool = false
+var _hold_feint: bool = false
 ## En el aire por un salto (leap/hop): la velocidad la manda el salto, no la animación.
 var _airborne: bool = false
 var _air_time: float = 0.0
@@ -167,10 +203,17 @@ func enter(msg: Dictionary) -> void:
 	# "delay"/"feint" solo los usan las pruebas para forzar un golpe retrasado o un amago.
 	_forced_delay = msg.get("delay", -1.0)
 	_forced_feint = msg.get("feint", false)
-	_swings = PATTERNS[msg.get("pattern", &"single")]
+	_pattern = msg.get("pattern", &"single")
+	_swings = PATTERNS[_pattern]
+	enemy.mind.begin_attack()
+	# Todo se decide aquí, al empezar el ataque, y ya no cambia (la IA no lee los botones).
+	# "hold"/"hold_feint" solo los usan las pruebas, para forzar la versión retrasada de un ataque.
+	_use_hold = _forced_delay < 0.0 and HOLDS.has(_pattern) and (msg.get("hold", false) or enemy.mind.wants_delay())
+	_hold_feint = _use_hold and (msg.get("hold_feint", false) or enemy.mind.choose_feint())
 	_airborne = false
 	Squad.take_turn(enemy)
 	_index = 0
+	_settled = false
 	_set_phase(Phase.WINDUP)
 
 
@@ -219,6 +262,9 @@ func physics_update(delta: float) -> void:
 		Phase.AFTER:
 			enemy.apply_root_motion()
 			var last: bool = _index == _swings.size() - 1
+			if last and not _settled and reaches_next_strike(swing):
+				_settled = true
+				enemy.body.stop_action(SETTLE_FADE)
 			if last and _deflected_last:
 				machine.transition_to(&"Recoil")
 			elif _timer >= swing["after"]:
@@ -227,6 +273,21 @@ func physics_update(delta: float) -> void:
 				else:
 					_index += 1
 					_set_phase(Phase.WINDUP)
+
+
+## ¿El clip de este golpe está llegando ya al tajo siguiente (que este patrón no da)?
+func reaches_next_strike(swing: Dictionary) -> bool:
+	var strikes: Array = CLIP_STRIKES.get(swing["anim"], [])
+	var now: float = enemy.body.action_time()
+	for at in strikes:
+		if at > swing["impact"] and now >= at - SETTLE_LEAD:
+			return true
+	return false
+
+
+## ¿Ha bajado ya el arma tras el último golpe?
+func is_settled() -> bool:
+	return _settled
 
 
 ## Lo llama Enemy cuando el jugador pisa la hoja de la estocada: mucha postura y queda expuesto.
@@ -320,18 +381,30 @@ func current_delay() -> float:
 func _update_hold(swing: Dictionary, delta: float) -> void:
 	if _delay <= 0.0 or _held:
 		return
-	if not _holding and _timer >= swing["windup"] - HOLD_LEAD:
-		_holding = true
-		_hold_left = _delay
-		enemy.body.set_action_speed(HOLD_CREEP)
-	elif _holding:
+	if not _holding:
+		# Altura de la punta respecto al cuerpo: aguanta cuando ha subido y empieza a bajar (lo alto).
+		var tip_y: float = (enemy.body.global_transform.affine_inverse() * enemy.body.weapon_tip()).y
+		if _timer <= delta * 1.5:
+			_tip_low = tip_y
+			_tip_last = tip_y
+		_tip_low = minf(_tip_low, tip_y)
+		var at_top: bool = _timer >= swing["windup"] * HOLD_EARLIEST and tip_y - _tip_low >= HOLD_RISE and tip_y < _tip_last + 0.003
+		_tip_last = tip_y
+		if at_top or _timer >= swing["windup"] - HOLD_LEAD:
+			_holding = true
+			_hold_left = _delay
+			_hold_started_at = _timer
+			enemy.body.set_action_speed(HOLD_CREEP)
+	else:
 		_hold_left -= delta
 		if _hold_left <= 0.0:
 			_holding = false
 			_held = true
 			if not _feint:
+				# Reanuda para que el impacto llegue justo al terminar la preparación + el retraso.
 				var remaining: float = swing["impact"] - enemy.body.action_time()
-				enemy.body.set_action_speed(clampf(remaining / HOLD_LEAD, 0.3, 3.0))
+				var time_left: float = maxf(swing["windup"] - _hold_started_at, 0.05)
+				enemy.body.set_action_speed(clampf(remaining / time_left, 0.3, 3.0))
 
 
 ## Amago: tras aguantar el golpe, no lo suelta y vuelve a la guardia (castiga desviar sin mirar).
@@ -361,9 +434,11 @@ func _set_phase(phase: Phase) -> void:
 				_delay = 0.0
 			elif _forced_delay >= 0.0:
 				_delay = _forced_delay
+			elif _use_hold and int(HOLDS[_pattern][0]) == _index:
+				_delay = float(HOLDS[_pattern][1])
 			else:
-				_delay = enemy.mind.choose_delay()
-			_feint = _forced_feint if _forced_delay >= 0.0 else (_delay > 0.0 and enemy.mind.choose_feint())
+				_delay = 0.0
+			_feint = _forced_feint if _forced_delay >= 0.0 else (_delay > 0.0 and _hold_feint)
 			enemy.body.set_blocking(false)
 			enemy.body.play_shaped(swing["anim"], swing["from"], swing["impact"], swing["windup"] + swing["active"] * 0.5)
 			if swing.get("leap", false):

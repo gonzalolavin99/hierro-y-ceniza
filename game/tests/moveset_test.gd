@@ -54,26 +54,30 @@ func _try(move: StringName) -> void:
 		_check("la patada empuja poco (%.2f m)" % pushed, pushed < 3.0)
 
 
-## Atacando a toda prisa, LB corta el tajo ligero y pone la guardia (como en Sekiro); el pesado no.
+## Atacando, LB corta el golpe en cualquier momento (también el pesado y en el instante del impacto) y pone
+## la guardia, para poder desviar (pedido del jugador, 2026-11-08).
 func _guard_cancel() -> void:
 	_player.global_position = Vector3(0, 0, 10)
 	_player.reset_physics_interpolation()
 	_player.lock_target = null
-	for move in [&"light_1", &"light_2", &"heavy"]:
+	for case in [[&"light_1", 0.06], [&"light_2", 0.06], [&"heavy", 0.06], [&"kick", 0.06], [&"light_1", -1.0]]:
+		var move: StringName = case[0]
 		_player.state_machine.transition_to(&"Ground")
 		await _wait(0.4)
 		_player.state_machine.transition_to(&"Attack", {"move": move})
-		await _wait(0.06)
+		if case[1] < 0.0:  # Justo cuando la hoja golpea.
+			var hit_at: float = PlayerMoves.MOVES[move]["hits"][0]["at"]
+			while _player.body.action_time() < hit_at:
+				await get_tree().physics_frame
+		else:
+			await _wait(case[1])
 		Input.action_press("block")
 		var guarded: bool = false
 		for i in 12:
 			await get_tree().physics_frame
 			guarded = guarded or _player.state_machine.current.name == &"Block"
 		Input.action_release("block")
-		if move == &"heavy":
-			_check("LB no corta el golpe pesado al empezar", not guarded)
-		else:
-			_check("LB corta %s al momento y pone la guardia" % move, guarded)
+		_check("LB corta %s %s y pone la guardia" % [move, "en el impacto" if case[1] < 0.0 else "al momento"], guarded)
 		await _wait(1.6)
 
 

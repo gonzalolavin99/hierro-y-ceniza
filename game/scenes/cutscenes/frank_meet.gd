@@ -5,6 +5,10 @@ extends LevelCutscene
 ## El anciano recuerda que aquella mirada sí la entendió, y Frank se le sube al hombro para quedarse.
 ## Planos: cut, frank, kael, curls, two, hop, end. Mantener A 1 s la salta (Frank acaba igual en el hombro).
 
+## El tajo que corta la cuerda: momento del corte dentro de la animación y cuánto tarda en llegar.
+const CUT_IMPACT: float = 0.53
+const CUT_SECONDS: float = 0.55
+
 var _snare: FrankSnare
 var _frank: Frank
 
@@ -38,9 +42,13 @@ func _run() -> void:
 	_frank.say(&"happy")
 	if not await _wait(0.5):
 		return
-	_player.body.play_action(&"slash_a", 0.0, 1.1, 0.1)
-	if not await _wait(0.4):
+	# Kael levanta la espada y corta la cuerda por encima de la red (el tajo de slash_a sube hasta ~2,7 m: la
+	# cuerda va de ~2 m a 2,9 m). Aviso del jugador: tenía que verse que la corta, no una patada.
+	_player.body.play_shaped(&"slash_a", 0.0, CUT_IMPACT, CUT_SECONDS)
+	_player.body.set_trail(true)
+	if not await _wait(CUT_SECONDS):
 		return
+	_player.body.set_trail(false)
 	_snare.drop_bag()
 	var landing: Vector3 = kael + to_bag * 0.55 + side * 0.5
 	landing.y = kael.y
@@ -110,6 +118,7 @@ func _frank_close_up(at: Vector3, frank_forward: Vector3, side: Vector3) -> void
 
 
 func _end() -> void:
+	_player.body.set_trail(false)
 	_player.body.stop_action(0.2)
 	_snare.drop_bag()
 	_frank.perch()

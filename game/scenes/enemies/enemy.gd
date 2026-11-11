@@ -153,6 +153,11 @@ var _body_layer: int = 4
 var _body_mask: int = 7
 ## Capa del escenario (suelo y muros): lo único con lo que choca mientras no se le puede golpear.
 const WORLD_LAYER: int = 1
+## Capa del cuerpo de Kael, y cómo resbala si queda encima de él (ver _slide_off_player).
+const PLAYER_BODY_LAYER: int = 2
+const OFF_PLAYER_PUSH: float = 4.0
+const OFF_PLAYER_TIME: float = 0.35
+var _off_player_left: float = 0.0
 ## Si cae más que esto por debajo de su puesto (se salió del mapa), vuelve a él.
 const FALL_LIMIT: float = 20.0
 ## Distancias para los ataques a distancia (ranged_patterns).
@@ -212,8 +217,32 @@ func _physics_process(delta: float) -> void:
 	velocity += push
 	move_and_slide()
 	velocity -= push
+	_slide_off_player(delta)
 	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	body.update_locomotion(velocity, get_facing())
+
+
+## Nadie se queda de pie sobre la cabeza de otro (aviso del jugador, 2026-11-11: Varga cayó de un salto encima
+## de Kael y se quedó allí: él le pegaba y ella a él no). Si está apoyado en Kael, deja de chocar con él un
+## momento y resbala hacia fuera, hasta el suelo.
+func _slide_off_player(delta: float) -> void:
+	if _off_player_left > 0.0:
+		_off_player_left -= delta
+		if _off_player_left <= 0.0 and collision_mask != WORLD_LAYER:
+			collision_mask = _body_mask
+		return
+	for i in get_slide_collision_count():
+		var hit: KinematicCollision3D = get_slide_collision(i)
+		if hit.get_collider() is Player and hit.get_normal().y > 0.5:
+			var away: Vector3 = global_position - (hit.get_collider() as Node3D).global_position
+			away.y = 0.0
+			if away.length() < 0.05:
+				away = -get_facing()
+			push = away.normalized() * OFF_PLAYER_PUSH
+			_off_player_left = OFF_PLAYER_TIME
+			if collision_mask != WORLD_LAYER:
+				collision_mask = _body_mask & ~PLAYER_BODY_LAYER
+			return
 
 
 # --- Utilidades para los estados ------------------------------------------------

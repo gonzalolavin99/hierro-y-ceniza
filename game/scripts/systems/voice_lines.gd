@@ -251,6 +251,15 @@ const LINES: Dictionary = {
 		&"varga_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_varga_1", "en": "The Regent says you burn villages.", "es": "El Regente dice que quemáis aldeas."},
 		]},
+		# Conversación con Varga ampliada (aviso del jugador, 2026-11-11: la razón para luchar era muy vaga). Kael
+		# cree de verdad que ella deja morir a la gente: los carros del Regente traen grano y médicos, y ella
+		# los manda de vuelta. Y lleva su herida: Lira murió de esta misma fiebre y nadie fue a ayudarla.
+		&"varga_1b": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_varga_1b", "en": "It's closed because you close it. His wagons bring grain and physicians, and you turn them back while those people die behind your grey cloths.", "es": "Está cerrado porque tú lo cierras. Sus carros traen grano y médicos, y tú los mandas de vuelta mientras esa gente se muere detrás de tus telas grises."},
+		]},
+		&"varga_1c": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "kael_scene_varga_1c", "en": "I don't need him to. My sister died of this same fever. Nobody came for her. I won't let you make anyone else wait.", "es": "No necesito que me lo diga. Mi hermana murió de esta misma fiebre. Nadie vino a ayudarla. No dejaré que hagas esperar a nadie más."},
+		]},
 		&"varga_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "kael_scene_varga_2", "en": "I have my orders.", "es": "Tengo mis órdenes."},
 		]},
@@ -291,6 +300,12 @@ const LINES: Dictionary = {
 		# Escena antes del duelo (VargaIntro).
 		&"intro_1": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "varga_intro_1", "en": "Stop there. That smoke is not a village burning. It's their clothes. The sick ones.", "es": "Alto ahí. Ese humo no es una aldea ardiendo. Es su ropa. La de los enfermos."},
+		]},
+		&"intro_1b": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_intro_1b", "en": "The Regent says many things. Did he also tell you why this pass is closed?", "es": "El Regente dice muchas cosas. ¿Te dijo también por qué está cerrado este paso?"},
+		]},
+		&"intro_2b": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "varga_intro_2b", "en": "...Then you know what it does. And still you can't see what I'm doing here.", "es": "…Entonces sabes lo que hace. Y aun así no ves lo que hago aquí."},
 		]},
 		&"intro_2": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "varga_intro_2", "en": "And did he tell you why his wagons are in such a hurry to cross a closed pass?", "es": "¿Y te dijo por qué sus carros tienen tanta prisa por cruzar un paso cerrado?"},

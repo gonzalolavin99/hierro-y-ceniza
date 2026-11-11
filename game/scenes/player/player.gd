@@ -83,8 +83,8 @@ signal dashed
 @export var bandage_heal_ratio: float = 0.45
 
 @export_group("Técnicas")
-## Escenario de pruebas: todas las técnicas desbloqueadas desde el inicio. En el juego final se
-## desbloquearán con maestros y hallazgos.
+## Escenario de pruebas: todas las técnicas desbloqueadas desde el inicio. El nivel real (iron_pass.tscn)
+## lo pone a false: allí la Ráfaga se gana venciendo a Varga y las técnicas aprendidas se guardan.
 @export var start_with_all_arts: bool = true
 
 @export_group("Fijar objetivo")
@@ -154,6 +154,9 @@ var _last_block_press: float = -10.0
 var _spam_count: int = 0
 var _spawn_position: Vector3
 var _stick_flicked: bool = false
+## Capa del cuerpo de los enemigos, y tiempo que queda sin chocar con ellos tras resbalar de uno.
+const ENEMY_BODY_LAYER: int = 4
+var _off_enemy_left: float = 0.0
 
 
 func _ready() -> void:
@@ -207,6 +210,7 @@ func _physics_process(delta: float) -> void:
 	velocity += push
 	move_and_slide()
 	velocity -= push
+	_slide_off_enemy(delta)
 	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	body.align_to_ground(get_floor_normal(), is_on_floor(), delta)
 	body.update_locomotion(velocity, get_facing())
@@ -590,6 +594,39 @@ func spawn_position() -> Vector3:
 func set_spawn(at: Vector3, facing_degrees: float) -> void:
 	_spawn_position = at
 	start_facing_degrees = facing_degrees
+
+
+## Kael no se queda de pie sobre la cabeza de un enemigo (lo mismo que Enemy._slide_off_player, al revés):
+## deja de chocar con los enemigos un momento y resbala hacia fuera.
+func _slide_off_enemy(delta: float) -> void:
+	if _off_enemy_left > 0.0:
+		_off_enemy_left -= delta
+		if _off_enemy_left <= 0.0:
+			collision_mask |= ENEMY_BODY_LAYER
+		return
+	for i in get_slide_collision_count():
+		var hit: KinematicCollision3D = get_slide_collision(i)
+		if hit.get_collider() is Enemy and hit.get_normal().y > 0.5:
+			var away: Vector3 = global_position - (hit.get_collider() as Node3D).global_position
+			away.y = 0.0
+			if away.length() < 0.05:
+				away = model.global_basis.z
+			push = away.normalized() * 4.0
+			_off_enemy_left = 0.35
+			collision_mask &= ~ENEMY_BODY_LAYER
+			return
+
+
+## ¿Hay junto a Kael algo con lo que hacer algo con Y / E (soltar a Frank, abrir una puerta, recoger un
+## escondite, descansar)? Entonces Y / E no da una patada (aviso del jugador: al soltar a Frank pateaba el aire).
+func interaction_nearby() -> bool:
+	for node in get_tree().get_nodes_in_group("interactables"):
+		if node.has_method("offers_interaction") and node.offers_interaction(self):
+			return true
+	for node in get_tree().get_nodes_in_group("campfires"):
+		if (node as Campfire).can_rest(self):
+			return true
+	return false
 
 
 ## Fogata a su alcance donde puede descansar ahora (o null). Solo cuenta si pulsa Y / E.

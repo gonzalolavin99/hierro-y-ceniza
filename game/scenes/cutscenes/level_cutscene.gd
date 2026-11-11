@@ -9,6 +9,8 @@ signal finished
 
 const HOLD_TO_SKIP: float = 1.0
 const BAR_HEIGHT: float = 90.0
+## Distancia mínima de la cámara a un muro (ver clear_view).
+const CAMERA_MARGIN: float = 0.3
 
 var _player: Player
 var _camera: Camera3D
@@ -20,6 +22,8 @@ var _skip_label: Label
 var _sub_tween: Tween
 var _cam_tween: Tween
 var _hold: float = 0.0
+## A dónde mira el plano actual (para que _push también evite los muros).
+var _look: Vector3
 var _done: bool = false
 var _hud_was_visible: bool = true
 var _overlay_was_visible: bool = false
@@ -102,14 +106,27 @@ func _wait(seconds: float) -> bool:
 func _place(at: Vector3, look: Vector3) -> void:
 	if _cam_tween:
 		_cam_tween.kill()
-	_camera.global_position = at
+	_look = look
+	_camera.global_position = clear_view(at, look)
 	_camera.look_at(look)
 
 
 func _push(to: Vector3, seconds: float) -> void:
-	var target := Transform3D(_camera.global_basis, to)
+	var target := Transform3D(_camera.global_basis, clear_view(to, _look))
 	_cam_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_cam_tween.tween_property(_camera, "global_transform", target, seconds)
+
+
+## Si entre lo que se mira y la cámara hay un muro (o la cámara quedaría dentro de él), la acerca hasta
+## delante del muro: así nada tapa a los actores (aviso del jugador: en la escena de Frank lo tapaba la roca).
+func clear_view(at: Vector3, look: Vector3) -> Vector3:
+	var space: PhysicsDirectSpaceState3D = _player.get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(look, at, 1)
+	var hit: Dictionary = space.intersect_ray(query)
+	if hit.is_empty():
+		return at
+	var back: Vector3 = (look - at).normalized()
+	return (hit["position"] as Vector3) + back * CAMERA_MARGIN
 
 
 ## Primer plano de la cara de un personaje (que mira hacia -Z de `body`), a `height` del suelo.

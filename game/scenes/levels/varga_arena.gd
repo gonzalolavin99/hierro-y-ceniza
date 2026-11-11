@@ -36,6 +36,8 @@ const PHASE_2: Dictionary = {
 	"ranged_cooldown": 2.2,
 }
 
+## ¿Pone su campamento a la entrada? (El Paso de Hierro no: su fogata 2 está en el bosque.)
+var with_campfire: bool = true
 var varga: Enemy
 ## Escena antes del duelo (mientras dura).
 var intro: VargaIntro
@@ -58,10 +60,11 @@ func _ready() -> void:
 	_build_fog()
 	_build_braziers()
 	_build_pyre()
-	var fire := CAMPFIRE.instantiate() as Campfire
-	fire.camp_name = "Campamento de la fortaleza"
-	fire.position = Vector3(-31.0, 0.0, 5.0)
-	add_child(fire)
+	if with_campfire:
+		var fire := CAMPFIRE.instantiate() as Campfire
+		fire.camp_name = "Campamento de la fortaleza"
+		fire.position = Vector3(-31.0, 0.0, 5.0)
+		add_child(fire)
 	var trigger := Area3D.new()
 	trigger.name = "DuelTrigger"
 	trigger.collision_layer = 0

@@ -45,6 +45,16 @@ func _run() -> void:
 	_close_up(_player.body, 1.6, 1.4)
 	if not await _line(&"kael_scene", &"varga_1"):
 		return
+	# Conversación ampliada (aviso del jugador: la razón para luchar era muy vaga). Ella pregunta; él cree de
+	# verdad que ella deja morir a la gente.
+	shot = &"varga"
+	_close_up(_varga.body, 1.6, 1.5)
+	if not await _say_varga(&"intro_1b"):
+		return
+	shot = &"kael"
+	_close_up(_player.body, 1.6, 1.35)
+	if not await _line(&"kael_scene", &"varga_1b"):
+		return
 	# 3. Avanza hacia él mientras le contesta (plano de lado).
 	shot = &"walk"
 	var side: Vector3 = across.cross(Vector3.UP)
@@ -55,6 +65,15 @@ func _run() -> void:
 	if not await _say_varga(&"intro_2"):
 		return
 	(_varga.state_machine.current as EnemyScripted).walk_velocity = Vector3.ZERO
+	# Su herida: Lira (el recuerdo del prólogo). Varga se queda un instante callada.
+	shot = &"kael"
+	_close_up(_player.body, 1.6, 1.3)
+	if not await _line(&"kael_scene", &"varga_1c", 0.8):
+		return
+	shot = &"varga"
+	_close_up(_varga.body, 1.6, 1.35)
+	if not await _say_varga(&"intro_2b"):
+		return
 	shot = &"kael"
 	_close_up(_player.body, 1.6, 1.3)
 	if not await _line(&"kael_scene", &"varga_2"):

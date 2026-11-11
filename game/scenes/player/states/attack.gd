@@ -2,12 +2,10 @@ extends PlayerState
 ## Ejecuta cualquier movimiento del repertorio (PlayerMoves): combos, golpe pesado, patada, técnicas…
 ## Todo se sincroniza con el reloj de la animación: el arma hace daño justo cuando la animación golpea.
 ## Pulsar RB tras el primer impacto encadena el siguiente golpe del combo.
-## Desde el segundo `cancel` se puede salir con guardia (LB) o paso rápido (B), como en Sekiro.
-## Los tajos ligeros (combo, a la carrera, tras el paso) se cortan con la guardia en cualquier momento
-## salvo en el instante en que la hoja golpea: así se puede desviar aunque se esté atacando.
-
-## Movimientos que la guardia puede cortar en cualquier momento (fuera del instante del impacto).
-const FREE_GUARD: Array[StringName] = [&"light_1", &"light_2", &"light_3", &"run_attack", &"dodge_attack"]
+## Todo lo que no es una técnica (combo, pesado, patada, a la carrera, tras el paso, en el aire) se corta con
+## la guardia (LB) EN CUALQUIER MOMENTO, también en el impacto: así se puede desviar aunque se esté atacando
+## (pedido del jugador, 2026-11-08). El paso rápido (B) también lo corta, salvo en el instante del impacto.
+## Las técnicas (LB + RB) son un compromiso: solo se cortan desde su `cancel`.
 
 var _name: StringName
 var _move: Dictionary
@@ -36,9 +34,16 @@ func enter(msg: Dictionary) -> void:
 
 ## ¿Puede cortarse ya este movimiento con la guardia?
 func _can_guard(t: float) -> bool:
-	if t >= _move["cancel"]:
-		return true
-	return _name in FREE_GUARD and not _hit_active
+	return t >= _move["cancel"] or not _is_art()
+
+
+## ¿Puede cortarse ya con el paso rápido?
+func _can_dodge(t: float) -> bool:
+	return t >= _move["cancel"] or (not _is_art() and not _hit_active)
+
+
+func _is_art() -> bool:
+	return String(_name).begins_with("art_")
 
 
 func exit() -> void:
@@ -88,11 +93,12 @@ func physics_update(delta: float) -> void:
 		player.consume_attack()
 
 	var done_hitting: bool = _hit_index >= hits.size()
-	if done_hitting and _queued:
-		machine.transition_to(&"Attack", {"move": _move["next"]})
-	elif player.wants_block() and _can_guard(t):
+	if player.wants_block() and _can_guard(t):
+		player.consume_attack()  # Un RB de antes no debe convertirse en técnica (LB + RB) al cubrirse.
 		machine.transition_to(&"Block")
-	elif t >= _move["cancel"] and Input.is_action_just_pressed("dodge"):
+	elif done_hitting and _queued:
+		machine.transition_to(&"Attack", {"move": _move["next"]})
+	elif Input.is_action_just_pressed("dodge") and _can_dodge(t):
 		machine.transition_to(&"Dash")
 	elif t >= _move["end"] or _elapsed > 3.0 or (air and done_hitting and player.is_on_floor()):
 		machine.transition_to(&"Ground" if player.is_on_floor() else &"Air")

@@ -24,6 +24,9 @@
 [ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="17_hitbox"]
 [ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="18_hurtbox"]
 
+[sub_resource type="SphereShape3D" id="camera_probe"]
+radius = 0.3
+
 [sub_resource type="CapsuleShape3D" id="body_shape"]
 radius = 0.35
 height = 1.8
@@ -99,6 +102,7 @@ script = ExtResource("2_camera")
 [node name="Pitch" type="Node3D" parent="CameraRig"]
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraRig/Pitch"]
+shape = SubResource("camera_probe")
 spring_length = 4.2
 margin = 0.2
 

@@ -29,7 +29,7 @@ func physics_update(delta: float) -> void:
 		machine.transition_to(&"Attack", {"move": &"heavy"})
 	elif player.wants_rest():
 		machine.transition_to(&"Rest", {"fire": player.wants_rest()})
-	elif Input.is_action_just_pressed("kick"):
+	elif Input.is_action_just_pressed("kick") and not player.interaction_nearby():
 		machine.transition_to(&"Attack", {"move": &"kick"})
 	elif player.wants_block():
 		machine.transition_to(&"Block")

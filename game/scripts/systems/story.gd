@@ -80,7 +80,10 @@ func to_dict() -> Dictionary:
 
 func from_dict(data: Dictionary) -> void:
 	reset()
-	act = int(data.get("act", 1))
-	for event in data.get("heard", []):
-		_heard[StringName(event)] = true
+	var saved_act: Variant = data.get("act", 1)
+	act = clampi(int(saved_act), 1, 4) if (saved_act is int or saved_act is float) else 1
+	var heard: Variant = data.get("heard", [])
+	for event in (heard if heard is Array else []):
+		if event is String:
+			_heard[StringName(event)] = true
 	changed.emit()

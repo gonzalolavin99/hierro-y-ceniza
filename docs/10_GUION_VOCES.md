@@ -131,6 +131,8 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `kael_scene_prologue_choice_stop.wav` | prologue_choice_stop | I will stop them, my lord. | Subtítulo: Los detendré, mi señor. |
 | `kael_scene_prologue_choice_end.wav` | prologue_choice_end | I will put an end to them. | Subtítulo: Acabaré con ellos. |
 | `kael_scene_varga_1.wav` | varga_1 | The Regent says you burn villages. | Subtítulo: El Regente dice que quemáis aldeas. |
+| `kael_scene_varga_1b.wav` | varga_1b | It's closed because you close it. His wagons bring grain and physicians, and you turn them back while those people die behind your grey cloths. | Subtítulo: Está cerrado porque tú lo cierras. Sus carros traen grano y médicos, y tú los mandas de vuelta mientras esa gente se muere detrás de tus telas grises. |
+| `kael_scene_varga_1c.wav` | varga_1c | I don't need him to. My sister died of this same fever. Nobody came for her. I won't let you make anyone else wait. | Subtítulo: No necesito que me lo diga. Mi hermana murió de esta misma fiebre. Nadie vino a ayudarla. No dejaré que hagas esperar a nadie más. |
 | `kael_scene_varga_2.wav` | varga_2 | I have my orders. | Subtítulo: Tengo mis órdenes. |
 | `kael_scene_frank_1.wav` | frank_1 | Go on. Back to your own kind. | Subtítulo: Anda, vete. Vuelve con los tuyos. |
 | `kael_scene_frank_2.wav` | frank_2 | ...Do as you like. | Subtítulo: …Haz lo que quieras. |
@@ -159,6 +161,8 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `varga_hurt_2.wav` | hurt | Ah! | sharp gasp of pain, adult woman |
 | `varga_broken_1.wav` | broken | Hah... hah... | out of breath, adult woman losing her balance |
 | `varga_intro_1.wav` | intro_1 | Stop there. That smoke is not a village burning. It's their clothes. The sick ones. | Subtítulo: Alto ahí. Ese humo no es una aldea ardiendo. Es su ropa. La de los enfermos. |
+| `varga_intro_1b.wav` | intro_1b | The Regent says many things. Did he also tell you why this pass is closed? | Subtítulo: El Regente dice muchas cosas. ¿Te dijo también por qué está cerrado este paso? |
+| `varga_intro_2b.wav` | intro_2b | ...Then you know what it does. And still you can't see what I'm doing here. | Subtítulo: …Entonces sabes lo que hace. Y aun así no ves lo que hago aquí. |
 | `varga_intro_2.wav` | intro_2 | And did he tell you why his wagons are in such a hurry to cross a closed pass? | Subtítulo: ¿Y te dijo por qué sus carros tienen tanta prisa por cruzar un paso cerrado? |
 | `varga_intro_3.wav` | intro_3 | Then come. I hope you live long enough to regret them. | Subtítulo: Entonces ven. Ojalá vivas lo bastante para arrepentirte de ellas. |
 | `varga_phase_1.wav` | phase | Not yet. Look at the smoke, soldier. Ask yourself what we are burning. | Subtítulo: Todavía no. Mira el humo, soldado. Pregúntate qué estamos quemando. |

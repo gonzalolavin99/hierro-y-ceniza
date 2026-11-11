@@ -1,10 +1,11 @@
 extends Node
 ## Herramienta: capturas de Frank (en la red, cada plano de la escena y en el hombro de Kael). Con ventana.
-## Godot --path game res://tests/frank_shot.tscn -- <carpeta>
+## Godot --path game res://tests/frank_shot.tscn -- <carpeta> [iron_pass]   (con iron_pass: en el nivel real)
 
 func _ready() -> void:
 	var out: String = OS.get_cmdline_user_args()[0]
-	add_child(load("res://scenes/levels/test_level.tscn").instantiate())
+	var level: String = "iron_pass" if OS.get_cmdline_user_args().has("iron_pass") else "test_level"
+	add_child(load("res://scenes/levels/%s.tscn" % level).instantiate())
 	var player := get_tree().get_first_node_in_group("player") as Player
 	var snare := get_tree().get_first_node_in_group("frank_snare") as FrankSnare
 	for node in get_tree().get_nodes_in_group("enemies"):

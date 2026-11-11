@@ -112,7 +112,7 @@ func _run() -> void:
 	_teleport(gate.outside_point())
 	await _wait(0.4)
 	_check("Frank se ofrece: «Cerrado por dentro… Déjame a mí.»", _spoken.has("frank/gate_locked"))
-	_check("Aviso «Y  Que Frank abra el pestillo»", gate.can_open(_player) and gate._prompt.visible and gate._prompt.text.begins_with("Y"))
+	_check("Aviso «Y  Que Frank abra el pestillo»", gate.can_open(_player) and gate._prompt.visible and gate._prompt.text.begins_with(InputSetup.label(&"interact")))
 	_check("La puerta cierra el paso", _blocked(gate.outside_point(), gate.global_position))
 	_quiet()
 	await _tap("interact")

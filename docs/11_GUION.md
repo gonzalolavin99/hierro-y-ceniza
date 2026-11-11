@@ -73,6 +73,20 @@ conocidas (D11).
 - **Orme:** "El agua… alguien tiene que cuidar el agua."
 - **Aren** (solo en el final principal): "Él te dio la espada. Yo te habría dado la verdad."
 
+**Conversación antes del duelo con Varga** (ampliada el 2026-11-11 a petición del jugador: la razón para
+luchar era muy vaga). Kael cree de verdad que ella deja morir a la gente, y lleva su herida (Lira):
+1. Varga: "Alto ahí. Ese humo no es una aldea ardiendo. Es su ropa. La de los enfermos."
+2. Kael: "El Regente dice que quemáis aldeas."
+3. Varga: "El Regente dice muchas cosas. ¿Te dijo también por qué está cerrado este paso?"
+4. Kael: "Está cerrado porque tú lo cierras. Sus carros traen grano y médicos, y tú los mandas de vuelta
+   mientras esa gente se muere detrás de tus telas grises."
+5. Varga (avanza): "¿Y te dijo por qué sus carros tienen tanta prisa por cruzar un paso cerrado?"
+6. Kael: "No necesito que me lo diga. Mi hermana murió de esta misma fiebre. Nadie vino a ayudarla. No dejaré
+   que hagas esperar a nadie más."
+7. Varga (un silencio): "…Entonces sabes lo que hace. Y aun así no ves lo que hago aquí."
+8. Kael: "Tengo mis órdenes." · 9. Varga (desenvaina): "Entonces ven. Ojalá vivas lo bastante para
+   arrepentirte de ellas."
+
 ---
 
 ## 5. Estructura en actos
