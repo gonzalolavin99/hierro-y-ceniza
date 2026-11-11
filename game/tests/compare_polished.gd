@@ -20,7 +20,7 @@ func _init() -> void:
 			print("FALTA hueso ", sko.get_bone_name(i)); continue
 		rest_diff = max(rest_diff, sko.get_bone_rest(i).basis.get_rotation_quaternion().angle_to(sk.get_bone_rest(j).basis.get_rotation_quaternion()))
 	print("Máxima diferencia de rotación en reposo: %.4f rad" % rest_diff)
-	for bone in ["mixamorig_Hips", "mixamorig_LeftFoot", "mixamorig_RightHand"]:
+	for bone in [Bones.name(&"Hips"), Bones.name(&"LeftFoot"), Bones.name(&"RightHand")]:
 		for t in [0.0, ao.length * 0.5]:
 			var p0: Variant = _pos(ao, bone, t)
 			var p1: Variant = _pos_any(anp, bone, t)

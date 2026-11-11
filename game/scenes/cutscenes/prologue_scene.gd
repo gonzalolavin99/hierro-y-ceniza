@@ -771,6 +771,7 @@ func _build_memory_sets() -> void:
 
 func _build_music() -> void:
 	_music = AudioStreamPlayer.new()
+	_music.bus = AudioMix.MUSIC
 	_music.process_mode = Node.PROCESS_MODE_ALWAYS
 	var hall: AudioStreamWAV = load("res://assets/audio/music/prologue_hall.wav")
 	if hall:
@@ -780,6 +781,7 @@ func _build_music() -> void:
 		_music.stream = hall
 	add_child(_music)
 	_sting = AudioStreamPlayer.new()
+	_sting.bus = AudioMix.MUSIC
 	_sting.process_mode = Node.PROCESS_MODE_ALWAYS
 	_sting.stream = load("res://assets/audio/music/prologue_sting.wav")
 	_sting.volume_db = -6.0

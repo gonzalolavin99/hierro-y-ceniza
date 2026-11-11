@@ -15,7 +15,7 @@ func _ready() -> void:
 	add_child(bot)
 	var sk := bot.get_node("Skeleton3D") as Skeleton3D
 	var att := BoneAttachment3D.new()
-	att.bone_name = "mixamorig_RightHand"
+	att.bone_name = Bones.name(&"RightHand")
 	sk.add_child(att)
 	for axis in 3:
 		var m := MeshInstance3D.new()

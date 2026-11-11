@@ -28,6 +28,8 @@ var _next: int = 0
 var _narrator: AudioStreamPlayer
 ## Quién está hablando ahora: personaje -> {priority, until (reloj de juego), player}.
 var _active: Dictionary = {}
+## Cuánto están bajadas ahora la música y el ambiente (dB).
+var _duck: float = 0.0
 
 
 func _ready() -> void:
@@ -36,15 +38,38 @@ func _ready() -> void:
 		var p := AudioStreamPlayer3D.new()
 		p.unit_size = 10.0
 		p.max_distance = 50.0
+		p.bus = AudioMix.VOICE
 		add_child(p)
 		_pool.append(p)
 	_narrator = AudioStreamPlayer.new()
+	_narrator.bus = AudioMix.VOICE
 	add_child(_narrator)
 
 
 func _process(delta: float) -> void:
 	if not get_tree().paused:
 		_clock += delta
+	_update_duck(delta)
+
+
+## Mientras alguien habla, la música y el ambiente bajan (DUCK_DB) para que se entienda; luego vuelven.
+func _update_duck(delta: float) -> void:
+	var target: float = AudioMix.DUCK_DB if anyone_speaking() else 0.0
+	_duck = move_toward(_duck, target, delta * (24.0 if target < _duck else 8.0))
+	for bus: StringName in [AudioMix.MUSIC, AudioMix.AMBIENT]:
+		var i: int = AudioMix.bus_index(bus)
+		if i >= 0:
+			AudioServer.set_bus_volume_db(i, _duck)
+
+
+## ¿Está sonando alguna voz ahora?
+func anyone_speaking() -> bool:
+	if _narrator.playing:
+		return true
+	for p in _pool:
+		if p.playing:
+			return true
+	return false
 
 
 ## Intenta que `speaker` diga algo del `event`. Devuelve true si habló.

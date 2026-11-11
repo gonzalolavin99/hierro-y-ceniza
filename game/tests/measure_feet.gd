@@ -3,7 +3,7 @@ extends SceneTree
 ## Calcula la cadena de huesos a mano (cinemática directa) desde las pistas de la animación.
 
 const ANIMS := ["kick", "kick_2", "high_spin_attack", "jump_attack", "slide_attack"]
-const CHAIN := ["mixamorig_Hips", "mixamorig_RightUpLeg", "mixamorig_RightLeg", "mixamorig_RightFoot"]
+var CHAIN := [Bones.name(&"Hips"), Bones.name(&"RightUpLeg"), Bones.name(&"RightLeg"), Bones.name(&"RightFoot")]
 
 var sk: Skeleton3D
 

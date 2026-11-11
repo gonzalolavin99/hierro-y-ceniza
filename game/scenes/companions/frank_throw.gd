@@ -100,7 +100,7 @@ func throw_at(enemy: Enemy) -> void:
 		target.y = enemy.global_position.y + 0.06
 	else:
 		# A la cara: sigue la cabeza del enemigo durante el vuelo.
-		follow = enemy.body.bone_attachment("mixamorig_Head")
+		follow = enemy.body.bone_attachment(Bones.name(&"Head"))
 		target = follow.global_position
 	_frank.point_at(target, 0.8)
 	_frank.say(&"throw_go")

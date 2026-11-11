@@ -265,7 +265,8 @@ Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
       Paso de Hierro; ejecutor de pruebas rápido ("N/N OK", 4 a la vez); `save_iron_pass_test` y
       `respawn_clean_test`; lista F5 del jugador; lista de lo que entra y lo que no entra en la slice.
       **Hecho (2026-11-09), falta la prueba del jugador con F5 y su OK.** 34/34 pruebas OK; peor zona: 82 FPS.
-- [ ] **Cimientos**: esqueleto común (`BoneMap`, sin `mixamorig_` escrito a mano); canales de sonido (Música, Voz,
+- [ ] **Cimientos** (hecho el 2026-11-11 salvo el cuerpo base CC0, que necesita descargar; **falta el OK del jugador a la
+      guía de estilo**, `docs/16_GUIA_DE_ESTILO.md`, capturas en `docs/estilo/`): esqueleto común (`BoneMap`, sin `mixamorig_` escrito a mano); canales de sonido (Música, Voz,
       Efectos, Ambiente; la música baja cuando alguien habla; ambiente del Paso con viento, río y pájaros lejanos, que
       el jugador aprobó); enemigos lejanos que "duermen"; **guía de estilo**
       (`docs/16_GUIA_DE_ESTILO.md`) con una escena de prueba y el OK del jugador; cuerpo base CC0 y siluetas de

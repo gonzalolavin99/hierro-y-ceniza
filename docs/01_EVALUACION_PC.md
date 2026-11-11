@@ -65,6 +65,10 @@ nivel (paso 7) se vuelve a medir: si una zona baja más de un 10 %, hay que revi
 | Fortaleza (patio) | 107 | 22 ms | 640 | 206 MB |
 | Patio de Varga | 130 | 13 ms | 291 | 206 MB |
 
+**Con los enemigos lejanos dormidos (Cimientos, 2026-11-11):** camino 210 · arco 153 · aldea 163 · bosque 146
+· pie de la rampa **129 (la peor)** · fortaleza 183 · Varga 148 FPS de media. Los peores fotogramas bajan a
+9–19 ms.
+
 Todas las zonas pasan de sobra el mínimo de 45 FPS. Los picos de "peor fotograma" coinciden con el salto de
 Kael de una zona a otra (carga de lo que se ve por primera vez), no con el juego normal. Las llamadas de
 dibujo son las cosas que se dibujan por separado; el arte tiene que mantenerlas por debajo de unas 1.000.

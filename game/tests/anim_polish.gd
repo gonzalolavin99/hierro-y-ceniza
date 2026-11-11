@@ -26,7 +26,7 @@ var _idx: Dictionary = {}  # nombre corto -> índice de hueso
 func _init(skeleton: Skeleton3D) -> void:
 	_sk = skeleton
 	for b in BONES:
-		_idx[b] = _sk.find_bone("mixamorig_" + b)
+		_idx[b] = _sk.find_bone(Bones.name(b))
 
 
 ## Aplica los ajustes a `anim` (se modifica en el sitio). Devuelve un informe con los errores.
@@ -149,10 +149,10 @@ func _locals(anim: Animation, t: float) -> Dictionary:
 		var rest := _sk.get_bone_rest(i)
 		var pos := rest.origin
 		var rot := rest.basis.get_rotation_quaternion()
-		var pt := anim.find_track(NodePath("Skeleton3D:mixamorig_" + b), Animation.TYPE_POSITION_3D)
+		var pt := anim.find_track(Bones.path(b), Animation.TYPE_POSITION_3D)
 		if pt >= 0:
 			pos = anim.position_track_interpolate(pt, t)
-		var rt := anim.find_track(NodePath("Skeleton3D:mixamorig_" + b), Animation.TYPE_ROTATION_3D)
+		var rt := anim.find_track(Bones.path(b), Animation.TYPE_ROTATION_3D)
 		if rt >= 0:
 			rot = anim.rotation_track_interpolate(rt, t)
 		L[b] = Transform3D(Basis(rot), pos)
@@ -163,7 +163,7 @@ func _globals(L: Dictionary) -> Dictionary:
 	var G := {}
 	for b in BONES:  # BONES está ordenado de padre a hijo
 		var parent := _sk.get_bone_parent(_idx[b])
-		var pname := _sk.get_bone_name(parent).trim_prefix("mixamorig_") if parent >= 0 else ""
+		var pname := Bones.common(_sk.get_bone_name(parent)) if parent >= 0 else ""
 		G[b] = (G[pname] * L[b]) if G.has(pname) else L[b]
 	return G
 
@@ -185,7 +185,7 @@ func _curve(points: Array, t: float) -> float:
 
 
 func _key_times(anim: Animation, bone: String, type: int) -> Array[float]:
-	var tr := anim.find_track(NodePath("Skeleton3D:mixamorig_" + bone), type)
+	var tr := anim.find_track(Bones.path(bone), type)
 	var out: Array[float] = []
 	for k in anim.track_get_key_count(tr):
 		out.append(anim.track_get_key_time(tr, k))
@@ -201,7 +201,7 @@ func _push(keys: Dictionary, id: String, t: float, value: Variant) -> void:
 func _write(anim: Animation, keys: Dictionary) -> void:
 	for id in keys:
 		var parts: PackedStringArray = id.split("/")
-		var path := NodePath("Skeleton3D:mixamorig_" + parts[0])
+		var path := Bones.path(parts[0])
 		var type := Animation.TYPE_ROTATION_3D if parts[1] == "rot" else Animation.TYPE_POSITION_3D
 		var tr := anim.find_track(path, type)
 		if tr < 0:

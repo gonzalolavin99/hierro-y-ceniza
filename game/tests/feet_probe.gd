@@ -23,7 +23,7 @@ func _ready() -> void:
 			await sk.skeleton_updated
 			var line := "%-15s ajuste=%-5s" % [mode, active]
 			for b in ["LeftFoot", "RightFoot", "LeftToeBase", "RightToeBase"]:
-				var w: Vector3 = sk.global_transform * sk.get_bone_global_pose(sk.find_bone("mixamorig_" + b)).origin
+				var w: Vector3 = sk.global_transform * sk.get_bone_global_pose(sk.find_bone(Bones.name(b))).origin
 				var q := PhysicsRayQueryParameters3D.create(w + Vector3.UP * 0.5, w + Vector3.DOWN * 2.0, 1)
 				var hit := p.get_world_3d().direct_space_state.intersect_ray(q)
 				var h: float = (w - hit["position"]).dot(hit["normal"]) if not hit.is_empty() else -1.0

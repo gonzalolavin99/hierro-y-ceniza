@@ -112,7 +112,7 @@ func _init() -> void:
 		if POLISH.has(key):
 			var report := polisher.polish(anim, POLISH[key].duplicate(true))
 			print("  retocada %-16s pies_error=%.4f m" % [key, report["pies_error_max"]])
-		var hips := anim.find_track(NodePath("Skeleton3D:mixamorig_Hips"), Animation.TYPE_POSITION_3D)
+		var hips := anim.find_track(Bones.path(&"Hips"), Animation.TYPE_POSITION_3D)
 		if hips >= 0 and anim.track_get_key_count(hips) > 0:
 			var first: Vector3 = anim.track_get_key_value(hips, 0)
 			var root := -1

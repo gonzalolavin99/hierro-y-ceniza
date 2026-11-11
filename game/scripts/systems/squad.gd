@@ -19,10 +19,39 @@ var _last_end: float = -100.0
 var _last_attacker: Enemy = null
 ## Enemigo -> [desde cuándo espera, última vez que pidió]
 var _waiting: Dictionary = {}
+## Distancia a la que duermen los enemigos tranquilos (0 = nunca). Ver update_sleep().
+var sleep_distance: float = 0.0
+const SLEEP_DISTANCE: float = 40.0
+const SLEEP_CHECK: float = 0.25
+var _sleep_left: float = 0.0
 
 
 func _physics_process(delta: float) -> void:
 	_clock += delta
+	_sleep_left -= delta
+	if _sleep_left <= 0.0:
+		_sleep_left = SLEEP_CHECK
+		update_sleep()
+
+
+## Enemigos que "duermen" (revisión del estudio, programación): a más de `sleep_distance` de Kael, un enemigo
+## tranquilo (quieto, de ronda o muerto) deja de pensar, animarse y ajustar los pies hasta que Kael se acerca.
+## 0 = nadie duerme (el patio de pruebas). El Paso de Hierro lo pone a SLEEP_DISTANCE.
+func update_sleep() -> void:
+	var player := get_tree().get_first_node_in_group("player") as Node3D
+	var awake: int = 0
+	var total: int = 0
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var enemy := node as Enemy
+		if enemy == null:
+			continue
+		total += 1
+		var far: bool = sleep_distance > 0.0 and player != null 			and enemy.global_position.distance_to(player.global_position) > sleep_distance
+		enemy.set_asleep(far and enemy.can_sleep())
+		if not enemy.asleep:
+			awake += 1
+	if sleep_distance > 0.0:
+		DebugOverlay.watch("Enemigos activos", "%d de %d" % [awake, total])
 
 
 ## Reloj de juego (se frena con la pausa de impacto).
@@ -64,6 +93,11 @@ func end_turn(enemy: Enemy) -> void:
 
 
 ## ¿Tiene otro enemigo el turno? (para no meterse a atacar mientras tanto)
+## ¿Tiene este enemigo el turno de ataque?
+func has_turn(enemy: Enemy) -> bool:
+	return _turn == enemy
+
+
 func is_busy_for(enemy: Enemy) -> bool:
 	_drop_invalid()
 	return _turn != null and _turn != enemy

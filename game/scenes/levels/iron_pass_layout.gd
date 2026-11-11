@@ -58,6 +58,7 @@ var _materials: Dictionary = {}
 
 
 func _ready() -> void:
+	Squad.sleep_distance = Squad.SLEEP_DISTANCE  # Los enemigos lejanos duermen (rendimiento).
 	world = StaticBody3D.new()
 	world.name = "World"
 	add_child(world)
@@ -70,6 +71,11 @@ func _ready() -> void:
 	_build_arena()
 	for at in LANTERNS:
 		_lantern(at)
+	# Ambiente: viento, el arroyo junto al sendero del atajo y pájaros lejanos.
+	var ambience := Ambience.new()
+	ambience.name = "Ambience"
+	ambience.river_points = PackedVector3Array([Vector3(43.0, 0.5, 30.0), Vector3(43.0, 0.5, -5.0), Vector3(43.0, 0.5, -40.0)])
+	add_child(ambience)
 
 
 # --- A. Camino del Paso (tutorial) -------------------------------------------
@@ -371,6 +377,8 @@ func _build_shortcut() -> void:
 	_cliff_z(-91.0, 31.0, 44.0, 9.0)
 	_cliff_z(44.0, 36.0, 44.0)
 	_box(Vector3(40.0, 0.01, -8.0), Vector3(7.0, 0.02, 98.0), PATH, false)
+	# El arroyo que baja junto al sendero (solo de vista; su rumor lo pone Ambience).
+	_box(Vector3(42.9, 0.025, -6.0), Vector3(1.0, 0.02, 94.0), Color(0.28, 0.36, 0.42), false)
 
 
 # --- E. Patio de Varga ---------------------------------------------------------
@@ -400,6 +408,11 @@ func _mat(color: Color) -> StandardMaterial3D:
 		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_materials[color] = m
 	return m
+
+
+func _exit_tree() -> void:
+	Squad.sleep_distance = 0.0
+	Squad.update_sleep()
 
 
 ## Caja con colisión (en el cuerpo `world`), o solo de vista.

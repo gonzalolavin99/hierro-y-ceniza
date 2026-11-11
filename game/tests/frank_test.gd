@@ -150,7 +150,7 @@ func _run() -> void:
 
 
 func _check_on_shoulder(when: String) -> void:
-	var left: Vector3 = _player.body.bone_attachment("mixamorig_LeftArm").global_position
+	var left: Vector3 = _player.body.bone_attachment(Bones.name(&"LeftArm")).global_position
 	var gap: float = _frank.global_position.distance_to(left)
 	var high: float = _frank.global_position.y - _player.global_position.y
 	_check("Frank va sobre el hombro izquierdo %s (a %.2f m del hombro, a %.2f m del suelo)" % [when, gap, high], gap < 0.2 and high > 1.2 and high < 1.7)

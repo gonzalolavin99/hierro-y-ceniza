@@ -389,6 +389,25 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
   probar con F5: doc 15, sección A.
 - **Falta**: la prueba del jugador con F5 y su OK → commit. Después, los Cimientos (doc 15, B).
 
+**Cimientos (2026-11-11, doc 15 B):**
+- **Canales de sonido** (`game/default_bus_layout.tres`, `AudioMix`): Musica, Voz, Efectos y Ambiente. `Voice`
+  baja la música y el ambiente 6 dB mientras alguien habla (`_update_duck`). `Sfx` usa un reproductor libre y
+  nunca repite la misma variante dos veces seguidas.
+- **Ambiente del Paso** (`scenes/levels/ambience.gd`, `Ambience`; sonidos de `tools/gen_ambient.py`): viento en
+  bucle, que sopla más arriba; el arroyo junto al sendero del atajo (con una franja de agua de vista); pájaros
+  lejanos cada 5–13 s, que callan en la fortaleza y en el duelo con un jefe. Prueba `audio_mix_test`.
+- **Enemigos que duermen** (`Squad.update_sleep`, `Enemy.set_asleep/can_sleep`): en el Paso de Hierro
+  (`Squad.sleep_distance` = 40 m), los enemigos tranquilos y lejanos se quedan con `PROCESS_MODE_DISABLED`.
+  F3 muestra "Enemigos activos". La peor zona pasa de 82 a 129 FPS. Prueba `enemy_sleep_test`.
+- **Esqueleto común** (`scripts/components/bones.gd`, clase `Bones`; "BoneMap" ya lo usa Godot): el código pide
+  `Bones.name(&"Hips")` o `Bones.path(&"Hips")`. "mixamorig" solo aparece en esa tabla.
+- **Guía de estilo** (`docs/16_GUIA_DE_ESTILO.md`) y su paleta (`StylePalette`); escena de prueba
+  `tests/style_probe.tscn -- <carpeta>` (capturas en `docs/estilo/`). **Falta el OK del jugador.**
+- **Pendiente de los Cimientos**: el cuerpo base CC0 (Quaternius) para sustituir al Y Bot. Hay que descargarlo,
+  así que antes hace falta el permiso del jugador.
+- Lección: `--headless --editor --quit` (para importar archivos nuevos) a veces se queda colgado; usar
+  siempre `timeout 120` delante.
+
 **Arreglos tras la 2.ª prueba del jugador (2026-11-11):**
 - **La cámara ya no se mete en los muros**: el SpringArm tiene una esfera de 0,3 m (`camera_probe`). Kael no
   atravesaba la roca: `walls_test` lo empuja contra las paredes del camino de 50 maneras.

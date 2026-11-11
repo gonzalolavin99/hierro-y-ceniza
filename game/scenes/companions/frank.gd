@@ -95,8 +95,8 @@ func _ready() -> void:
 	Voice.spoken.connect(_on_spoken)
 	Story.changed.connect(sync_with_story)
 	if _player:
-		_shoulder = _player.body.bone_attachment("mixamorig_LeftArm")
-		_neck = _player.body.bone_attachment("mixamorig_Neck")
+		_shoulder = _player.body.bone_attachment(Bones.name(&"LeftArm"))
+		_neck = _player.body.bone_attachment(Bones.name(&"Neck"))
 		_player.health.changed.connect(_on_health_changed)
 		_last_health = _player.health.current
 		advisor = FrankAdvisor.new()

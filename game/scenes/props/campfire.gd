@@ -246,6 +246,7 @@ func _build_sound() -> void:
 	stream.loop_begin = 0
 	stream.loop_end = int(stream.get_length() * stream.mix_rate)
 	_crackle = AudioStreamPlayer3D.new()
+	_crackle.bus = AudioMix.SFX
 	_crackle.stream = stream
 	_crackle.volume_db = -8.0
 	_crackle.unit_size = 3.0

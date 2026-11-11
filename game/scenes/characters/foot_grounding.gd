@@ -13,9 +13,9 @@ extends SkeletonModifier3D
 @export var hips_smoothing: float = 14.0
 @export_flags_3d_physics var floor_collision_mask: int = 1
 
-const LEG_NAMES: Array[Array] = [
-	["mixamorig_LeftUpLeg", "mixamorig_LeftLeg", "mixamorig_LeftFoot"],
-	["mixamorig_RightUpLeg", "mixamorig_RightLeg", "mixamorig_RightFoot"],
+var LEG_NAMES: Array[Array] = [
+	[Bones.name(&"LeftUpLeg"), Bones.name(&"LeftLeg"), Bones.name(&"LeftFoot")],
+	[Bones.name(&"RightUpLeg"), Bones.name(&"RightLeg"), Bones.name(&"RightFoot")],
 ]
 
 var _legs: Array[PackedInt32Array] = []
@@ -41,7 +41,7 @@ func _cache_legs() -> void:
 	var skeleton: Skeleton3D = get_skeleton()
 	if skeleton == null:
 		return
-	_hips = skeleton.find_bone("mixamorig_Hips")
+	_hips = skeleton.find_bone(Bones.name(&"Hips"))
 	for names: Array in LEG_NAMES:
 		var indices := PackedInt32Array([
 			skeleton.find_bone(String(names[0])),
@@ -127,7 +127,7 @@ func _solve_leg(skeleton: Skeleton3D, upper: int, lower: int, foot: int, target:
 	var old_direction: Vector3 = (ankle - hip).normalized()
 	var bend: Vector3 = (knee - hip) - old_direction * (knee - hip).dot(old_direction)
 	if bend.length() < 0.0001:
-		bend = skeleton.get_bone_global_pose(skeleton.find_bone("mixamorig_Hips")).basis.z
+		bend = skeleton.get_bone_global_pose(skeleton.find_bone(Bones.name(&"Hips"))).basis.z
 	var pole: Vector3 = bend - direction * bend.dot(direction)
 	pole = pole.normalized() if pole.length() > 0.0001 else bend.normalized()
 	var along: float = (upper_length * upper_length - lower_length * lower_length + distance * distance) / (2.0 * distance)

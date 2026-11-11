@@ -30,7 +30,7 @@ func _ready() -> void:
 			var s: Node = (load("res://assets/animations/mixamo/%s.fbx" % a[1]) as PackedScene).instantiate()
 			var anim: Animation = (s.get_node("AnimationPlayer") as AnimationPlayer).get_animation("mixamo_com").duplicate(true)
 			s.free()
-			var hips := anim.find_track(NodePath("Skeleton3D:mixamorig_Hips"), Animation.TYPE_POSITION_3D)
+			var hips := anim.find_track(Bones.path(&"Hips"), Animation.TYPE_POSITION_3D)
 			var first: Vector3 = anim.track_get_key_value(hips, 0)
 			for k in anim.track_get_key_count(hips):
 				var v: Vector3 = anim.track_get_key_value(hips, k)

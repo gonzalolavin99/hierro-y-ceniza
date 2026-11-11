@@ -3,7 +3,7 @@ func _init() -> void:
 	for d in ["forward", "backward", "left", "right"]:
 		var s: Node = (load("res://assets/animations/mixamo/dodge_%s.fbx" % d) as PackedScene).instantiate()
 		var a: Animation = (s.get_node("AnimationPlayer") as AnimationPlayer).get_animation("mixamo_com")
-		var tr := a.find_track(NodePath("Skeleton3D:mixamorig_Hips"), Animation.TYPE_POSITION_3D)
+		var tr := a.find_track(Bones.path(&"Hips"), Animation.TYPE_POSITION_3D)
 		var p0: Vector3 = a.position_track_interpolate(tr, 0.0)
 		var line := ""
 		var t := 0.0

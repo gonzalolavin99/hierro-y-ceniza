@@ -158,6 +158,8 @@ const PLAYER_BODY_LAYER: int = 2
 const OFF_PLAYER_PUSH: float = 4.0
 const OFF_PLAYER_TIME: float = 0.35
 var _off_player_left: float = 0.0
+## Dormido por estar lejos de Kael (Squad.update_sleep).
+var asleep: bool = false
 ## Si cae más que esto por debajo de su puesto (se salió del mapa), vuelve a él.
 const FALL_LIMIT: float = 20.0
 ## Distancias para los ataques a distancia (ranged_patterns).
@@ -220,6 +222,21 @@ func _physics_process(delta: float) -> void:
 	_slide_off_player(delta)
 	push = push.move_toward(Vector3.ZERO, 14.0 * delta)
 	body.update_locomotion(velocity, get_facing())
+
+
+## ¿Puede dormirse ahora? Solo si está tranquilo (quieto, de ronda o muerto) y no es un jefe ni tiene el turno.
+func can_sleep() -> bool:
+	return not boss and state_name() in [&"Idle", &"Patrol", &"Dead"] and not Squad.has_turn(self)
+
+
+## Dormido: no piensa, no se anima ni ajusta los pies (ver Squad.update_sleep). Al despertar sigue igual.
+func set_asleep(enabled: bool) -> void:
+	if enabled == asleep:
+		return
+	asleep = enabled
+	process_mode = Node.PROCESS_MODE_DISABLED if enabled else Node.PROCESS_MODE_INHERIT
+	if not enabled:
+		reset_physics_interpolation()
 
 
 ## Nadie se queda de pie sobre la cabeza de otro (aviso del jugador, 2026-11-11: Varga cayó de un salto encima

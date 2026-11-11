@@ -328,6 +328,7 @@ func music_track() -> int:
 func _build_music() -> void:
 	for path in MUSIC:
 		var player := AudioStreamPlayer.new()
+		player.bus = AudioMix.MUSIC
 		if ResourceLoader.exists(path):
 			var stream := (load(path) as AudioStreamWAV).duplicate() as AudioStreamWAV
 			stream.loop_mode = AudioStreamWAV.LOOP_FORWARD

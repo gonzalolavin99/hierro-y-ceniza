@@ -84,7 +84,7 @@ var _hand_bone: int = -1
 
 func _ready() -> void:
 	_sword_rest = _sword.transform
-	_hand_bone = _skeleton.find_bone("mixamorig_RightHand")
+	_hand_bone = _skeleton.find_bone(Bones.name(&"RightHand"))
 	_skeleton.skeleton_updated.connect(_apply_spear_thrust)
 	_bot_facing = _bot.basis
 	_paint()
@@ -488,7 +488,7 @@ func _build_tree() -> void:
 	var block_blend := AnimationNodeBlend2.new()
 	block_blend.filter_enabled = true
 	for bone in UPPER_BODY:
-		block_blend.set_filter_path(NodePath("Skeleton3D:mixamorig_" + bone), true)
+		block_blend.set_filter_path(Bones.path(bone), true)
 	bt.add_node(&"block_blend", block_blend, Vector2(400, 100))
 	bt.connect_node(&"block_blend", 0, &"crouch_blend")
 	bt.connect_node(&"block_blend", 1, &"block_anim")
@@ -605,7 +605,7 @@ func bone_attachment(bone: String) -> BoneAttachment3D:
 func _build_ribbon() -> void:
 	var wrist := BoneAttachment3D.new()
 	wrist.name = "LeftWrist"
-	wrist.bone_name = "mixamorig_LeftHand"
+	wrist.bone_name = Bones.name(&"LeftHand")
 	_skeleton.add_child(wrist)
 	var cloth := StandardMaterial3D.new()
 	cloth.albedo_color = Color(0.32, 0.47, 0.68)
@@ -660,7 +660,7 @@ func _build_bow(sword: Node3D) -> void:
 			(child as Node3D).visible = false
 	var hand := BoneAttachment3D.new()
 	hand.name = "LeftHand"
-	hand.bone_name = "mixamorig_LeftHand"
+	hand.bone_name = Bones.name(&"LeftHand")
 	_skeleton.add_child(hand)
 	var bow := Node3D.new()
 	bow.name = "Bow"

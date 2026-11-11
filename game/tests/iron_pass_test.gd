@@ -30,6 +30,9 @@ func _ready() -> void:
 		enemy.state_machine.transition_to(&"Idle", {"wait": 1000.0})
 		enemies.append(enemy)
 		spawned[enemy] = enemy.global_position
+	# Aquí se mira dónde está cada uno: que nadie duerma (dormidos no se mueven; ver enemy_sleep_test).
+	Squad.sleep_distance = 0.0
+	Squad.update_sleep()
 	await get_tree().create_timer(2.0).timeout
 	_space = get_viewport().world_3d.direct_space_state
 	_probe.radius = 0.35

@@ -242,7 +242,7 @@ func _sample(who: String) -> void:
 	var world: Dictionary = {}
 	var local: Dictionary = {}
 	for bone in BONES:
-		var idx: int = sk.find_bone("mixamorig_" + bone)
+		var idx: int = sk.find_bone(Bones.name(bone))
 		var p: Vector3 = sk.global_transform * sk.get_bone_global_pose(idx).origin
 		world[bone] = p
 		local[bone] = to_local * p

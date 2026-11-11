@@ -104,7 +104,7 @@ func _run() -> void:
 	_check("Apunta al que tiene delante", got == soldier)
 	# Mientras vuela, el soldado se aparta: la fruta tiene que darle igual en la cabeza.
 	_put(soldier, soldier.global_position + Vector3(1.5, 0.0, 0.0))
-	var head: Node3D = soldier.body.bone_attachment("mixamorig_Head")
+	var head: Node3D = soldier.body.bone_attachment(Bones.name(&"Head"))
 	var fruit: FrankFruit = _thrower.last_fruit
 	var closest: float = 100.0
 	var flown: float = 0.0
