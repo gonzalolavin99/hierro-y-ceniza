@@ -407,6 +407,10 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
   ../build/HierroYCeniza.exe` (unos 143 MB). `build/LEEME.txt` es la hoja para los probadores y
   `docs/17_FALLOS.md`, el registro de fallos. El `.exe` no acepta una escena por la línea de órdenes: siempre
   empieza en el menú.
+- **Releases de GitHub** (con el OK del jugador, 2026-11-11): la v0.9.4 está publicada como versión de prueba
+  (pre-release) con el `.exe` y `LEEME_como_jugar.txt`:
+  https://github.com/gonzalolavin99/hierro-y-ceniza/releases/tag/v0.9.4. Por cada `.exe` nuevo: subir
+  `GameInfo.VERSION` y `application/*_version` del preset, exportar y `gh release create vX.Y.Z --prerelease`.
   descargarlas de godotengine.org, así que antes hace falta el permiso del jugador.
 
 **Cimientos (2026-11-11, doc 15 B):**
