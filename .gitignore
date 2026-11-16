@@ -15,3 +15,10 @@ game/assets/animations/*.tres
 
 # El .exe exportado (se genera, no se guarda en Git)
 build/
+
+# Volsungos media stays local until explicitly cleared for public redistribution.
+game/assets/volsungos/*.jpg
+game/assets/volsungos/*.jpg.import
+game/assets/volsungos/*.ogv
+game/assets/volsungos/*.ogv.uid
+game/assets/volsungos/manifest.json

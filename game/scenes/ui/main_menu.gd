@@ -43,6 +43,9 @@ func press(id: StringName) -> void:
 			else:
 				_start(true)
 		&"yes":
+			if not dry_run and not _combat_ready():
+				_show_missing_assets()
+				return
 			SaveGame.erase()
 			_start(true)
 		&"no":
@@ -51,15 +54,36 @@ func press(id: StringName) -> void:
 			chosen = &"quit"
 			if not dry_run:
 				get_tree().quit()
+		&"volsungos":
+			chosen = &"volsungos"
+			if not dry_run:
+				get_tree().change_scene_to_file("res://scenes/volsungos/visual_review.tscn")
 
 
 func _start(new_game: bool) -> void:
 	chosen = &"new" if new_game else &"continue"
 	if dry_run:
 		return
+	if not _combat_ready():
+		_show_missing_assets()
+		return
 	Camps.fade_to(1.0, 0.0)
 	get_tree().change_scene_to_file(GameInfo.GAME_SCENE)
 	Camps.fade_to(0.0, 0.8)
+
+
+func _combat_ready() -> bool:
+	return ResourceLoader.exists("res://assets/animations/mixamo/y_bot.fbx") and ResourceLoader.exists("res://assets/animations/mixamo_library.res")
+
+
+func _show_missing_assets() -> void:
+	var notice := AcceptDialog.new()
+	notice.title = "Instalación de los personajes"
+	notice.dialog_text = "Faltan el modelo y las animaciones originales de Mixamo.\nConsulta docs/06_ARQUITECTURA_TECNICA.md para instalarlos.\nPuedes abrir el taller Los Volsungos sin esos archivos."
+	add_child(notice)
+	notice.confirmed.connect(notice.queue_free)
+	notice.canceled.connect(notice.queue_free)
+	notice.popup_centered()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -82,6 +106,19 @@ func _build() -> void:
 	bg.color = BG_COLOR
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	var art := TextureRect.new()
+	if ResourceLoader.exists("res://assets/volsungos/hall.jpg"):
+		art.texture = load("res://assets/volsungos/hall.jpg")
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(art)
+	var shade := ColorRect.new()
+	shade.color = Color(0.03, 0.04, 0.05, 0.78)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(shade)
 	# Un resplandor cálido abajo: la fogata del narrador.
 	var glow := ColorRect.new()
 	glow.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
@@ -116,7 +153,7 @@ func _build() -> void:
 	_main = VBoxContainer.new()
 	_main.add_theme_constant_override("separation", 10)
 	column.add_child(_main)
-	for entry in [[&"continue", "Continuar"], [&"new", "Partida nueva"], [&"quit", "Salir"]]:
+	for entry in [[&"continue", "Continuar"], [&"new", "Partida nueva"], [&"volsungos", "Los Volsungos · taller 3D"], [&"quit", "Salir"]]:
 		_main.add_child(_button(entry[0], entry[1]))
 
 	_confirm = VBoxContainer.new()

@@ -44,6 +44,15 @@ func _ready() -> void:
 	_check("…«Sí» borra la partida y empieza una nueva", menu.chosen == &"new" and not SaveGame.exists())
 	menu.press(&"quit")
 	_check("Salir", menu.chosen == &"quit")
+	menu.press(&"volsungos")
+	_check("Taller de arte accesible desde el menú", menu.chosen == &"volsungos")
+	if not menu._combat_ready():
+		file = FileAccess.open(TEST_PATH, FileAccess.WRITE)
+		file.store_string(JSON.stringify({"version": SaveGame.VERSION, "level": "iron_pass", "xp": 10}))
+		file.close()
+		menu.dry_run = false
+		menu.press(&"yes")
+		_check("Sin Mixamo no se borra una partida existente", SaveGame.exists())
 	_check("En el menú no se abre la pausa (no hay partida)", get_tree().get_first_node_in_group("player") == null)
 	menu.queue_free()
 	SaveGame.erase()

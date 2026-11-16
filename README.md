@@ -1,5 +1,7 @@
 # Hierro y Ceniza
 
+> **Rama visual Los Volsungos:** vestuario modular 3D, taller de revisión y soporte para los renders y la cinemática locales. [Cambios, prueba y límites](docs/18_VOLSUNGOS_3D.md). El taller funciona sin los archivos externos de Mixamo. Los medios audiovisuales no se incluyen en la rama pública.
+
 Un souls-like de acción en tercera persona, con combate inspirado en **Sekiro**: postura, desvío y golpe mortal.
 Sin magia ni elementos sobrenaturales: un reino medieval-feudal destrozado por la guerra y la peste,
 contado por la voz de un anciano que quizá no sea tan inocente como parece.

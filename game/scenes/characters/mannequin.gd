@@ -33,6 +33,8 @@ enum Weapon { SWORD, SPEAR, BOW, NONE }
 ## Qué tan rápido entran/salen las mezclas (por segundo).
 @export var block_blend_speed: float = 12.0
 @export var ground_alignment_speed: float = 12.0
+## Development branch: modular wool, leather and iron inspired by Los Volsungos.
+@export var volsungos_costume: bool = true
 
 @onready var _bot: Node3D = $YBot
 @onready var _skeleton: Skeleton3D = $YBot/Skeleton3D
@@ -91,6 +93,11 @@ func _ready() -> void:
 	_glint.visible = false
 	_build_danger_flash()
 	_setup_weapon()
+	if volsungos_costume:
+		var costume := NordicCostume.new()
+		costume.name = "VolsungosCostume"
+		add_child(costume)
+		costume.dress(_skeleton, ribbon, body_color, weapon == Weapon.BOW)
 	_trail = SwordTrail.new()
 	_trail.base_node = $YBot/Skeleton3D/RightHand/Sword/Guard
 	_trail.tip_node = _glint

@@ -69,6 +69,10 @@ func _ready() -> void:
 	_build_fortress()
 	_build_shortcut()
 	_build_arena()
+	var nordic_props := NordicProps.new()
+	nordic_props.name = "VolsungosVillage"
+	add_child(nordic_props)
+	nordic_props.dress_village()
 	for at in LANTERNS:
 		_lantern(at)
 	# Ambiente: viento, el arroyo junto al sendero del atajo y pájaros lejanos.
