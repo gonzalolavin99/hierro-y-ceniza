@@ -17,6 +17,10 @@
 | [11_GUION](11_GUION.md) | La historia completa: mundo, personajes, jefes, actos, pistas y los dos finales |
 | [12_PLAN_PASO_DE_HIERRO](12_PLAN_PASO_DE_HIERRO.md) | Plan del Hito 9: el mapa del Paso de Hierro, sus zonas y el orden de los pasos |
 | [13_EQUIPO_DE_UN_ESTUDIO](13_EQUIPO_DE_UN_ESTUDIO.md) | Departamentos y especialistas de un estudio, y quién cubre cada papel aquí |
+| [14_REVISION_DEL_ESTUDIO](14_REVISION_DEL_ESTUDIO.md) | Lo que dijo un experto de cada departamento al revisar el proyecto hasta el Hito 9, paso 3 |
+| [15_PLAN_DEL_ESTUDIO](15_PLAN_DEL_ESTUDIO.md) | Plan por hito de cada departamento y cuándo algo está «hecho» (aprobado) |
+| [16_GUIA_DE_ESTILO](16_GUIA_DE_ESTILO.md) | Cómo debe verse todo el juego (borrador, pendiente del OK del jugador; capturas en `estilo/`) |
+| [17_FALLOS](17_FALLOS.md) | Registro de fallos y opiniones de quienes prueban el `.exe` |
 | [GLOSARIO](GLOSARIO.md) | Términos de desarrollo explicados |
 
 ## Cómo trabajamos
