@@ -28,6 +28,10 @@ func enter(_msg: Dictionary) -> void:
 
 
 func physics_update(delta: float) -> void:
+	# Soldado que avisa (Enemy.warns_first): si ve a Kael cerca, se pone en guardia y le avisa (warn.gd).
+	if enemy.should_warn():
+		machine.transition_to(&"Warn")
+		return
 	var route: PackedVector3Array = enemy.patrol_route()
 	var to: Vector3 = route[_index] - enemy.global_position
 	to.y = 0.0

@@ -66,6 +66,9 @@ signal danger_warned(kind: int)
 ## Empieza sin saber que estás ahí (patrulla o guardia). Si es false, está alerta desde el principio
 ## (el soldado de práctica de la arena).
 @export var starts_unaware: bool = false
+## Soldado de la aldea (Paso 4): al ver a Kael cerca no ataca enseguida; primero le avisa (estado Warn).
+## Empieza tranquilo en su puesto. No se combina con starts_unaware.
+@export var warns_first: bool = false
 ## Puntos de su ronda (posiciones en el mundo). Vacío = vigila quieto en su puesto.
 @export var patrol_points: PackedVector3Array = PackedVector3Array()
 @export var patrol_speed: float = 1.1
@@ -117,6 +120,12 @@ const PUNISH_HEAL_RANGE: float = 7.0
 ## Esquiva: solo si el ataque empieza a esta distancia, y tras este tiempo de reacción.
 const EVADE_RANGE: float = 3.2
 const EVADE_REACTION: float = 0.1
+## Aviso (warns_first, estado Warn): a qué distancia avisa (si ve a Kael), cuánto aguanta en guardia tras
+## avisar, a qué distancia ya pelea y desde qué distancia lo deja estar. Números para ajustar tras probar con F5.
+const WARN_RANGE: float = 10.0
+const WARN_TIME: float = 3.0
+const WARN_CLOSE: float = 5.0
+const WARN_LEAVE: float = 12.0
 
 var target: Player
 ## Lo que ha aprendido de los hábitos del jugador (ver EnemyMind).
@@ -124,6 +133,8 @@ var mind: EnemyMind = EnemyMind.new()
 var blocks_in_a_row: int = 0
 ## Ya le habló al jugador en esta vida (frase al verlo).
 var has_spoken_to_target: bool = false
+## Ya avisó («¡Atrás!») en esta vida. Se reinicia en respawn(), al morir Kael o descansar.
+var has_warned: bool = false
 ## Velocidad que "pide" la animación actual (su paso real).
 var root_motion_velocity: Vector3 = Vector3.ZERO
 ## Empujón que se suma al movimiento y se desvanece (choques, golpes).
@@ -186,8 +197,8 @@ func _ready() -> void:
 	_build_mark()
 	mind.configure(moveset, danger_moveset, danger_ratio)
 	post_direction = get_facing()
-	alerted = not starts_unaware
-	if starts_unaware:
+	alerted = not starts_unaware and not warns_first
+	if starts_unaware or warns_first:
 		state_machine.transition_to(&"Patrol")
 
 
@@ -351,7 +362,7 @@ func receive_hit(hit: HitData) -> int:
 	var contact: Vector3 = global_position + Vector3.UP * 1.3 + to_attacker * 0.55
 	var facing_attacker: bool = get_facing().dot(to_attacker) > 0.0
 	# Desprevenido no se cubre; el golpe lo pone en alerta.
-	var unaware: bool = not alerted
+	var unaware: bool = not alerted and not warns_first
 	alert()
 
 	# Fuera de sus ataques, bloquea todo lo que tenga de frente.
@@ -493,7 +504,8 @@ func respawn() -> void:
 	deathblows_left = deathblows
 	blocks_in_a_row = 0
 	has_spoken_to_target = false
-	alerted = not starts_unaware
+	has_warned = false
+	alerted = not starts_unaware and not warns_first
 	awareness = 0.0
 	_lost_time = 0.0
 	set_vulnerable(true)
@@ -508,7 +520,7 @@ func reset_to_post() -> void:
 	respawn()
 	_mark_timer = 0.0
 	_mark.visible = false
-	state_machine.transition_to(&"Patrol" if starts_unaware else &"Idle")
+	state_machine.transition_to(&"Patrol" if starts_unaware or warns_first else &"Idle")
 
 
 ## Pisotón: el jugador salta sobre él y se impulsa en su cabeza/hombros. Daña la postura;
@@ -571,7 +583,7 @@ func alert() -> void:
 				and other.global_position.distance_to(global_position) <= ALARM_RADIUS:
 			other.hear_alarm(0.4)
 	var state: StringName = state_name()
-	if state == &"Patrol" or state == &"Suspicious" or state == &"Idle":
+	if state == &"Patrol" or state == &"Suspicious" or state == &"Idle" or state == &"Warn":
 		state_machine.transition_to(&"Chase")
 
 
@@ -593,13 +605,19 @@ func calm_down() -> void:
 
 ## ¿Se le puede dar un golpe mortal por sorpresa? Desprevenido y con el jugador a su espalda o costado.
 func can_be_stealth_killed(by: Player) -> bool:
-	if alerted or is_dead() or state_name() == &"Broken":
+	if alerted or warns_first or is_dead() or state_name() == &"Broken":
 		return false
 	var to: Vector3 = by.global_position - global_position
 	to.y = 0.0
 	if to.length() > STEALTH_KILL_RANGE:
 		return false
 	return get_facing().dot(to.normalized()) < 0.3
+
+
+## Soldado que avisa: ¿ve a Kael a menos de WARN_RANGE? (Patrol lo usa para pasar a Warn).
+func should_warn() -> bool:
+	return warns_first and not alerted and target != null and not target.is_dead() \
+			and distance_to_target() <= WARN_RANGE and _can_see_target()
 
 
 ## Ronda: los puntos de patrulla, o su puesto si no tiene.
@@ -613,7 +631,14 @@ func post_facing() -> Vector3:
 
 
 func _update_awareness(delta: float) -> void:
-	if not starts_unaware or is_dead():
+	if is_dead():
+		return
+	if not starts_unaware:
+		# El que avisa no tiene sigilo (lo decide Warn), pero sí oye la alarma de un compañero (hear_alarm).
+		if warns_first and not alerted and _alarm_in >= 0.0:
+			_alarm_in -= delta
+			if _alarm_in < 0.0:
+				alert()
 		return
 	if alerted:
 		if has_target():
@@ -706,7 +731,7 @@ func _show_mark(text: String, color: Color, seconds: float) -> void:
 
 
 func _update_mark(delta: float) -> void:
-	if not starts_unaware:
+	if not starts_unaware and not warns_first:
 		return
 	if _mark_timer > 0.0:
 		_mark_timer -= delta

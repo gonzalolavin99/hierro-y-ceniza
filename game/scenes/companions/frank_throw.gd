@@ -90,7 +90,7 @@ func pick_target() -> Enemy:
 
 func throw_at(enemy: Enemy) -> void:
 	cooldown_left = COOLDOWN
-	var unaware: bool = not enemy.alerted
+	var unaware: bool = not enemy.alerted and not enemy.warns_first
 	var target: Vector3
 	var follow: Node3D = null
 	if unaware:
@@ -124,6 +124,8 @@ func _on_landed(at: Vector3, enemy: Enemy, unaware: bool) -> void:
 		enemy.body.flinch(enemy.global_position - _player.global_position, 0.6)
 		_say_later(&"throw_boss", 0.4)
 	else:
+		if enemy.warns_first:
+			enemy.alert()  # Fruta a la cara de quien avisaba: lo toma como un golpe y pelea (con sus compañeros).
 		enemy.state_machine.transition_to(&"Dazed", {"seconds": DAZE_SECONDS})
 		_say_later(&"throw_hit", 0.3)
 

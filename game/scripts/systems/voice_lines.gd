@@ -22,7 +22,7 @@ const VOLUME_DB: Dictionary = {&"frank": -7.0}
 ## Los eventos que no aparecen valen 1 (esfuerzos de ataque, lanzar…).
 const EVENT_PRIORITY: Dictionary = {
 	&"player_death": 4, &"player_death_2": 4, &"player_death_3": 4, &"player_death_4": 4,
-	&"death": 3, &"spot": 3, &"victory": 3,
+	&"death": 3, &"spot": 3, &"warn": 3, &"victory": 3,
 	&"danger": 2, &"broken": 2, &"hurt": 2, &"deathblow": 2,
 	&"offended": 3, &"offended_2": 3, &"meet_1": 3, &"meet_2": 3, &"meet_3": 3, &"scared": 2,
 	&"hint_soldier": 3, &"hint_spear": 3, &"hint_archer": 3, &"hint_bandit": 3, &"hint_varga": 3, &"hint_danger": 3,
@@ -66,6 +66,10 @@ const LINES: Dictionary = {
 			{"id": "soldier_spot_1", "en": "You shouldn't have come here.", "es": "No deberías haber venido."},
 			{"id": "soldier_spot_2", "en": "Halt! Who goes there?", "es": "¡Alto! ¿Quién va?"},
 			{"id": "soldier_spot_3", "en": "Draw your blade.", "es": "Desenvaina."},
+		]},
+		# Paso 4: los soldados de la aldea avisan antes de atacar (estado Warn). De momento solo subtítulo (sin .wav).
+		&"warn": {"chance": 1.0, "cooldown": 5.0, "lines": [
+			{"id": "soldier_warn_1", "en": "Back! Stay away from the houses.", "es": "¡Atrás! No te acerques a las casas."},
 		]},
 		&"attack": {"chance": 0.4, "cooldown": 0.7, "lines": [
 			{"id": "soldier_attack_1", "say": "Rah!", "effort": "rough grunt, middle-aged man swinging a sword"},
