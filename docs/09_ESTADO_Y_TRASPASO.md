@@ -3,8 +3,8 @@
 Resumen para retomar el trabajo en una sesión nueva. **Leer primero esto**, después
 [00_LEEME](00_LEEME.md), [05_ROADMAP](05_ROADMAP.md) y [08_MEJORAS](08_MEJORAS_FLUIDEZ_Y_ANIMACION.md).
 
-Última actualización: 2026-11-08 · Último commit: `d9767af` (los commits `01277a8`, `f6c4768` y `d9767af` aún
-no están subidos a GitHub; subir solo cuando el jugador lo diga) · Repositorio público:
+Última actualización: 2026-11-16 · Base de esta revisión: `104fe65` en `main` (todo está subido a GitHub; el estado
+al día es siempre `main`) · Repositorio público:
 https://github.com/gonzalolavin99/hierro-y-ceniza
 
 ---
@@ -300,7 +300,7 @@ game/
 tools/                   gen_test_level.py (escenario), gen_sounds.py, blender/ (experimental)
 ```
 
-Autoloads: `InputSetup`, `DebugOverlay`, `CombatFX`, `Sfx`. Capas físicas: 1 mundo, 2 jugador,
+Autoloads (en el orden de `game/project.godot`): `InputSetup`, `DebugOverlay`, `CombatFX`, `Sfx`, `Voice`, `Squad`, `Camps`, `SaveGame`, `Story`. Capas físicas: 1 mundo, 2 jugador,
 3 enemigos, 4 hurtbox jugador, 5 hurtbox enemigos.
 
 ## 4. Herramientas y comandos
@@ -316,7 +316,7 @@ Godot: `G:\Herramientas\Godot\Godot_v4.7.2-stable_win64_console.exe` (abrir el e
 | Capturas (con ventana) | `res://tests/visual_check.tscn -- <carpeta>` · `polish_preview.tscn` · `anim_preview.tscn` · `ramp_shot.tscn` · `iron_pass_shot.tscn` (el Paso de Hierro desde 8 sitios y el mapa desde arriba) |
 | Medir pies | `res://tests/feet_probe.tscn` (con ventana) |
 | Regenerar escenario / sonidos | `python tools/gen_test_level.py` · `python tools/gen_sounds.py` (desde `G:\Game`) |
-| Voces (tras cambiar `voice_lines.gd`) | `--headless --path . --script res://tests/export_voice_script.gd` y luego, desde `G:\Game`: `G:\Herramientas	tsenv\Scripts\python tools/gen_voices.py` (`--all` rehace todas) |
+| Voces (tras cambiar `voice_lines.gd`) | `--headless --path . --script res://tests/export_voice_script.gd` y luego, desde `G:\Game`: `G:\Herramientas\tts\venv\Scripts\python tools/gen_voices.py` (`--all` rehace todas) |
 
 Mixamo en un PC nuevo: ver [06_ARQUITECTURA_TECNICA](06_ARQUITECTURA_TECNICA.md) § Animaciones.
 Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One + 4 Standing Dodge
@@ -346,7 +346,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
   cambia `n` fuera. En pruebas, contar con variables de la clase.
 - **Voz Kokoro**: las interjecciones con consonantes sueltas ("Hh!", "Nngh", "Hmph") se leen **deletreadas**
   ("eich-eich"). `gen_voices.py` lo detecta por los fonemas y se detiene. Usar "Hut!", "Huff!", "Ungh...", "Rah!".
-- Entorno de voz: `G:\Herramientas	ts` (venv con `kokoro-onnx` + modelos `kokoro-v1.0.onnx` y `voices-v1.0.bin`,
+- Entorno de voz: `G:\Herramientas\tts` (venv con `kokoro-onnx` + modelos `kokoro-v1.0.onnx` y `voices-v1.0.bin`,
   de github.com/thewh1teagle/kokoro-onnx, release model-files-v1.0). En un PC nuevo: crear el venv e instalar
   `kokoro-onnx soundfile`, y descargar esos dos archivos en `models/`.
 
@@ -386,7 +386,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
   0,005; prueba `hold_pose_test`).
 - `Camps.reset_world()` también borra los proyectiles de Kael y la fruta de Frank.
 - Pruebas nuevas: `tutorial_hints`, `hold_pose`, `save_iron_pass` y `respawn_clean`.
-- **Ejecutor nuevo**: `bash game/tests/run_all.sh` (todas, 4 a la vez, ≈ 4,5 min, termina con "N/N OK";
+- **Ejecutor nuevo**: `bash game/tests/run_all.sh` (todas —hoy 38—, 4 a la vez, ≈ 4,5 min, termina con "N/N OK";
   encuentra solas las pruebas `*_test.tscn`). `run_all.sh rapido` lanza 6 pruebas en unos 30 s, y
   `run_all.sh ai save` solo esas dos.
 - **FPS del Paso** medidos con `perf_probe.tscn -- iron_pass`: la peor zona, la aldea, da 82 FPS (ver doc 01).
@@ -459,7 +459,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 **Dónde quedamos (antes):** Hito 9, **paso 3** (nivel en bloques del Paso de Hierro) hecho, con los arreglos de la
 primera prueba del jugador: la guardia corta cualquier ataque de Kael (no las técnicas), los soldados ya no
 amagan un tercer golpe, los carteles muestran solo los botones del aparato en uso, farolillos y sendero que
-guían, y la puerta atrancada del atajo en la aldea. Las 30 pruebas pasan (`bash game/tests/run_all.sh`, ≈ 12 min; al añadir una prueba nueva, sumarla a su lista).
+guían, y la puerta atrancada del atajo en la aldea. Las 30 pruebas pasan (`bash game/tests/run_all.sh`).
 **Falta:** que el jugador lo pruebe con F5 y dé el OK → entonces **commit** (nada de esto está en Git aún:
 nivel nuevo, `combo_settle_test`, cambios en `attack.gd`, `input_setup.gd`, `latched_gate.gd`,
 `save_game.gd`, etc.). El paso 2 (prólogo nuevo) ya está en `d9767af`; el jugador siguió adelante sin
