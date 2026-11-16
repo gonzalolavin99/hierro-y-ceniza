@@ -192,7 +192,14 @@ func _build_village() -> void:
 	add_child(glow)
 	for i in 4:
 		_ball(Vector3(5.0 + i * 0.6, 3.0 + i * 3.0, 50.0 - i * 0.8), 1.2 + i * 0.5, Color(0.5, 0.5, 0.5, 0.35))
-	_sign(Vector3(-4.0, 2.4, 56.0), "(Aldeanos: paso 4)")
+	# Aldeanos (paso 4.2): no pelean; cada uno dice su frase una vez al pasar Kael. Fuera del camino (|x| >= 5;
+	# la calle va de x -4 a 4) y lejos de los dos grupos de soldados.
+	_villager(Vector3(-7.0, 0.0, 58.0), 0.0, &"road_man", StylePalette.SLATE)  # Mira al sur, el camino de la capital.
+	_villager(Vector3(-7.0, 0.0, 50.0), 90.0, &"child", StylePalette.EARTH, 0.7, &"drawing")
+	_villager(Vector3(-7.0, 0.0, 43.0), 90.0, &"sweeper", StylePalette.LEATHER, 1.0, &"broom")  # Ante la casa de tela gris (-11, 42).
+	_villager(Vector3(5.0, 0.0, 45.5), 180.0, &"old_man", StylePalette.STONE)  # Junto a la hoguera de ropa (5, 50), mirándola.
+	_villager(Vector3(7.0, 0.0, 41.5), -90.0, &"mother", StylePalette.MOSS)
+	_villager(Vector3(7.7, 0.0, 40.8), -90.0, &"", StylePalette.EARTH, 0.62)  # Su hija (no habla).
 	_tip(Vector3(2.8, 2.4, 62.0), "PATADA  {kick}: rompe la guardia\nde quien se cubre mucho")
 	# Grupo 1 (junto a la hoguera), grupo 2 con el lancero (salida norte) y el arquero en la azotea.
 	# Los de a pie son de Varga y guardan la cuarentena: avisan antes de atacar (Paso 4). El arquero, todavía no.
@@ -640,3 +647,16 @@ func _cache(id: StringName, at: Vector3, xp: int, item: StringName = &"") -> voi
 	cache.reward_item = item
 	cache.position = at
 	add_child(cache)
+
+
+func _villager(at: Vector3, facing_degrees: float, event: StringName, robe: Color, size: float = 1.0, prop: StringName = &"") -> Villager:
+	var v := Villager.new()
+	v.name = "Villager_%s" % (event if event != &"" else &"child_girl")
+	v.event = event
+	v.robe = robe
+	v.size = size
+	v.prop = prop
+	v.position = at
+	v.rotation.y = deg_to_rad(facing_degrees)
+	add_child(v)
+	return v

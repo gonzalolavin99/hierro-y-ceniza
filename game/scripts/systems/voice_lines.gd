@@ -9,9 +9,10 @@ extends RefCounted
 ## el generador de voz local (tools/gen_voices.py) y `effort` la descripción del sonido buscado.
 ## Frank (el tití) no habla: sus líneas son chillidos {id, chirp, es} o {id, chirp, effort}. `chirp` es el tipo de
 ## chillido que sintetiza tools/gen_frank.py y `es`, lo que Kael entiende (va entre «»).
+## Cualquier línea puede llevar `name` (opcional): el nombre propio que sale en su subtítulo, en vez del del personaje.
 
 ## Nombre que aparece en los subtítulos.
-const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga", &"frank": "Frank", &"lira": "Lira"}
+const SPEAKER_NAMES: Dictionary = {&"kael": "Kael", &"soldier": "Soldado", &"narrator": "El anciano", &"regent": "El Regente", &"kael_scene": "Kael", &"varga": "Varga", &"frank": "Frank", &"lira": "Lira", &"villager": "Aldeano"}
 ## Voces que no salen de un personaje del nivel (el narrador; el Regente en las escenas): suenan igual en
 ## todas partes (no posicionales) y mandan sobre las demás.
 const NARRATORS: Array[StringName] = [&"narrator", &"regent", &"kael_scene", &"lira"]
@@ -503,6 +504,25 @@ const LINES: Dictionary = {
 		&"scared": {"chance": 0.2, "cooldown": 15.0, "lines": [
 			{"id": "frank_scared_1", "chirp": "alarm", "effort": "sharp startled shriek of a small monkey"},
 			{"id": "frank_scared_2", "chirp": "squeak", "effort": "frightened squeak"},
+		]},
+	},
+	# Aldeanos (paso 4.2): cada frase se dice una vez por partida (Story "villager_<evento>"). De momento solo
+	# subtítulo (el inglés es provisional, para la voz futura); `name` es el nombre que sale en el subtítulo.
+	&"villager": {
+		&"sweeper": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_sweeper_1", "name": "Aldeana", "en": "No one goes in. The captain said so. Not even for bread.", "es": "No se entra. La capitana lo dijo. Ni por pan."},
+		]},
+		&"old_man": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_old_man_1", "name": "Viejo", "en": "My son's blankets... they burned them yesterday. Better that than the other thing.", "es": "Las mantas de mi hijo… las quemaron ayer. Mejor eso que lo otro."},
+		]},
+		&"child": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_child_1", "name": "Niño", "en": "That's the captain. She brings us water when there's none.", "es": "Es la capitana. Nos trae el agua cuando no hay."},
+		]},
+		&"road_man": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_road_man_1", "name": "Aldeano", "en": "They sent soldiers, not physicians. Again.", "es": "Mandaron soldados, no médicos. Otra vez."},
+		]},
+		&"mother": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_mother_1", "name": "Madre", "en": "Don't look. He's one of the Regent's men.", "es": "No mires. Es de los del Regente."},
 		]},
 	},
 }

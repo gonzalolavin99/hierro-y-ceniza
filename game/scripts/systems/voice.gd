@@ -98,7 +98,7 @@ func say(speaker: StringName, event: StringName, at: Vector3 = Vector3.ZERO) -> 
 	_active[speaker] = {"priority": priority, "until": _clock + busy, "player": played[1]}
 	if line.has("es"):
 		var text: String = line["es"]
-		subtitle.emit(text, VoiceLines.SPEAKER_NAMES.get(speaker, ""), maxf(seconds + 0.6, 1.5 + text.length() * 0.05))
+		subtitle.emit(text, line.get("name", VoiceLines.SPEAKER_NAMES.get(speaker, "")), maxf(seconds + 0.6, 1.5 + text.length() * 0.05))
 	spoken.emit(speaker, event, line["id"])
 	return true
 
