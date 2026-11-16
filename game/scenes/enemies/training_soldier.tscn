@@ -21,6 +21,7 @@
 [ext_resource type="Script" path="res://scenes/enemies/states/shoot.gd" id="19_shoot"]
 [ext_resource type="Script" path="res://scenes/enemies/states/rally.gd" id="20_rally"]
 [ext_resource type="Script" path="res://scenes/enemies/states/scripted.gd" id="21_scripted"]
+[ext_resource type="Script" path="res://scenes/enemies/states/warn.gd" id="22_warn"]
 
 [sub_resource type="CapsuleShape3D" id="body_shape"]
 radius = 0.4
@@ -159,3 +160,6 @@ script = ExtResource("20_rally")
 
 [node name="Scripted" type="Node" parent="StateMachine"]
 script = ExtResource("21_scripted")
+
+[node name="Warn" type="Node" parent="StateMachine"]
+script = ExtResource("22_warn")

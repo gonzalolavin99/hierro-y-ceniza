@@ -34,7 +34,8 @@ func _ready() -> void:
 	_check("Al acercarse Kael, el soldado de la aldea despierta", not soldier.asleep)
 	_check("…cerca de su puesto, sin saltos raros (%.2f m)" % soldier.global_position.distance_to(post), soldier.global_position.distance_to(post) < 3.0)
 	var states: Array[StringName] = []
-	for i in 30:
+	# El de la aldea primero avisa (Warn, 3 s en guardia) y luego pelea.
+	for i in 50:
 		await _wait(0.1)
 		if not soldier.state_name() in states:
 			states.append(soldier.state_name())

@@ -7,6 +7,9 @@ extends Node
 const BANNED: Array[String] = ["soul", "spirit", "demon", "devil", "magic", "spell", "witch", "curse", "god", "ghost",
 	"undead", "hell", "heaven", "pray", "alma", "espíritu", "demonio", "diablo", "magia", "hechiz", "bruj",
 	"maldi", "dios", "fantasma", "infierno", "cielo", "reza"]
+## Frases que de momento van solo con subtítulo: su audio lo genera Gonzalo en local con Kokoro
+## (tools/gen_voices.py). Al generarlo, quitarlas de aquí.
+const AUDIO_PENDING: Array[String] = ["soldier_warn_1"]
 
 var _player: Player
 var _enemy: Enemy
@@ -70,6 +73,8 @@ func _run() -> void:
 	for speaker: StringName in VoiceLines.LINES:
 		for event: StringName in VoiceLines.LINES[speaker]:
 			for line: Dictionary in VoiceLines.LINES[speaker][event]["lines"]:
+				if line["id"] in AUDIO_PENDING:
+					continue
 				var path: String = "res://assets/audio/voice/%s/%s.wav" % [speaker, line["id"]]
 				if not ResourceLoader.exists(path):
 					missing.append(line["id"])

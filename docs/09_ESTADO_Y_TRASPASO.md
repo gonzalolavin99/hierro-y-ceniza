@@ -97,6 +97,11 @@ cambiar de objetivo con el stick derecho.
   con el jugador a su espalda o costado (≤2,4 m). Agacharse: C / L3 (alterna). El soldado de práctica y los del
   grupo siguen empezando alerta. Patio de sigilo en x=-34 con 2 guardias. Se prueba en `stealth_test`;
   capturas con `tests/stealth_shot.tscn`.
+- **Soldados que avisan** (Enemy `warns_first`, estado `warn.gd`; los 5 de a pie de la aldea): tranquilos en su
+  puesto (`Patrol`). Al ver a Kael a ≤10 m se ponen en guardia, lo miran y dicen «¡Atrás! No te acerques a las
+  casas.» (de momento solo subtítulo). Pelean (`alert()`, y avisan a los de 12 m) si Kael se acerca a <5 m, si
+  sigue a ≤10 m 3 s después del aviso o si golpea. A >12 m vuelven al puesto. Se reinicia al morir o descansar
+  (`respawn`). Sin golpe mortal por la espalda.
 - **Tipos de enemigo** (grupo "Tipo" en Enemy): `moveset`, `danger_moveset`, `danger_ratio`, `idle_wait`,
   `evade_chance`, `damage_scale`; la mente usa ese repertorio (`EnemyMind.configure`). Cada tipo es una escena que
   hereda de `training_soldier.tscn` y cambia esos valores, la vida, la postura y el color. **Bandido**
@@ -465,6 +470,7 @@ objeciones.
    pasa de verdad; los soldados de la aldea son **de Varga y guardan la cuarentena** (Kael cree que son
    rebeldes): primero avisan ("¡Atrás! No te acerques a las casas") y solo luego atacan; el desertor. Quitar
    el cartel provisional "(Aldeanos: paso 4)".
+   **4.1 hecho** (soldados que avisan, #2): falta el OK del jugador y la voz Kokoro de `soldier_warn_1`.
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).
 3. **Paso 6 — menú principal, opciones** (gráficos, sangre, subtítulos) **y exportar el `.exe`**.
 4. **Paso 7 — arte**: estilo, Kael, enemigos, jefes, Frank (mejorar su modelo), iluminación; vestir el nivel.

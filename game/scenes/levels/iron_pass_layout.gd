@@ -195,11 +195,13 @@ func _build_village() -> void:
 	_sign(Vector3(-4.0, 2.4, 56.0), "(Aldeanos: paso 4)")
 	_tip(Vector3(2.8, 2.4, 62.0), "PATADA  {kick}: rompe la guardia\nde quien se cubre mucho")
 	# Grupo 1 (junto a la hoguera), grupo 2 con el lancero (salida norte) y el arquero en la azotea.
-	_enemy(SOLDIER, Vector3(9.0, 0.0, 55.0), 180.0)
-	_enemy(SOLDIER, Vector3(12.0, 0.0, 53.0), 180.0)
-	_enemy(SOLDIER, Vector3(-5.0, 0.0, 30.0), 180.0)
-	_enemy(SOLDIER, Vector3(-1.0, 0.0, 32.0), 180.0)
-	_enemy(SPEARMAN, Vector3(2.0, 0.0, 25.0), 180.0)
+	# Los de a pie son de Varga y guardan la cuarentena: avisan antes de atacar (Paso 4). El arquero, todavía no.
+	var warns := func(e: Enemy) -> void: e.warns_first = true
+	_enemy(SOLDIER, Vector3(9.0, 0.0, 55.0), 180.0, warns)
+	_enemy(SOLDIER, Vector3(12.0, 0.0, 53.0), 180.0, warns)
+	_enemy(SOLDIER, Vector3(-5.0, 0.0, 30.0), 180.0, warns)
+	_enemy(SOLDIER, Vector3(-1.0, 0.0, 32.0), 180.0, warns)
+	_enemy(SPEARMAN, Vector3(2.0, 0.0, 25.0), 180.0, warns)
 	var archer := _enemy(ARCHER, Vector3(25.0, FORT_Y - 0.5, 44.5), 180.0)
 	archer.aggro_range = 20.0
 
