@@ -64,3 +64,4 @@ func reset_world() -> void:
 		(node as Enemy).reset_to_post()
 	Squad.reset()
 	get_tree().call_group("arenas", "reset_arena")
+	get_tree().call_group("deserters", "on_world_reset")

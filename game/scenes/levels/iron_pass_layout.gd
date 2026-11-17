@@ -200,6 +200,13 @@ func _build_village() -> void:
 	_villager(Vector3(5.0, 0.0, 45.5), 180.0, &"old_man", StylePalette.STONE)  # Junto a la hoguera de ropa (5, 50), mirándola.
 	_villager(Vector3(7.0, 0.0, 41.5), -90.0, &"mother", StylePalette.MOSS)
 	_villager(Vector3(7.7, 0.0, 40.8), -90.0, &"", StylePalette.EARTH, 0.62)  # Su hija (no habla).
+	# El desertor (paso 4.3): soldado de Varga apartado entre las casas del oeste, lejos de la calle y de los
+	# dos grupos. Se rinde si Kael se acerca; si lo deja ir, tras descansar lleva agua al pozo (Deserter).
+	var deserter := Deserter.new()
+	deserter.name = "Deserter"
+	deserter.position = Vector3(-17.0, 0.0, 50.0)
+	deserter.rotation.y = -PI * 0.5  # Mira a la calle (+X).
+	add_child(deserter)
 	_tip(Vector3(2.8, 2.4, 62.0), "PATADA  {kick}: rompe la guardia\nde quien se cubre mucho")
 	# Grupo 1 (junto a la hoguera), grupo 2 con el lancero (salida norte) y el arquero en la azotea.
 	# Los de a pie son de Varga y guardan la cuarentena: avisan antes de atacar (Paso 4). El arquero, todavía no.
