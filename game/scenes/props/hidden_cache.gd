@@ -88,7 +88,8 @@ func pick(player: Player) -> void:
 	if reward_item != &"" and not player.key_items.has(reward_item):
 		player.key_items.append(reward_item)
 	_show_reward_text()
-	if player.frank and player.frank.mode == Frank.Mode.PERCHED:
+	# Con la lista de raciones, Frank calla (D21).
+	if player.frank and player.frank.mode == Frank.Mode.PERCHED and reward_item != &"ration_list":
 		# La nota de los cazadores le toca de cerca: no hay broma.
 		player.frank.say(&"poacher_note" if reward_item == &"poacher_note" else &"found_item")
 		if reward_item == &"poacher_note":

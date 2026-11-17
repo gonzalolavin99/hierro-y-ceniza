@@ -32,6 +32,8 @@ const ITEMS: Dictionary[StringName, Dictionary] = {
 		"text": "El Regente pidió sus estandartes. Este es de tela gris, sin emblema ni color: el mismo gris que se ataba en las puertas de los enfermos. Los soldados de Varga no defendían un señor. Defendían una línea que nadie debía cruzar."},
 	&"grey_cloth": {"name": "Tela gris", "kind": "Objeto clave",
 		"text": "Se ataba en las puertas de las casas con enfermos de la Ceniza. Para el soldado del Regente, marcaba un objetivo. Para el vecino, significaba «no entres»."},
+	&"ration_list": {"name": "Lista de raciones", "kind": "Objeto clave",
+		"text": "«Casa del pozo: cuatro bocas. Pan y agua cada dos días, en la puerta. Que nadie entre. — V.»"},
 	&"bram_key": {"name": "Llave del Carcelero", "kind": "Objeto clave",
 		"text": "Una llave de hierro grande, gastada de tanto girar. Abre el portón de la fortaleza del Paso. Bram la llevaba colgada del cuello y dormía con ella en la mano. Quien la tenga decide si esa puerta se abre."},
 	&"regent_letter": {"name": "Carta del Regente a Orme", "kind": "Objeto clave",
@@ -47,7 +49,7 @@ const ORDER: Array[StringName] = [
 	&"sword", &"lira_ribbon", &"bandage",
 	&"crossbow", &"smoke", &"powder",
 	&"art_whirlwind", &"art_hammer", &"art_flurry",
-	&"varga_banner", &"poacher_note", &"grey_cloth", &"bram_key", &"regent_letter", &"capital_register",
+	&"varga_banner", &"poacher_note", &"grey_cloth", &"ration_list", &"bram_key", &"regent_letter", &"capital_register",
 ]
 const ALWAYS: Array[StringName] = [&"sword", &"lira_ribbon", &"bandage"]
 

@@ -176,6 +176,8 @@ func _build_village() -> void:
 	_house(Vector3(-24.0, 0.0, 30.0), 0.0, true)
 	_cylinder(Vector3(-17.0, 0.45, 30.0), 1.1, 0.9, ROCK)
 	_sign(Vector3(-24.0, 4.6, 30.0), "Casa del pozo")
+	# La lista de raciones (paso 4.4), en un morral junto al pozo. Sin cuerpo (D21).
+	_cache(&"well_house", Vector3(-17.0, 0.0, 31.7), 100, &"ration_list")
 	# La casa del arquero: azotea plana con rampa por detrás.
 	_box(Vector3(25.0, 1.75, 44.0), Vector3(7.0, 3.5, 7.0), HOUSE)
 	for side in [-1.0, 1.0]:
