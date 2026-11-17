@@ -106,6 +106,12 @@ cambiar de objetivo con el stick derecho.
   No son enemigos: sin vida ni zona de golpes, no se pueden fijar y tienen colisión. A ≤4 m de Kael dicen su
   frase una sola vez por partida (Story `villager_<evento>`, se guarda); la cabeza lo mira (≤60°). Hablante
   `villager` en `VoiceLines`, con `name` por línea. De momento solo subtítulo.
+- **Desertor** (`scenes/props/deserter.gd`, `Deserter`, grupo `deserters`): soldado de Varga apartado al oeste de la
+  aldea. No es un `Enemy` (ni `Squad`, ni bombas, ni enemigo obligatorio): maniquí con colisión y `Hurtbox`. A ≤6 m
+  de Kael suelta la espada, se arrodilla y dice `soldier_surrender_1` (una vez por partida). Marcas de `Story`
+  (se guardan): `deserter_surrendered`, `deserter_spared` (Kael se alejó >20 m sin golpearlo) y `deserter_killed`.
+  `Camps.reset_world()` llama a `on_world_reset`: si fue perdonado, tras descansar está junto al pozo con un cubo,
+  en silencio. `Deserter.is_spared()` es la variable del final bueno (hoy no la usa nadie).
 - **Tipos de enemigo** (grupo "Tipo" en Enemy): `moveset`, `danger_moveset`, `danger_ratio`, `idle_wait`,
   `evade_chance`, `damage_scale`; la mente usa ese repertorio (`EnemyMind.configure`). Cada tipo es una escena que
   hereda de `training_soldier.tscn` y cambia esos valores, la vida, la postura y el color. **Bandido**
@@ -477,6 +483,8 @@ objeciones.
    **4.1 hecho** (soldados que avisan, #2): falta el OK del jugador y la voz Kokoro de `soldier_warn_1`.
    **4.2 hecho** (aldeanos con su frase, #3): falta el OK del jugador, el texto en inglés definitivo y la voz
    Kokoro de las 5 frases (`AUDIO_PENDING` en `voice_test`). Quitado el cartel provisional.
+   **4.3 hecho** (el desertor, #13): falta el OK del jugador y la voz Kokoro (`soldier_surrender_1` en
+   `AUDIO_PENDING`).
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).
 3. **Paso 6 — menú principal, opciones** (gráficos, sangre, subtítulos) **y exportar el `.exe`**.
 4. **Paso 7 — arte**: estilo, Kael, enemigos, jefes, Frank (mejorar su modelo), iluminación; vestir el nivel.

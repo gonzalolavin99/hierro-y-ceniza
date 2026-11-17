@@ -9,7 +9,7 @@ const BANNED: Array[String] = ["soul", "spirit", "demon", "devil", "magic", "spe
 	"maldi", "dios", "fantasma", "infierno", "cielo", "reza"]
 ## Frases que de momento van solo con subtítulo: su audio lo genera Gonzalo en local con Kokoro
 ## (tools/gen_voices.py). Al generarlo, quitarlas de aquí.
-const AUDIO_PENDING: Array[String] = ["soldier_warn_1", "villager_sweeper_1", "villager_old_man_1", "villager_child_1", "villager_road_man_1", "villager_mother_1"]
+const AUDIO_PENDING: Array[String] = ["soldier_warn_1", "villager_sweeper_1", "villager_old_man_1", "villager_child_1", "villager_road_man_1", "villager_mother_1", "soldier_surrender_1"]
 
 var _player: Player
 var _enemy: Enemy

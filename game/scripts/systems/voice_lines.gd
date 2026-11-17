@@ -72,6 +72,10 @@ const LINES: Dictionary = {
 		&"warn": {"chance": 1.0, "cooldown": 5.0, "lines": [
 			{"id": "soldier_warn_1", "en": "Back! Stay away from the houses.", "es": "¡Atrás! No te acerques a las casas."},
 		]},
+		# Paso 4.3: el desertor se rinde (una vez por partida). De momento solo subtítulo (sin .wav).
+		&"surrender": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "soldier_surrender_1", "en": "No... no more. Take it. I only wanted to go home.", "es": "No… no más. Tómala. Yo solo quería volver a casa."},
+		]},
 		&"attack": {"chance": 0.4, "cooldown": 0.7, "lines": [
 			{"id": "soldier_attack_1", "say": "Rah!", "effort": "rough grunt, middle-aged man swinging a sword"},
 			{"id": "soldier_attack_2", "say": "Hup!", "effort": "short aggressive 'hup', middle-aged man"},
