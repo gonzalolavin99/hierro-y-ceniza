@@ -485,6 +485,7 @@ objeciones.
    Kokoro de las 5 frases (`AUDIO_PENDING` en `voice_test`). Quitado el cartel provisional.
    **4.3 hecho** (el desertor, #13): falta el OK del jugador y la voz Kokoro (`soldier_surrender_1` en
    `AUDIO_PENDING`).
+   **4.4 hecho** (lista de raciones en un morral junto al pozo, #14): falta el OK del jugador.
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).
 3. **Paso 6 — menú principal, opciones** (gráficos, sangre, subtítulos) **y exportar el `.exe`**.
 4. **Paso 7 — arte**: estilo, Kael, enemigos, jefes, Frank (mejorar su modelo), iluminación; vestir el nivel.

@@ -164,7 +164,7 @@ pasos de agua** del reino; y en el recuerdo, la puerta de la casa de Lira tiene 
 ### Acto I — El Paso de Hierro (la vertical slice)
 - Aldea en ruinas, bosque y la puerta de una fortaleza (GDD §7). Jefes: **Bram** y **Varga**.
 - **Grietas:** soldados de Varga que dicen "atrás, no te acerques a las casas" (Kael lo lee como
-  amenaza). Telas grises en algunas puertas. Una carta en un cadáver: lista de raciones para "los
+  amenaza). Telas grises en algunas puertas. Una carta en un morral junto al pozo: lista de raciones para "los
   de la casa del pozo". El humo de las hogueras de ropa.
 - **Narrador** (todavía seguro): "Los rebeldes quemaban todo lo que tocaban. El guerrero lo vio
   con sus propios ojos."

@@ -95,7 +95,7 @@ jefe sin volver a cruzar el bosque.
   las mismas frases suenan distintas.
 - **El desertor**: un soldado de Varga que suelta la espada y se arrodilla. Si Kael se va sin rematarlo, más
   tarde lleva agua a la casa del pozo. No hay aviso ni barra: solo cambia el mundo.
-- **La casa del pozo**: la **carta de raciones** en un cadáver ("para los de la casa del pozo").
+- **La casa del pozo**: la **carta de raciones** en un morral junto al pozo, sin cuerpo (D21) ("para los de la casa del pozo").
 - Enemigos: 2 grupos de 2–3 soldados, 1 lancero y 1 arquero en un tejado.
 
 ### C. Bosque (4–6 min) · sigilo (obligatorio)
