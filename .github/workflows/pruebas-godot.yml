@@ -1,0 +1,41 @@
+# Pruebas automáticas del juego en la nube (las mismas de game/tests), para que Madara revise con resultados reales.
+name: Pruebas Godot
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: pruebas-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Godot 4.7.2 (versión exacta, con verificación)
+        run: |
+          curl -sSL -o godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  godot.zip" | sha256sum -c -
+          unzip -q godot.zip
+          sudo mv Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --headless --version
+      - name: Importar el proyecto
+        run: timeout 900 godot --headless --path game --import > import.log 2>&1 || true
+      - name: Correr las pruebas
+        id: pruebas
+        run: bash .github/scripts/pruebas_ci.sh
+      - name: Publicar el resultado en el PR
+        if: always() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [ -f resultado.md ] || echo "🤖 Pruebas: no se pudieron ejecutar (revisa el registro de la acción)." > resultado.md
+          gh pr comment ${{ github.event.pull_request.number }} --body-file resultado.md

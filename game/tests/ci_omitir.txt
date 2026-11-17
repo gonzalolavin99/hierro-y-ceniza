@@ -1,0 +1,2 @@
+# Pruebas que NO se corren en la nube (GitHub Actions), una por línea, con el motivo después del nombre.
+# Ejemplo:  anim_audit  necesita las animaciones Mixamo, que no están en el repo por licencia
