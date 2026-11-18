@@ -3,7 +3,8 @@ extends Node3D
 ## Aldeano (Paso 4.2): gente de la aldea que cuenta lo que pasa sin explicarlo. No pelea y no es un enemigo:
 ## no está en el grupo "enemies" (no se fija, ni lo ven las bombas ni Squad), no tiene Hurtbox (los tajos lo
 ## atraviesan) y tiene colisión para no atravesarlo. Cuando Kael pasa a menos de TALK_RANGE dice su frase una
-## sola vez (Story "villager_<evento>", se guarda). La cabeza lo sigue con la mirada (como mucho 60°).
+## sola vez (Story "villager_<evento>", se guarda); tras vencer a Varga dice otra, también una vez (evento
+## "<evento>_after", paso 4.5). La cabeza lo sigue con la mirada (como mucho 60°).
 ## Se construye en código, con bloques de colores de StylePalette (el arte llega en el paso 7).
 
 ## Distancia en el suelo a la que habla.
@@ -35,13 +36,22 @@ func _ready() -> void:
 	_sync.call_deferred()
 
 
+## Evento que toca ahora: tras vencer a Varga, el de "después" (<evento>_after). Vacío = no habla.
+func current_event() -> StringName:
+	if event == &"":
+		return &""
+	if Story.heard(VargaArena.DEFEATED_FLAG):
+		return StringName("%s_after" % event)
+	return event
+
+
 func story_flag() -> StringName:
-	return StringName("villager_%s" % event)
+	return StringName("villager_%s" % current_event())
 
 
-## ¿Ya dijo su frase (o no tiene)?
+## ¿Ya dijo la frase que toca ahora (o no tiene)?
 func has_spoken() -> bool:
-	return event == &"" or Story.heard(story_flag())
+	return current_event() == &"" or Story.heard(story_flag())
 
 
 func _sync() -> void:
@@ -65,7 +75,7 @@ func _process(delta: float) -> void:
 	if get_tree().get_first_node_in_group("cutscene") != null:
 		return
 	# Si no hay voz libre (habla el narrador u otro aldeano), no se marca y se reintenta al fotograma siguiente.
-	if Voice.say(&"villager", event, global_position + Vector3.UP * 1.6):
+	if Voice.say(&"villager", current_event(), global_position + Vector3.UP * 1.6):
 		Story.mark_heard(story_flag())
 		SaveGame.save(_player)
 

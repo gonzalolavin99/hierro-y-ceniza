@@ -510,23 +510,39 @@ const LINES: Dictionary = {
 			{"id": "frank_scared_2", "chirp": "squeak", "effort": "frightened squeak"},
 		]},
 	},
-	# Aldeanos (paso 4.2): cada frase se dice una vez por partida (Story "villager_<evento>"). De momento solo
-	# subtítulo (el inglés es provisional, para la voz futura); `name` es el nombre que sale en el subtítulo.
+	# Aldeanos (pasos 4.2 y 4.5): cada uno tiene su frase de antes de Varga (`<x>`) y la de después (`<x>_after`,
+	# solo si Story tiene "boss_varga"). Cada frase se dice una vez por partida (Story "villager_<evento>").
+	# De momento solo subtítulo (el inglés es provisional, para la voz futura); `name` es el nombre del subtítulo.
 	&"villager": {
 		&"sweeper": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "villager_sweeper_1", "name": "Aldeana", "en": "No one goes in. The captain said so. Not even for bread.", "es": "No se entra. La capitana lo dijo. Ni por pan."},
 		]},
+		&"sweeper_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_sweeper_after_1", "name": "Aldeana", "en": "No one came to the door today. Nor yesterday.", "es": "Hoy nadie vino a la puerta. Ni ayer."},
+		]},
 		&"old_man": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "villager_old_man_1", "name": "Viejo", "en": "My son's blankets... they burned them yesterday. Better that than the other thing.", "es": "Las mantas de mi hijo… las quemaron ayer. Mejor eso que lo otro."},
+		]},
+		&"old_man_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_old_man_after_1", "name": "Viejo", "en": "No one burns the clothes anymore. She said it was the only thing that worked.", "es": "Ya nadie quema la ropa. Ella decía que era lo único que servía."},
 		]},
 		&"child": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "villager_child_1", "name": "Niño", "en": "That's the captain. She brings us water when there's none.", "es": "Es la capitana. Nos trae el agua cuando no hay."},
 		]},
+		&"child_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_child_after_1", "name": "Niño", "en": "Have you seen the captain? She didn't bring the water today.", "es": "¿Ha visto a la capitana? Hoy no ha traído el agua."},
+		]},
 		&"road_man": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "villager_road_man_1", "name": "Aldeano", "en": "They sent soldiers, not physicians. Again.", "es": "Mandaron soldados, no médicos. Otra vez."},
 		]},
+		&"road_man_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_road_man_after_1", "name": "Aldeano", "en": "Now the Regent's men will come. Those don't warn you.", "es": "Ahora vendrán los del Regente. Esos no avisan."},
+		]},
 		&"mother": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "villager_mother_1", "name": "Madre", "en": "Don't look. He's one of the Regent's men.", "es": "No mires. Es de los del Regente."},
+		]},
+		&"mother_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_mother_after_1", "name": "Madre", "en": "Don't look, girl. He's leaving.", "es": "No mires, hija. Ya se va."},
 		]},
 	},
 }
