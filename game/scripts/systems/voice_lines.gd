@@ -512,6 +512,8 @@ const LINES: Dictionary = {
 	},
 	# Aldeanos (pasos 4.2 y 4.5): cada uno tiene su frase de antes de Varga (`<x>`) y la de después (`<x>_after`,
 	# solo si Story tiene "boss_varga"). Cada frase se dice una vez por partida (Story "villager_<evento>").
+	# Antes de Varga, una frase extra según la promesa del prólogo (`<x>_vow_stop` / `<x>_vow_end`, paso 4.6;
+	# marca Story `villager_<x>_vow`). Sin evento `child_vow_end`, la niña se calla.
 	# De momento solo subtítulo (el inglés es provisional, para la voz futura); `name` es el nombre del subtítulo.
 	&"villager": {
 		&"sweeper": {"chance": 1.0, "cooldown": 0.0, "lines": [
@@ -543,6 +545,15 @@ const LINES: Dictionary = {
 		]},
 		&"mother_after": {"chance": 1.0, "cooldown": 0.0, "lines": [
 			{"id": "villager_mother_after_1", "name": "Madre", "en": "Don't look, girl. He's leaving.", "es": "No mires, hija. Ya se va."},
+		]},
+		&"child_vow_stop": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_child_vow_stop_1", "name": "Niño", "en": "Are you here to stop them? The bad ones, I mean?", "es": "¿Usted viene a detenerlos? ¿A los malos, digo?"},
+		]},
+		&"mother_vow_stop": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_mother_vow_stop_1", "name": "Madre", "en": "Look, girl. Maybe this one listens.", "es": "Mire, hija. Quizá este sí escucha."},
+		]},
+		&"mother_vow_end": {"chance": 1.0, "cooldown": 0.0, "lines": [
+			{"id": "villager_mother_vow_end_1", "name": "Madre", "en": "Come, girl. Away from him.", "es": "Ven, hija. Lejos de él."},
 		]},
 	},
 }
