@@ -487,6 +487,7 @@ objeciones.
    Kokoro de las 5 frases (`AUDIO_PENDING` en `voice_test`). Quitado el cartel provisional.
    **4.3 hecho** (el desertor, #13): falta el OK del jugador y la voz Kokoro (`soldier_surrender_1` en
    `AUDIO_PENDING`).
+   **4.4 hecho** (lista de raciones en un morral junto al pozo, #14): falta el OK del jugador.
    **4.5 hecho** (2.ª frase de los aldeanos tras Varga, #15): falta el OK del jugador, el inglés definitivo y la
    voz Kokoro (5 ids `villager_*_after_1` en `AUDIO_PENDING`).
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).

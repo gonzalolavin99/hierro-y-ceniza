@@ -78,7 +78,7 @@ func _ready() -> void:
 	_check("Fogata del bosque → Varga: %d enemigos obligatorios (≤ 8)" % stretch_b, stretch_b <= 8)
 	_check("La red de Frank está en el camino", get_tree().get_nodes_in_group("frank_snare").size() == 1)
 	_check("La despensa y las dos puertas del atajo", get_tree().get_nodes_in_group("latched_gates").size() == 3)
-	_check("Dos escondites en el bosque", get_tree().get_nodes_in_group("hidden_caches").size() == 2)
+	_check("Tres escondites: dos en el bosque y uno en la casa del pozo", get_tree().get_nodes_in_group("hidden_caches").size() == 3)
 	_check("El patio de Varga", get_tree().get_nodes_in_group("arenas").size() == 1)
 	_check("Cuatro narraciones de zona", get_tree().get_nodes_in_group("narration_zones").size() == 4)
 
