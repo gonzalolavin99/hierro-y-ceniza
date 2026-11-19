@@ -1,0 +1,12 @@
+# Pruebas que NO se corren en la nube (GitHub Actions), una por línea, con el motivo después del nombre.
+# Ejemplo:  anim_audit  necesita las animaciones Mixamo, que no están en el repo por licencia
+arts  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+combat  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+combo_settle  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+danger  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+enemy_sleep  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+frank_finds  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+hold_pose  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+prologue  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+tools  necesita las animaciones Mixamo (y_bot.fbx), que no están en el repo por licencia
+moveset  se cuelga en la nube sin las animaciones Mixamo
