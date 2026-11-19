@@ -26,6 +26,7 @@ func _ready() -> void:
 	await _load_level()
 	await _villagers()
 	await _vow()
+	await _gestures()
 	await _deserter_case()
 	Engine.time_scale = 1.0
 	SaveGame.erase()
@@ -134,6 +135,35 @@ func _vow() -> void:
 	_check("Tras Varga solo hay frases «después» (%s)" % str(_spoken),
 			_said("villager/child_after") == 1 and _said("villager/mother_after") == 1 and not _any_vow())
 	_check("Tras Varga no hay promesa", child.vow_event() == &"" and mother.vow_event() == &"")
+
+
+# --- 4. Gestos de la aldea (#29) ---------------------------------------------------------------------------
+
+func _gestures() -> void:
+	await _fresh()
+	var sweeper: Villager = _villager(&"sweeper")
+	var mother: Villager = _villager(&"mother")
+	var before: float = sweeper._broom.rotation.z
+	await _wait(0.3)
+	var after: float = sweeper._broom.rotation.z
+	_check("La escoba se mueve sola (Kael lejos)", absf(after - before) > 0.01 and absf(after) <= Villager.BROOM_SWING + 0.001)
+	var only_ok := true
+	for e in [&"old_man", &"road_man", &"child"]:
+		var v: Villager = _villager(e)
+		only_ok = only_ok and v._broom == null and v._covered == null
+	_check("Solo la barrendera lleva escoba y solo la madre tapa ojos", only_ok and mother._broom == null \
+			and mother._covered != null and mother._covered.event == &"")
+	await _wait(0.8)
+	_check("Con Kael lejos la mano está en reposo", mother._hand_pos.is_equal_approx(mother._hand_rest))
+	await _visit(mother)
+	await _wait(0.8)
+	_check("Con Kael cerca la mano tapa los ojos", mother._hand_pos.distance_to(mother._cover_point()) < 0.02)
+	var girl: Villager = mother._covered
+	_check("La mano no atraviesa la cabeza de la niña", \
+			mother._hand.global_position.distance_to(girl._head.global_position) > 0.12 * girl.size)
+	_teleport(_start)
+	await _wait(0.8)
+	_check("Al alejarse la mano baja", mother._hand_pos.is_equal_approx(mother._hand_rest))
 
 
 # --- 3. El desertor (paso 4.3) --------------------------------------------------------------------------------
