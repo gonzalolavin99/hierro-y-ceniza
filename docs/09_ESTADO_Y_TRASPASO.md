@@ -3,7 +3,7 @@
 Resumen para retomar el trabajo en una sesión nueva. **Leer primero esto**, después
 [00_LEEME](00_LEEME.md), [05_ROADMAP](05_ROADMAP.md) y [08_MEJORAS](08_MEJORAS_FLUIDEZ_Y_ANIMACION.md).
 
-Última actualización: 2026-11-16 · Base de esta revisión: `104fe65` en `main` (todo está subido a GitHub; el estado
+Última actualización: 2026-11-19 · Base de esta revisión: `9669363` en `main` (todo está subido a GitHub; el estado
 al día es siempre `main`) · Repositorio público:
 https://github.com/gonzalolavin99/hierro-y-ceniza
 
@@ -22,7 +22,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
 | 8 · Primer jefe | ✅ **OK del jugador: Hito 8 cerrado.** Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Paso 4 (reacciones a los golpes, escena previa, música, estandarte) hecho y probado (OK) |
-| 9 · Vertical slice | Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho (el jugador siguió adelante). Paso 3 (nivel en bloques, `scenes/levels/iron_pass.tscn`, escena principal) hecho y corregido tras la primera prueba, **pendiente de la segunda prueba y OK del jugador**. Faltan pasos 4 (aldeanos), 5 (Bram), 6 (menú y `.exe`) y 7 (arte) |
+| 9 · Vertical slice | 🔨 Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho (el jugador siguió adelante). Paso 3 (nivel en bloques, `scenes/levels/iron_pass.tscn`, escena principal) hecho, **falta la segunda prueba y el OK del jugador**. Cimientos hechos (falta el OK a la guía de estilo y el cuerpo base CC0). Paso 6a (menú principal, versión, registro de errores y `.exe`; Release v0.9.4 de prueba) hecho, falta dárselo a 3–5 personas. **Paso 4 en curso:** 4.1 soldados que avisan, 4.2 aldeanos con su frase, 4.3 el desertor, 4.4 la lista de raciones, 4.5 la 2.ª frase tras Varga y 4.6 la promesa del prólogo, hechos (falta el OK del jugador y las voces Kokoro); faltan el bus de eventos `Events`, la lista de marcas de la historia, los gestos cotidianos, el murmullo de la aldea y las voces. Faltan pasos 5 (Bram), 6b (menú y opciones completos) y 7 (arte) |
 | Extra · Frank | Paso 1 (Frank, la red y su escena) hecho y probado (OK). Paso 2 (consejos y bromas) hecho y probado (OK). Paso 3 (avisos, escondites y la despensa) hecho y probado (OK). Paso 4 (fruta para distraer) hecho y probado (OK). **Frank completo** para el juego actual |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -496,7 +496,7 @@ objeciones.
    voz Kokoro (3 ids `villager_*_vow_*_1` en `AUDIO_PENDING`). «Se apartan a su paso» (guion) queda para otra
    propuesta.
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).
-3. **Paso 6 — menú principal, opciones** (gráficos, sangre, subtítulos) **y exportar el `.exe`**.
+3. **Paso 6b — menú y opciones completos** (gráficos, sangre, subtítulos, volumen por canal); el 6a (menú principal y `.exe`) ya está hecho.
 4. **Paso 7 — arte**: estilo, Kael, enemigos, jefes, Frank (mejorar su modelo), iluminación; vestir el nivel.
 
 **Pendiente de decidir por el jugador:** ¿se mantiene la revelación final "Yo fui ese guerrero"? (ver

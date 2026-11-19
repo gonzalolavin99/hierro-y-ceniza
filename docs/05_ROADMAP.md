@@ -277,6 +277,12 @@ Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
 - [ ] **Paso 4: la gente de la aldea**: aldeanos con frases de antes y después de Varga, soldados que avisan
       antes de atacar, el desertor (perdonarlo → después aparece llevando agua), la carta de raciones; bus de
       eventos y lista de marcas de la historia; gestos cotidianos; voces y murmullo de la aldea.
+      **En curso (2026-11-19):** hechos 4.1 soldados que avisan (#7), 4.2 aldeanos con su frase y fuera el
+      cartel provisional (#8), 4.3 el desertor (#17), 4.4 la lista de raciones (#19), 4.5 la 2.ª frase tras Varga
+      (#20) y 4.6 la promesa del prólogo cambia a la niña y la madre (#22); falta el OK del jugador. **Quedan**
+      (según `docs/15_PLAN_DEL_ESTUDIO.md` §D): el bus de eventos `Events`, la lista de marcas de la historia con
+      su prueba, los gestos cotidianos (y la cabeza que mira a Kael), las voces Kokoro de soldados y aldeanos,
+      el murmullo de la aldea y el grito de alerta, y que los aldeanos se aparten al paso de Kael.
 - [ ] **Paso 5: Bram**, gigante de unos 3 m: antes, los ataques pasan a archivos de datos (`.tres`) y se crea la
       base `BossArena`; golpes lentos que se esquivan mejor que se paran, cadena y grillete; 2–6 intentos;
       **da el Golpe de Martillo** y la llave.
