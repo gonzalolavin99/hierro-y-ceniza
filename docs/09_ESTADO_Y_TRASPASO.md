@@ -113,7 +113,7 @@ cambiar de objetivo con el stick derecho.
 - **Desertor** (`scenes/props/deserter.gd`, `Deserter`, grupo `deserters`): soldado de Varga apartado al oeste de la
   aldea. No es un `Enemy` (ni `Squad`, ni bombas, ni enemigo obligatorio): maniquí con colisión y `Hurtbox`. A ≤6 m
   de Kael suelta la espada, se arrodilla y dice `soldier_surrender_1` (una vez por partida). Marcas de `Story`
-  (se guardan): `deserter_surrendered`, `deserter_spared` (Kael se alejó >20 m sin golpearlo) y `deserter_killed`.
+  (se guardan): `deserter_surrendered`, `deserter_spared` (Kael se alejó >20 m sin golpearlo, o murió o descansó con él rendido y vivo) y `deserter_killed`.
   `Camps.reset_world()` llama a `on_world_reset`: si fue perdonado, tras descansar está junto al pozo con un cubo,
   en silencio. `Deserter.is_spared()` es la variable del final bueno (hoy no la usa nadie). Prueba `villagers_test`.
 - **Tipos de enemigo** (grupo "Tipo" en Enemy): `moveset`, `danger_moveset`, `danger_ratio`, `idle_wait`,

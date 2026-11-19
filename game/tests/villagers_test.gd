@@ -1,7 +1,8 @@
 extends Node
 ## Prueba automática de los aldeanos, la promesa del prólogo y el desertor (Paso 4.2 a 4.6), en el nivel real
 ## (el Paso de Hierro): cada aldeano dice su frase una sola vez (antes y después de Varga), la niña y la madre
-## reaccionan a la promesa, el desertor se rinde, queda perdonado o muere, y todo se guarda con la partida.
+## reaccionan a la promesa, el desertor se rinde, queda perdonado o muere (también al morir o descansar con él
+## rendido), y todo se guarda con la partida.
 ## Usa un archivo de guardado de prueba aparte y no necesita audio real.
 ## Ejecutar: Godot --headless --path game res://tests/villagers_test.tscn
 
@@ -27,6 +28,7 @@ func _ready() -> void:
 	await _villagers()
 	await _vow()
 	await _deserter_case()
+	await _deserter_reset_case()
 	Engine.time_scale = 1.0
 	SaveGame.erase()
 	print("RESULTADO: %s" % ("TODO OK" if _failures == 0 else "%d FALLOS" % _failures))
@@ -37,6 +39,12 @@ func _ready() -> void:
 
 func _villagers() -> void:
 	await _fresh()
+	var old: Villager = _villager(&"old_man")
+	var to_fire: Vector3 = Vector3(5.0, 0.0, 50.0) - old.global_position
+	to_fire.y = 0.0
+	var face: Vector3 = old.global_basis.z
+	face.y = 0.0
+	_check("El viejo mira la hoguera de ropa", face.normalized().dot(to_fire.normalized()) > 0.9)
 	for e in VILLAGERS:
 		var v: Villager = _villager(e)
 		_check("Existe el aldeano %s" % e, v != null)
@@ -200,6 +208,52 @@ func _deserter_case() -> void:
 	_check("Tras cargar no vuelve (%s)" % str(d), d != null and not d.visible)
 	_check("Se conservan las dos marcas", Story.heard(Deserter.STORY_KILLED) and Story.heard(Deserter.STORY_SPARED))
 	_check("…y ya no cuenta como perdonado", not Deserter.is_spared())
+
+
+## El desertor y el reinicio del mundo (morir o descansar) sin alejarse 20 m.
+func _deserter_reset_case() -> void:
+	# Sin verlo: reiniciar no cambia nada.
+	await _fresh()
+	await _wait(0.1)
+	var d: Deserter = _deserter()
+	var post := Vector2(-17.0, 50.0)
+	var well := Vector2(Deserter.WELL_SPOT.x, Deserter.WELL_SPOT.z)
+	Camps.reset_world()
+	await _wait(0.1)
+	_check("Sin verlo, reiniciar no cambia nada", _flat(d).distance_to(post) < 0.5 and d.visible \
+			and not Story.heard(Deserter.STORY_SURRENDERED) and not Story.heard(Deserter.STORY_SPARED))
+
+	# Rendido y Kael cerca (como si muriera a su lado): al reiniciar queda perdonado y va al pozo.
+	Voice.reset()
+	_teleport(Vector3(-13.0, 0.0, 50.0))
+	await _wait(0.5)
+	_check("Rendido, aún sin perdón", Story.heard(Deserter.STORY_SURRENDERED) and not Story.heard(Deserter.STORY_SPARED))
+	Camps.reset_world()
+	await _wait(0.1)
+	_check("Al reiniciar sin alejarse queda perdonado", Deserter.is_spared())
+	_check("…y ya está junto al pozo", _flat(d).distance_to(well) < 0.1 and d.visible)
+	await _wait(0.5)
+	_check("No repite la frase en el pozo", _said("soldier/surrender") == 1)
+
+	# Lo guardó el propio reinicio: se carga sin guardar a mano.
+	await _load_level()
+	d = _deserter()
+	_check("Tras cargar sigue perdonado y en el pozo", Deserter.is_spared() and d != null \
+			and _flat(d).distance_to(well) < 0.1 and d.visible)
+
+	# Rendido y muerto por Kael: al reiniciar desaparece y no queda perdonado.
+	await _fresh()
+	await _wait(0.1)
+	d = _deserter()
+	Voice.reset()
+	_teleport(Vector3(-13.0, 0.0, 50.0))
+	await _wait(0.5)
+	d.receive_hit(HitData.create(_player, 10.0, 10.0))
+	Engine.time_scale = 1.0  # La pausa de impacto.
+	Camps.reset_world()
+	await _wait(0.1)
+	_check("Muerto antes del perdón: desaparece", not d.visible)
+	_check("…y no queda perdonado", Story.heard(Deserter.STORY_KILLED) and not Story.heard(Deserter.STORY_SPARED))
 
 
 # --- Ayudantes ---------------------------------------------------------------------------------------------------

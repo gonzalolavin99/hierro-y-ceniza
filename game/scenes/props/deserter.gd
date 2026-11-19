@@ -5,8 +5,8 @@ extends Node3D
 ## Squad, las bombas ni la alarma de los soldados, ni cuenta como enemigo obligatorio entre fogatas). Tiene
 ## colisión para no atravesarlo y un Hurtbox para que Kael pueda golpearlo (muere y no vuelve).
 ## Todo se apunta en Story (se guarda): "deserter_surrendered", "deserter_spared" y "deserter_killed".
-## Si Kael se aleja sin golpearlo queda perdonado y, tras el siguiente descanso (Camps.reset_world), aparece
-## junto al pozo con un cubo, quieto y en silencio. No hay carteles ni avisos: solo cambia el mundo.
+## Si Kael se aleja sin golpearlo, o muere o descansa sin haberlo golpeado, queda perdonado y, tras el siguiente
+## reinicio del mundo (Camps.reset_world), aparece junto al pozo con un cubo, quieto y en silencio. No hay carteles ni avisos: solo cambia el mundo.
 
 const MANNEQUIN: PackedScene = preload("res://scenes/characters/mannequin.tscn")
 ## El mismo gris azulado de los soldados de la aldea (training_soldier.tscn).
@@ -249,9 +249,19 @@ func _die(contact: Vector3) -> void:
 	_hurt_shape.set_deferred("disabled", true)
 
 
-## Lo llama Camps.reset_world (al descansar o al morir Kael): el mundo cambia.
+## Lo llama Camps.reset_world (al descansar o al morir Kael): el mundo cambia. Si se rindió y Kael no lo mató,
+## Kael se fue sin golpearlo (murió o descansó): queda perdonado aunque no se alejara 20 m.
 func on_world_reset() -> void:
 	if Story.heard(STORY_KILLED):
 		_vanish()
-	elif Story.heard(STORY_SPARED):
+		return
+	if Story.heard(STORY_SURRENDERED) and not Story.heard(STORY_SPARED):
+		Story.mark_heard(STORY_SPARED)
+		SaveGame.save(_player)
+	if Story.heard(STORY_SPARED):
+		# Si aún caía la espada o giraba hacia Kael, se termina de golpe para que no pise la nueva postura.
+		if _tween != null and _tween.is_valid():
+			_tween.custom_step(1.0)
+			_tween.kill()
+		_pending_line = false
 		_go_to_well()
