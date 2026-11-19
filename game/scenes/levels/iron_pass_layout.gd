@@ -199,9 +199,9 @@ func _build_village() -> void:
 	_villager(Vector3(-7.0, 0.0, 58.0), 0.0, &"road_man", StylePalette.SLATE)  # Mira al sur, el camino de la capital.
 	_villager(Vector3(-7.0, 0.0, 50.0), 90.0, &"child", StylePalette.EARTH, 0.7, &"drawing")
 	_villager(Vector3(-7.0, 0.0, 43.0), 90.0, &"sweeper", StylePalette.LEATHER, 1.0, &"broom")  # Ante la casa de tela gris (-11, 42).
-	_villager(Vector3(5.0, 0.0, 45.5), 180.0, &"old_man", StylePalette.STONE)  # Junto a la hoguera de ropa (5, 50), mirándola.
+	_villager(Vector3(5.0, 0.0, 45.5), 0.0, &"old_man", StylePalette.STONE)  # Junto a la hoguera de ropa (5, 50), mirándola.
 	var mother := _villager(Vector3(7.0, 0.0, 41.5), -90.0, &"mother", StylePalette.MOSS)
-	var daughter := _villager(Vector3(7.45, 0.0, 41.05), -90.0, &"", StylePalette.EARTH, 0.62)  # Su hija (no habla), pegada a la madre.
+	var daughter := _villager(Vector3(7.7, 0.0, 40.8), -90.0, &"", StylePalette.EARTH, 0.62)  # Su hija (no habla).
 	mother.cover_eyes_of(daughter)  # Le tapa los ojos cuando Kael se acerca (#29).
 	# El desertor (paso 4.3): soldado de Varga apartado entre las casas del oeste, lejos de la calle y de los
 	# dos grupos. Se rinde si Kael se acerca; si lo deja ir, tras descansar lleva agua al pozo (Deserter).
