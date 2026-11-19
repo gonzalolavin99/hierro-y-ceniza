@@ -6,6 +6,8 @@ extends Node3D
 ## sola vez (Story "villager_<evento>", se guarda); tras vencer a Varga dice otra, también una vez (evento
 ## "<evento>_after", paso 4.5). Antes de Varga, la niña y la madre dicen además una frase según la promesa
 ## del prólogo (paso 4.6). La cabeza lo sigue con la mirada (como mucho 60°).
+## Gestos (#29): la barrendera barre (la escoba se balancea siempre) y la madre tapa los ojos de su hija cuando
+## Kael está cerca (`cover_eyes_of`).
 ## Se construye en código, con bloques de colores de StylePalette (el arte llega en el paso 7).
 
 ## Distancia en el suelo a la que habla.
@@ -20,6 +22,16 @@ const BODY_HEIGHT: float = 1.9
 ## Hoja del dibujo: en alto (mirándola) y bajada (paso 4.6, si Kael prometió «Acabaré con ellos»).
 const PAPER_UP: Vector3 = Vector3(0.0, 0.85, 0.3)
 const PAPER_DOWN: Vector3 = Vector3(0.0, 0.5, 0.24)
+## Escoba (gesto de barrer, #29): balanceo de lado a lado alrededor de las manos.
+const BROOM_SWING: float = 0.35  # rad, a cada lado
+const BROOM_PERIOD: float = 1.2  # s por ciclo completo
+## Punta de arriba del palo (donde lo agarra): misma posición que tenía el palo fijo.
+const BROOM_GRIP: Vector3 = Vector3(0.32, 1.26, 0.40)
+const BROOM_TILT: float = 0.35
+## Tapar los ojos (#29): hombro y mano en reposo (en local, se multiplican por size; x lleva el signo del lado de la hija).
+const SHOULDER: Vector3 = Vector3(0.2, 1.25, 0.0)
+const HAND_REST: Vector3 = Vector3(0.24, 0.75, 0.08)
+const HAND_SPEED: float = 1.5  # m/s
 
 ## Evento en VoiceLines.LINES[&"villager"]. Vacío = no habla.
 @export var event: StringName = &""
@@ -32,6 +44,15 @@ const PAPER_DOWN: Vector3 = Vector3(0.0, 0.5, 0.24)
 var _player: Player
 var _head: Node3D
 var _paper: MeshInstance3D
+var _broom: Node3D
+var _broom_time: float = 0.0
+## Aldeano al que tapa los ojos (solo la madre). null = no hace el gesto.
+var _covered: Villager
+var _arm: Node3D
+var _hand: MeshInstance3D
+var _shoulder: Vector3
+var _hand_rest: Vector3
+var _hand_pos: Vector3
 
 
 func _ready() -> void:
@@ -87,11 +108,55 @@ func _drawing_lowered() -> bool:
 	return vow() == "end" and Story.heard(StringName("villager_%s" % event))
 
 
+## La madre tapa los ojos de su hija cuando Kael está cerca (#29). Lo llama el nivel con las dos ya en el árbol.
+func cover_eyes_of(other: Villager) -> void:
+	_covered = other
+	var side: float = -1.0 if to_local(other.global_position).x < 0.0 else 1.0
+	_shoulder = Vector3(SHOULDER.x * side, SHOULDER.y, SHOULDER.z) * size
+	_hand_rest = Vector3(HAND_REST.x * side, HAND_REST.y, HAND_REST.z) * size
+	_hand_pos = _hand_rest
+	_arm = Node3D.new()
+	add_child(_arm)
+	var arm := BoxMesh.new()
+	arm.size = Vector3(0.07, 0.07, 1.0)
+	_box(_arm, arm, robe, Vector3(0.0, 0.0, -0.5))
+	var hand := BoxMesh.new()
+	hand.size = Vector3(0.09, 0.09, 0.12)
+	_hand = _box(self, hand, StylePalette.ASH, _hand_pos)
+	_place_arm()
+
+
+## Delante de la cara de la hija, un poco arriba (los ojos). Sigue a su cabeza, que también mira a Kael.
+func _cover_point() -> Vector3:
+	var h: Node3D = _covered._head
+	var at: Vector3 = h.global_position + h.global_basis.z * (0.12 * _covered.size + 0.04) \
+			+ Vector3.UP * 0.02 * _covered.size
+	return to_local(at)
+
+
+## Pone la mano en _hand_pos y estira el brazo del hombro a la mano.
+func _place_arm() -> void:
+	_hand.position = _hand_pos
+	var dir: Vector3 = _hand_pos - _shoulder
+	var length: float = dir.length()
+	if length < 0.01:
+		return
+	# Si el brazo cuelga casi vertical, looking_at falla con up = UP: se usa otro eje (no se nota, la sección es cuadrada).
+	var up: Vector3 = Vector3.UP if absf(dir.y / length) < 0.95 else Vector3.BACK
+	var b := Basis.looking_at(dir, up)
+	_arm.transform = Transform3D(b.scaled_local(Vector3(1.0, 1.0, length)), _shoulder)
+	_hand.basis = b
+
+
 func _sync() -> void:
 	_player = get_tree().get_first_node_in_group("player") as Player
 
 
 func _process(delta: float) -> void:
+	# La escoba se mueve siempre, también sin Kael.
+	if _broom != null:
+		_broom_time = fmod(_broom_time + delta, BROOM_PERIOD)
+		_broom.rotation.z = BROOM_SWING * sin(_broom_time * TAU / BROOM_PERIOD)
 	if _player == null or not is_instance_valid(_player):
 		return
 	var d: Vector3 = _player.global_position - global_position
@@ -103,6 +168,12 @@ func _process(delta: float) -> void:
 		var local: Vector3 = global_basis.inverse() * d
 		target = clampf(atan2(local.x, local.z), -HEAD_TURN_MAX, HEAD_TURN_MAX)
 	_head.rotation.y = move_toward(_head.rotation.y, target, HEAD_TURN_SPEED * delta)
+	if _covered != null:
+		# Misma condición que girar la cabeza: sube la mano si Kael está cerca, baja si se aleja.
+		var cover: bool = flat <= LOOK_RANGE and near and is_instance_valid(_covered)
+		var goal: Vector3 = _cover_point() if cover else _hand_rest
+		_hand_pos = _hand_pos.move_toward(goal, HAND_SPEED * delta)
+		_place_arm()
 	if _paper != null:
 		_paper.position = (PAPER_DOWN if _drawing_lowered() else PAPER_UP) * size
 	if flat > TALK_RANGE or not near or _player.is_dead():
@@ -153,16 +224,18 @@ func _build() -> void:
 	hood.height = 0.31 * size
 	_box(_head, hood, robe.darkened(0.2), Vector3(0.0, 0.02, -0.035) * size)
 	if prop == &"broom":
+		_broom = Node3D.new()
+		_broom.position = BROOM_GRIP
+		_broom.rotation.x = BROOM_TILT
+		add_child(_broom)
 		var stick := CylinderMesh.new()
 		stick.top_radius = 0.025
 		stick.bottom_radius = 0.025
 		stick.height = 1.3
-		var s := _box(self, stick, StylePalette.WOOD, Vector3(0.32, 0.65, 0.18))
-		s.rotation.x = 0.35
+		_box(_broom, stick, StylePalette.WOOD, Vector3(0.0, -0.65, 0.0))
 		var bristles := BoxMesh.new()
 		bristles.size = Vector3(0.28, 0.12, 0.08)
-		var b := _box(self, bristles, StylePalette.EARTH, Vector3(0.32, 0.06, 0.18))
-		b.rotation.x = 0.35
+		_box(_broom, bristles, StylePalette.EARTH, Vector3(0.0, -1.28, 0.0))
 	elif prop == &"drawing":
 		var paper := BoxMesh.new()
 		paper.size = Vector3(0.24, 0.17, 0.01)

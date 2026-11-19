@@ -110,6 +110,8 @@ cambiar de objetivo con el stick derecho.
   `villager_<x>_after`); si no oyó la 1.ª, dice solo la 2.ª. Antes de Varga, tras su 1.ª frase, la niña (`child`) y
   la madre dicen una frase según la promesa del prólogo (eventos `<x>_vow_stop`/`<x>_vow_end`, marca
   `villager_<x>_vow`); con «Acabaré con ellos» la niña calla y baja el dibujo. Prueba `villagers_test`.
+  Gestos (#29): la barrendera barre (la escoba se balancea siempre; `BROOM_*`) y la madre tapa los ojos de su hija
+  con la mano cuando Kael está a ≤7 m (`cover_eyes_of`, solo visual, no se guarda).
 - **Desertor** (`scenes/props/deserter.gd`, `Deserter`, grupo `deserters`): soldado de Varga apartado al oeste de la
   aldea. No es un `Enemy` (ni `Squad`, ni bombas, ni enemigo obligatorio): maniquí con colisión y `Hurtbox`. A ≤6 m
   de Kael suelta la espada, se arrodilla y dice `soldier_surrender_1` (una vez por partida). Marcas de `Story`
@@ -495,6 +497,8 @@ objeciones.
    **4.6 hecho** (la promesa cambia a la niña y la madre, #21): falta el OK del jugador, el inglés definitivo y la
    voz Kokoro (3 ids `villager_*_vow_*_1` en `AUDIO_PENDING`). «Se apartan a su paso» (guion) queda para otra
    propuesta.
+   **Gestos cotidianos (#29), parte:** barrer y tapar los ojos, hechos; falta el OK del jugador. Quedan sentarse y
+   mirar a lo lejos.
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).
 3. **Paso 6b — menú y opciones completos** (gráficos, sangre, subtítulos, volumen por canal); el 6a (menú principal y `.exe`) ya está hecho.
 4. **Paso 7 — arte**: estilo, Kael, enemigos, jefes, Frank (mejorar su modelo), iluminación; vestir el nivel.
