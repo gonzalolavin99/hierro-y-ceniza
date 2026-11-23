@@ -280,9 +280,9 @@ Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
       **En curso (2026-11-19):** hechos 4.1 soldados que avisan (#7), 4.2 aldeanos con su frase y fuera el
       cartel provisional (#8), 4.3 el desertor (#17), 4.4 la lista de raciones (#19), 4.5 la 2.ª frase tras Varga
       (#20), 4.6 la promesa del prólogo cambia a la niña y la madre (#22) y los gestos de barrer y tapar los
-      ojos (#29) y la lista de marcas de la historia (#32); falta el OK del jugador. **Quedan**
+      ojos (#29), el crepitar de la hoguera de la ropa (#33) y la lista de marcas de la historia (#32); falta el OK del jugador. **Quedan**
       (según `docs/15_PLAN_DEL_ESTUDIO.md` §D): el bus de eventos `Events`, el resto de los gestos cotidianos (sentarse, mirar a lo lejos), las voces Kokoro de soldados y aldeanos,
-      el murmullo de la aldea y el grito de alerta, y que los aldeanos se aparten al paso de Kael.
+      el murmullo de gente de la aldea y el grito de alerta, y que los aldeanos se aparten al paso de Kael.
 - [ ] **Paso 5: Bram**, gigante de unos 3 m: antes, los ataques pasan a archivos de datos (`.tres`) y se crea la
       base `BossArena`; golpes lentos que se esquivan mejor que se paran, cadena y grillete; 2–6 intentos;
       **da el Golpe de Martillo** y la llave.
