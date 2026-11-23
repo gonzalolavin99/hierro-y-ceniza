@@ -20,9 +20,9 @@ const WELL_SPOT := Vector3(-19.5, 0.0, 28.5)
 const WELL_CENTER := Vector3(-17.0, 0.0, 30.0)
 const BODY_HEIGHT: float = 1.9
 
-const STORY_SURRENDERED: StringName = &"deserter_surrendered"
-const STORY_SPARED: StringName = &"deserter_spared"
-const STORY_KILLED: StringName = &"deserter_killed"
+const STORY_SURRENDERED: StringName = StoryMarks.DESERTER_SURRENDERED
+const STORY_SPARED: StringName = StoryMarks.DESERTER_SPARED
+const STORY_KILLED: StringName = StoryMarks.DESERTER_KILLED
 
 var body: Mannequin
 

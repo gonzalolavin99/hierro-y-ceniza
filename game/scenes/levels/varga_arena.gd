@@ -15,8 +15,8 @@ const HALF: float = 15.0
 const WALL_HEIGHT: float = 6.0
 const GATE_WIDTH: float = 4.0
 const GATE_OPEN_Y: float = 4.6
-const DEFEATED_FLAG: StringName = &"boss_varga"
-const INTRO_FLAG: StringName = &"scene_varga"
+const DEFEATED_FLAG: StringName = StoryMarks.BOSS_VARGA
+const INTRO_FLAG: StringName = StoryMarks.SCENE_VARGA
 ## Dónde arde la ropa de los enfermos (junto al sitio de Varga).
 const PYRE_AT: Vector3 = Vector3(11.0, 0.0, 1.8)
 ## Música del duelo (tools/gen_music.py): fase 1 y fase 2, mismo ritmo y duración.

@@ -1,6 +1,7 @@
 extends Node
 ## Prueba automática de la historia: el anciano narra al entrar en zonas (una sola vez), al descansar por
-## primera vez, cambia sus frases de muerte según el acto, y todo eso se guarda con la partida.
+## primera vez, cambia sus frases de muerte según el acto, y todo eso se guarda con la partida. Además revisa la
+## lista única de marcas (StoryMarks): sin repetidas, con sus nombres de siempre y que el guardado no pierde ninguna.
 ## Ejecutar: Godot --headless --path game res://tests/story_test.tscn
 
 const TEST_PATH: String = "user://save_story_test.json"
@@ -85,6 +86,57 @@ func _run() -> void:
 	_check("Partida nueva: nada narrado", not Story.heard(&"story_pass_village") and Story.act == 1)
 	Story.from_dict(saved)
 	_check("Al cargar vuelve todo", Story.heard(&"story_pass_village") and Story.heard(&"story_camp_first") and Story.act == 2)
+
+	# 7. La lista única de marcas (StoryMarks).
+	var unknown: Array[String] = []
+	for text: String in Story.to_dict().get("heard", []):
+		if not StoryMarks.is_known(StringName(text)):
+			unknown.append(text)
+	_check("Todo lo marcado en esta prueba está en la lista %s" % str(unknown), unknown.is_empty())
+	var unique: Dictionary = {}
+	for mark in StoryMarks.FIXED:
+		unique[mark] = true
+	_check("Las marcas fijas no se repiten", unique.size() == StoryMarks.FIXED.size())
+	var expected: Array[StringName] = [&"scene_prologue", &"scene_varga", &"boss_varga", &"vow_stop", &"vow_end",
+		&"frank_met", &"frank_freed", &"frank_rest_first", &"deserter_surrendered", &"deserter_spared", &"deserter_killed"]
+	var renamed: Array[String] = []
+	for mark in expected:
+		if not mark in StoryMarks.FIXED:
+			renamed.append(String(mark))
+	_check("Las marcas fijas tienen sus nombres de siempre %s" % str(renamed),
+		expected.size() == StoryMarks.FIXED.size() and renamed.is_empty())
+	var clash: Array[String] = []
+	for mark in StoryMarks.FIXED:
+		for prefix in StoryMarks.PREFIXES:
+			if String(mark).begins_with(prefix):
+				clash.append(String(mark))
+	_check("Ninguna marca fija empieza con un prefijo dinámico %s" % str(clash), clash.is_empty())
+	_check("Las funciones arman los nombres de siempre",
+		StoryMarks.gate(&"village_shortcut") == &"gate_village_shortcut"
+		and StoryMarks.cache(&"x") == &"cache_x"
+		and StoryMarks.hint(&"sweep") == &"hint_sweep"
+		and StoryMarks.villager(&"sweeper") == &"villager_sweeper"
+		and StoryMarks.villager_vow(&"child") == &"villager_child_vow"
+		and StoryMarks.vow(&"stop") == StoryMarks.VOW_STOP
+		and StoryMarks.vow(&"end") == StoryMarks.VOW_END)
+	_check("Una marca mal escrita no es de la lista", not StoryMarks.is_known(&"boss_varg") and not StoryMarks.is_known(&"gate_"))
+	Story.reset()
+	var sample: Array[StringName] = [&"hint_sweep", &"villager_sweeper", &"gate_village_shortcut", &"cache_x", &"story_pass_village"]
+	var all_marks: Array[StringName] = []
+	all_marks.append_array(StoryMarks.FIXED)
+	all_marks.append_array(sample)
+	for mark in all_marks:
+		Story.mark_heard(mark)
+	SaveGame.save(_player)
+	var data: Dictionary = SaveGame.read().get("story", {})
+	Story.reset()
+	Story.from_dict(data)
+	var missing: Array[String] = []
+	for mark in all_marks:
+		if not Story.heard(mark):
+			missing.append(String(mark))
+	_check("Guardar y cargar devuelve todas las marcas (faltan: %s)" % str(missing), missing.is_empty())
+	Story.reset()
 
 
 func _teleport(at: Vector3) -> void:

@@ -207,7 +207,7 @@ func _run() -> void:
 	vow = await _choose()
 	if _done:
 		return
-	Story.mark_heard(StringName("vow_%s" % vow))
+	Story.mark_heard(StoryMarks.vow(vow))
 	if not await _line(&"kael_scene", StringName("prologue_choice_%s" % vow)):
 		return
 	_close_up(_regent, 1.6, 1.3)

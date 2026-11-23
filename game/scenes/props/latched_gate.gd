@@ -40,7 +40,7 @@ func _ready() -> void:
 
 
 func story_flag() -> StringName:
-	return StringName("gate_%s" % gate_id)
+	return StoryMarks.gate(gate_id)
 
 
 func is_open() -> bool:
