@@ -41,6 +41,10 @@ const LANTERNS: PackedVector3Array = [
 ]
 ## La puerta atrancada del atajo en la aldea: se abre desde el sendero (Kael quita la tranca).
 const VILLAGE_DOOR_AT: Vector3 = Vector3(34.2, 0.0, 39.0)
+## La hoguera de la ropa de la aldea (humo visible desde el arco; crepita en el canal Ambiente, #33).
+const CLOTH_FIRE_AT: Vector3 = Vector3(5.0, 0.0, 50.0)
+const CLOTH_FIRE_DB: float = -12.0
+const CLOTH_FIRE_RANGE: float = 18.0
 
 const ROCK := Color(0.4, 0.38, 0.35)
 const CLIFF := Color(0.33, 0.32, 0.3)
@@ -185,15 +189,16 @@ func _build_village() -> void:
 	_box(Vector3(25.0, 3.85, 47.3), Vector3(7.0, 0.7, 0.4), HOUSE)
 	_ramp(Vector3(25.0, 0.0, 33.0), Vector3(25.0, 3.5, 40.5), 2.5, WOOD)
 	# La hoguera de la ropa (humo que se ve desde el arco).
-	_cylinder(Vector3(5.0, 0.4, 50.0), 1.6, 0.8, Color(0.15, 0.13, 0.12))
+	_cylinder(CLOTH_FIRE_AT + Vector3(0.0, 0.4, 0.0), 1.6, 0.8, Color(0.15, 0.13, 0.12))
 	var glow := OmniLight3D.new()
 	glow.light_color = Color(1.0, 0.55, 0.25)
 	glow.light_energy = 2.0
 	glow.omni_range = 9.0
-	glow.position = Vector3(5.0, 1.6, 50.0)
+	glow.position = CLOTH_FIRE_AT + Vector3(0.0, 1.6, 0.0)
 	add_child(glow)
 	for i in 4:
-		_ball(Vector3(5.0 + i * 0.6, 3.0 + i * 3.0, 50.0 - i * 0.8), 1.2 + i * 0.5, Color(0.5, 0.5, 0.5, 0.35))
+		_ball(CLOTH_FIRE_AT + Vector3(i * 0.6, 3.0 + i * 3.0, -i * 0.8), 1.2 + i * 0.5, Color(0.5, 0.5, 0.5, 0.35))
+	_fire_sound(CLOTH_FIRE_AT + Vector3(0.0, 0.6, 0.0))  # Crepita (#33); baja cuando alguien habla.
 	# Aldeanos (paso 4.2): no pelean; cada uno dice su frase una vez al pasar Kael. Fuera del camino (|x| >= 5;
 	# la calle va de x -4 a 4) y lejos de los dos grupos de soldados.
 	_villager(Vector3(-7.0, 0.0, 58.0), 0.0, &"road_man", StylePalette.SLATE)  # Mira al sur, el camino de la capital.
@@ -557,6 +562,28 @@ func _ball(at: Vector3, radius: float, color: Color) -> void:
 	mesh.position = at
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mesh)
+
+
+## Crepitar de un fuego sin fogata de descanso (la hoguera de la ropa), como el de Campfire pero en el canal
+## Ambiente. Si falta el sonido, no hace nada.
+func _fire_sound(at: Vector3) -> void:
+	var path: String = "res://assets/audio/sfx/fire_1.wav"
+	if not ResourceLoader.exists(path):
+		return
+	var stream := (load(path) as AudioStreamWAV).duplicate() as AudioStreamWAV
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_begin = 0
+	stream.loop_end = int(stream.get_length() * stream.mix_rate)
+	var crackle := AudioStreamPlayer3D.new()
+	crackle.name = "ClothFireSound"
+	crackle.bus = AudioMix.AMBIENT
+	crackle.stream = stream
+	crackle.volume_db = CLOTH_FIRE_DB
+	crackle.unit_size = 2.5
+	crackle.max_distance = CLOTH_FIRE_RANGE
+	crackle.position = at
+	crackle.autoplay = true
+	add_child(crackle)
 
 
 ## Casa maciza de 6 × 3,5 × 6 m con tejado a dos aguas (de vista); la puerta mira al camino (+X o −X).
