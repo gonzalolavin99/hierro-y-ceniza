@@ -151,16 +151,24 @@ func _gestures() -> void:
 	await _fresh()
 	var sweeper: Villager = _villager(&"sweeper")
 	var mother: Villager = _villager(&"mother")
-	var before: float = sweeper._broom.rotation.z
-	await _wait(0.3)
-	var after: float = sweeper._broom.rotation.z
-	_check("La escoba se mueve sola (Kael lejos)", absf(after - before) > 0.01 and absf(after) <= Villager.BROOM_SWING + 0.001)
+	# Varias lecturas cortas: con solo dos, separadas 0,3 s, a veces caen simétricas al pico y salen iguales (#35).
+	var first: float = sweeper._broom.rotation.z
+	var moved := false
+	var in_range := absf(first) <= Villager.BROOM_SWING + 0.001
+	for i in 3:
+		await _wait(0.1)
+		var now: float = sweeper._broom.rotation.z
+		moved = moved or absf(now - first) > 0.01
+		in_range = in_range and absf(now) <= Villager.BROOM_SWING + 0.001
+	_check("La escoba se mueve sola (Kael lejos)", moved and in_range)
 	var only_ok := true
 	for e in [&"old_man", &"road_man", &"child"]:
 		var v: Villager = _villager(e)
 		only_ok = only_ok and v._broom == null and v._covered == null
 	_check("Solo la barrendera lleva escoba y solo la madre tapa ojos", only_ok and mother._broom == null \
 			and mother._covered != null and mother._covered.event == &"")
+	var gap: float = _flat(mother).distance_to(_flat(mother._covered)) if mother._covered != null else -1.0
+	_check("La hija está junto a su madre (%.2f m)" % gap, gap > 0.6 and gap < 0.75)
 	await _wait(0.8)
 	_check("Con Kael lejos la mano está en reposo", mother._hand_pos.is_equal_approx(mother._hand_rest))
 	await _visit(mother)
