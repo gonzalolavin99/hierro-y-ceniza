@@ -12,10 +12,10 @@ concurrency:
   group: fabrica-itachi-${{ github.event.issue.number }}
   cancel-in-progress: false
 
+# Sin id-token: la acción usa el github_token que le pasamos y no necesita OIDC.
 permissions:
   contents: read
   issues: write
-  id-token: write
 
 jobs:
   opinion:
@@ -37,10 +37,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 1
-      - uses: anthropics/claude-code-action@v1
+      - uses: anthropics/claude-code-action@acfe7992852970efb4fee683d63d628e3e52df67 # v1.0.286
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,14 +67,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 1
       - name: Marcar que Itachi está planificando
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh issue edit ${{ github.event.issue.number }} --add-label "fabrica:planificando"
-      - uses: anthropics/claude-code-action@v1
+      - uses: anthropics/claude-code-action@acfe7992852970efb4fee683d63d628e3e52df67 # v1.0.286
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
