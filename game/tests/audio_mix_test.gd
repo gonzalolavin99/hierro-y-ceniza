@@ -2,7 +2,7 @@ extends Node
 ## Prueba automática de los canales de sonido y el ambiente (Cimientos, revisión del estudio): existen los 4
 ## canales; cada sonido va al suyo; la música y el ambiente bajan solos mientras alguien habla y luego vuelven;
 ## los efectos no cortan uno que sigue sonando ni repiten la misma variante dos veces seguidas; en el Paso de
-## Hierro sopla el viento, suena el arroyo y cantan pájaros lejanos (no en el duelo con un jefe).
+## Hierro sopla el viento, suena el arroyo y cantan pájaros lejanos (no en el duelo con un jefe) y crepita la hoguera de la ropa de la aldea.
 ## Ejecutar: Godot --headless --path game res://tests/audio_mix_test.tscn
 
 var _failures: int = 0
@@ -54,6 +54,9 @@ func _ready() -> void:
 		_check("Canta un pájaro lejos", ambience.sing() and ambience._bird_player.global_position.distance_to(get_tree().get_first_node_in_group("player").global_position) >= 18.0)
 		_check("Suena la música de exploración, suave y en el canal Música", ambience.explore.playing and ambience.explore.bus == AudioMix.MUSIC and ambience.explore.volume_db < -8.0)
 		_check("Sin peligro, la capa de tensión calla (%.0f dB)" % ambience.tension.volume_db, ambience.tension.volume_db <= Ambience.SILENT_DB + 1.0)
+		var cloth_fire := find_child("ClothFireSound", true, false) as AudioStreamPlayer3D  # El nivel es hijo de la prueba.
+		_check("La hoguera de la ropa crepita, en bucle y en el canal Ambiente", cloth_fire != null and cloth_fire.playing and cloth_fire.bus == AudioMix.AMBIENT and (cloth_fire.stream as AudioStreamWAV).loop_mode == AudioStreamWAV.LOOP_FORWARD)
+		_check("…y solo se oye cerca (%.0f m) de la hoguera" % (cloth_fire.max_distance if cloth_fire else 0.0), cloth_fire != null and cloth_fire.max_distance <= 20.0 and Vector2(cloth_fire.global_position.x, cloth_fire.global_position.z).distance_to(Vector2(IronPassLayout.CLOTH_FIRE_AT.x, IronPassLayout.CLOTH_FIRE_AT.z)) < 0.5)
 		# Un soldado ve a Kael de cerca: entra la tensión.
 		var player := get_tree().get_first_node_in_group("player") as Player
 		var soldier: Enemy

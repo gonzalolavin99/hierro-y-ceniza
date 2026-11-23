@@ -6,7 +6,7 @@ extends RefCounted
 ## - Musica: la música (duelo, prólogo, exploración).
 ## - Voz: lo que se habla (personajes, narrador, chillidos de Frank).
 ## - Efectos: golpes, pasos, armas, fuego cercano.
-## - Ambiente: los sonidos de fondo (viento, río, pájaros lejanos).
+## - Ambiente: los sonidos de fondo (viento, río, pájaros lejanos, la hoguera de la ropa de la aldea).
 
 const MUSIC: StringName = &"Musica"
 const VOICE: StringName = &"Voz"
