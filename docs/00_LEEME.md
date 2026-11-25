@@ -13,7 +13,7 @@
 | [07_DECISIONES_PENDIENTES](07_DECISIONES_PENDIENTES.md) | Lo que necesito que decidas |
 | [08_MEJORAS_FLUIDEZ_Y_ANIMACION](08_MEJORAS_FLUIDEZ_Y_ANIMACION.md) | Pulido paso a paso: qué se cambió, cómo se midió y qué probar |
 | [09_ESTADO_Y_TRASPASO](09_ESTADO_Y_TRASPASO.md) | **Empezar aquí en una sesión nueva**: estado, mapa del código, comandos, lecciones |
-| [10_GUION_VOCES](10_GUION_VOCES.md) | Guion para generar las voces con ElevenLabs (archivo generado, no editar a mano) |
+| [10_GUION_VOCES](10_GUION_VOCES.md) | Guion para generar las voces en local con Kokoro (archivo generado, no editar a mano) |
 | [11_GUION](11_GUION.md) | La historia completa: mundo, personajes, jefes, actos, pistas y los dos finales |
 | [12_PLAN_PASO_DE_HIERRO](12_PLAN_PASO_DE_HIERRO.md) | Plan del Hito 9: el mapa del Paso de Hierro, sus zonas y el orden de los pasos |
 | [13_EQUIPO_DE_UN_ESTUDIO](13_EQUIPO_DE_UN_ESTUDIO.md) | Departamentos y especialistas de un estudio, y quién cubre cada papel aquí |

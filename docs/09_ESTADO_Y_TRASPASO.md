@@ -383,7 +383,7 @@ Archivos usados: Great Sword Pack + One/Two Hand Sword Combo + Sword Fight One +
 - **Contenido:** nada de magia, demonios, espíritus, no-muertos, brujería, ocultismo, "almas" ni deidades.
   **Solo enemigos humanos.** Sin mundo abierto (zonas conectadas que se desbloquean).
 - Una sola dificultad: la IA debe ser lista, no tramposa. Jefes muy completos y distintos entre sí.
-- Sonido: nunca audio extraído de otros juegos. Voces futuras: ElevenLabs (inglés + subtítulos ES).
+- Sonido: nunca audio extraído de otros juegos. Voces: Kokoro en local (`tools/gen_voices.py`, `.wav`), en inglés + subtítulos ES.
 - Git: commit tras cada OK, mensajes en español, **sin ninguna mención a asistentes de IA**, correo noreply
   de GitHub. Los archivos de instrucciones de los asistentes (`CLAUDE.md`, `AGENTS.md`) están excluidos del
   repositorio (`.git/info/exclude`). Mixamo nunca se sube (licencia).
