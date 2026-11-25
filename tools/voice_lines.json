@@ -1027,6 +1027,18 @@
       "text": "Draw your blade."
     },
     {
+      "event": "warn",
+      "id": "soldier_warn_1",
+      "phrase": true,
+      "text": "Back! Stay away from the houses."
+    },
+    {
+      "event": "surrender",
+      "id": "soldier_surrender_1",
+      "phrase": true,
+      "text": "No... no more. Take it. I only wanted to go home."
+    },
+    {
       "event": "attack",
       "id": "soldier_attack_1",
       "phrase": false,
@@ -1195,6 +1207,99 @@
       "id": "varga_victory_2",
       "phrase": true,
       "text": "Go home. Tell him the Pass is closed."
+    }
+  ],
+  "villager": [
+    {
+      "event": "sweeper",
+      "id": "villager_sweeper_1",
+      "name": "Aldeana",
+      "phrase": true,
+      "text": "No one goes in. The captain said so. Not even for bread."
+    },
+    {
+      "event": "sweeper_after",
+      "id": "villager_sweeper_after_1",
+      "name": "Aldeana",
+      "phrase": true,
+      "text": "No one came to the door today. Nor yesterday."
+    },
+    {
+      "event": "old_man",
+      "id": "villager_old_man_1",
+      "name": "Viejo",
+      "phrase": true,
+      "text": "My son's blankets... they burned them yesterday. Better that than the other thing."
+    },
+    {
+      "event": "old_man_after",
+      "id": "villager_old_man_after_1",
+      "name": "Viejo",
+      "phrase": true,
+      "text": "No one burns the clothes anymore. She said it was the only thing that worked."
+    },
+    {
+      "event": "child",
+      "id": "villager_child_1",
+      "name": "Niño",
+      "phrase": true,
+      "text": "That's the captain. She brings us water when there's none."
+    },
+    {
+      "event": "child_after",
+      "id": "villager_child_after_1",
+      "name": "Niño",
+      "phrase": true,
+      "text": "Have you seen the captain? She didn't bring the water today."
+    },
+    {
+      "event": "road_man",
+      "id": "villager_road_man_1",
+      "name": "Aldeano",
+      "phrase": true,
+      "text": "They sent soldiers, not physicians. Again."
+    },
+    {
+      "event": "road_man_after",
+      "id": "villager_road_man_after_1",
+      "name": "Aldeano",
+      "phrase": true,
+      "text": "Now the Regent's men will come. Those don't warn you."
+    },
+    {
+      "event": "mother",
+      "id": "villager_mother_1",
+      "name": "Madre",
+      "phrase": true,
+      "text": "Don't look. He's one of the Regent's men."
+    },
+    {
+      "event": "mother_after",
+      "id": "villager_mother_after_1",
+      "name": "Madre",
+      "phrase": true,
+      "text": "Don't look, girl. He's leaving."
+    },
+    {
+      "event": "child_vow_stop",
+      "id": "villager_child_vow_stop_1",
+      "name": "Niño",
+      "phrase": true,
+      "text": "Are you here to stop them? The bad ones, I mean?"
+    },
+    {
+      "event": "mother_vow_stop",
+      "id": "villager_mother_vow_stop_1",
+      "name": "Madre",
+      "phrase": true,
+      "text": "Look, girl. Maybe this one listens."
+    },
+    {
+      "event": "mother_vow_end",
+      "id": "villager_mother_vow_end_1",
+      "name": "Madre",
+      "phrase": true,
+      "text": "Come, girl. Away from him."
     }
   ]
 }

@@ -6,6 +6,7 @@ Ejecutar desde G:\\Game con el Python del entorno de voz:
 
 Lee tools/voice_lines.json (lo genera game/tests/export_voice_script.gd a partir de voice_lines.gd)
 y escribe game/assets/audio/voice/<personaje>/<id>.wav, que el autoload Voice reproduce.
+Los aldeanos (`villager`) usan una voz por persona (NAME_VOICES).
 """
 import json
 import os
@@ -31,6 +32,15 @@ SPEAKERS = {
     "regent": {"voice": "bm_george", "lang": "en-gb", "speed": 0.92, "pitch": 1.0, "grit": 0.0, "reverb": 0.1},
     "lira": {"voice": "bf_emma", "lang": "en-gb", "speed": 1.0, "pitch": 1.14, "grit": 0.0, "reverb": 0.12},
     "narrator": {"voice": "bm_lewis", "lang": "en-gb", "speed": 0.82, "pitch": 0.93, "grit": 0.1, "reverb": 0.22},
+    "villager": {"voice": "bm_fable", "lang": "en-gb", "speed": 1.0, "pitch": 0.98, "grit": 0.05, "reverb": 0.0},
+}
+# Aldeanos: voz por persona (campo `name` de la línea); lo que falte sale de SPEAKERS.
+NAME_VOICES = {
+    "Aldeana": {"voice": "bf_alice", "lang": "en-gb", "speed": 0.95, "pitch": 0.97},
+    "Viejo": {"voice": "am_adam", "lang": "en-us", "speed": 0.88, "pitch": 0.9, "grit": 0.15},
+    "Niño": {"voice": "af_sky", "lang": "en-us", "speed": 1.05, "pitch": 1.2, "grit": 0.0},
+    "Madre": {"voice": "bf_lily", "lang": "en-gb", "speed": 1.0, "pitch": 1.0, "grit": 0.0},
+    "Aldeano": {},
 }
 # Duración máxima de los esfuerzos (gritos y quejidos), en segundos; los de muerte duran algo más.
 EFFORT_MAX = 1.1
@@ -94,8 +104,13 @@ def normalize(x, peak_db):
 SPELLED_LETTERS = ["eɪtʃ", "ˌɛm", "ˌɛn", "ˌɛf", "ˌɛs", "ˌiː", "dʒˌiː"]
 
 
+def voice_config(speaker, line):
+    """Voz de la línea: la del personaje, con lo propio de la persona si la línea trae `name`."""
+    return {**SPEAKERS[speaker], **NAME_VOICES.get(line.get("name", ""), {})}
+
+
 def check_pronunciation(kokoro, speaker, line):
-    phonemes = kokoro.tokenizer.phonemize(line["text"], SPEAKERS[speaker]["lang"])
+    phonemes = kokoro.tokenizer.phonemize(line["text"], voice_config(speaker, line)["lang"])
     spelled = [p for p in SPELLED_LETTERS if p in phonemes]
     if spelled:
         raise SystemExit(f"ERROR {line['id']}: «{line['text']}» se leería deletreado ({phonemes}). "
@@ -103,7 +118,7 @@ def check_pronunciation(kokoro, speaker, line):
 
 
 def render(kokoro, speaker, line):
-    cfg = SPEAKERS[speaker]
+    cfg = voice_config(speaker, line)
     text = line["text"]
     effort = not line["phrase"]
     # Los esfuerzos se dicen algo más rápido y con más energía.
