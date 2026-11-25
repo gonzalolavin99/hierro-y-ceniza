@@ -29,7 +29,7 @@ const ZONES: Dictionary = {
 	&"story_pass_village": &"zone_village", &"story_pass_forest": &"zone_forest",
 	&"story_pass_fortress": &"zone_fortress",
 }
-const REST_FIRST: StringName = &"frank_rest_first"
+const REST_FIRST: StringName = StoryMarks.FRANK_REST_FIRST
 ## Enemigo "por la espalda": más allá de este ángulo respecto a donde mira Kael, y a esta distancia o menos.
 const BEHIND_DOT: float = -0.25
 const BEHIND_RANGE: float = 15.0

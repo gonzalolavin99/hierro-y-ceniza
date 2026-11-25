@@ -32,7 +32,7 @@ func _ready() -> void:
 
 
 func story_flag() -> StringName:
-	return StringName("cache_%s" % cache_id)
+	return StoryMarks.cache(cache_id)
 
 
 func is_taken() -> bool:

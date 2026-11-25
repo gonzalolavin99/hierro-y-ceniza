@@ -36,7 +36,7 @@ func mark_heard(event: StringName) -> void:
 func should_play_prologue() -> bool:
 	var scene: Node = get_tree().current_scene
 	var main: String = GameInfo.GAME_SCENE
-	return scene != null and scene.scene_file_path == main and not heard(&"scene_prologue")
+	return scene != null and scene.scene_file_path == main and not heard(StoryMarks.SCENE_PROLOGUE)
 
 
 ## Al aparecer Kael: si es una partida nueva, empieza con la escena del prólogo.
@@ -57,7 +57,7 @@ func play_prologue() -> PrologueScene:
 
 
 func _on_prologue_finished() -> void:
-	mark_heard(&"scene_prologue")
+	mark_heard(StoryMarks.SCENE_PROLOGUE)
 	get_tree().paused = false
 	SaveGame.save(get_tree().get_first_node_in_group("player") as Player)
 

@@ -13,8 +13,8 @@ enum Pose { IDLE, CLING, COVER_EYES, POINT, SAD, TOUCH_CURLS }
 
 signal perched
 
-const STORY_MET: StringName = &"frank_met"
-const STORY_FREED: StringName = &"frank_freed"
+const STORY_MET: StringName = StoryMarks.FRANK_MET
+const STORY_FREED: StringName = StoryMarks.FRANK_FREED
 
 const FUR := Color(0.58, 0.37, 0.2)
 const FUR_DARK := Color(0.4, 0.24, 0.13)

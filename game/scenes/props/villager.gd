@@ -72,7 +72,7 @@ func current_event() -> StringName:
 
 
 func story_flag() -> StringName:
-	return StringName("villager_%s" % current_event())
+	return StoryMarks.villager(current_event())
 
 
 ## ¿Ya dijo la frase que toca ahora (o no tiene)?
@@ -82,9 +82,9 @@ func has_spoken() -> bool:
 
 ## Promesa del prólogo: "stop", "end" o "" (sin elegir / partida antigua).
 static func vow() -> String:
-	if Story.heard(&"vow_stop"):
+	if Story.heard(StoryMarks.VOW_STOP):
 		return "stop"
-	if Story.heard(&"vow_end"):
+	if Story.heard(StoryMarks.VOW_END):
 		return "end"
 	return ""
 
@@ -93,19 +93,19 @@ static func vow() -> String:
 func vow_event() -> StringName:
 	if event == &"" or vow() == "" or Story.heard(VargaArena.DEFEATED_FLAG):
 		return &""
-	if not Story.heard(StringName("villager_%s" % event)):
+	if not Story.heard(StoryMarks.villager(event)):
 		return &""
 	var e := StringName("%s_vow_%s" % [event, vow()])
 	return e if VoiceLines.LINES[&"villager"].has(e) else &""
 
 
 func vow_flag() -> StringName:
-	return StringName("villager_%s_vow" % event)
+	return StoryMarks.villager_vow(event)
 
 
 ## ¿Baja el dibujo? (la niña, tras su 1.ª frase, si Kael prometió acabar con ellos).
 func _drawing_lowered() -> bool:
-	return vow() == "end" and Story.heard(StringName("villager_%s" % event))
+	return vow() == "end" and Story.heard(StoryMarks.villager(event))
 
 
 ## La madre tapa los ojos de su hija cuando Kael está cerca (#29). Lo llama el nivel con las dos ya en el árbol.

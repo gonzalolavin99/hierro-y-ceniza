@@ -77,7 +77,7 @@ func _on_player_health(current: float, maximum: float) -> void:
 
 ## ¿Queda alguna vez para este aviso?
 func pending(id: StringName) -> bool:
-	return not Story.heard(StringName("hint_%s" % id)) and int(shown.get(id, 0)) < int(TIMES.get(id, 1))
+	return not Story.heard(StoryMarks.hint(id)) and int(shown.get(id, 0)) < int(TIMES.get(id, 1))
 
 
 func show_hint(id: StringName) -> bool:
@@ -85,7 +85,7 @@ func show_hint(id: StringName) -> bool:
 		return false
 	shown[id] = int(shown.get(id, 0)) + 1
 	if shown[id] >= int(TIMES.get(id, 1)):
-		Story.mark_heard(StringName("hint_%s" % id))
+		Story.mark_heard(StoryMarks.hint(id))
 	last_id = id
 	text = IronPassLayout.tip_text(TEXTS[id])
 	if _tween:
