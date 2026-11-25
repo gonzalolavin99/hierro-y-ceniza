@@ -111,7 +111,7 @@ cambiar de objetivo con el stick derecho.
   la madre dicen una frase según la promesa del prólogo (eventos `<x>_vow_stop`/`<x>_vow_end`, marca
   `villager_<x>_vow`); con «Acabaré con ellos» la niña calla y baja el dibujo. Prueba `villagers_test`.
   Gestos (#29): la barrendera barre (la escoba se balancea siempre; `BROOM_*`) y la madre tapa los ojos de su hija
-  con la mano cuando Kael está a ≤7 m (`cover_eyes_of`, solo visual, no se guarda).
+  con la mano cuando Kael está a ≤7 m (`cover_eyes_of`, solo visual, no se guarda). La hija está a ~0,64 m de la madre; `villagers_test` lo vigila (#35).
 - **Desertor** (`scenes/props/deserter.gd`, `Deserter`, grupo `deserters`): soldado de Varga apartado al oeste de la
   aldea. No es un `Enemy` (ni `Squad`, ni bombas, ni enemigo obligatorio): maniquí con colisión y `Hurtbox`. A ≤6 m
   de Kael suelta la espada, se arrodilla y dice `soldier_surrender_1` (una vez por partida). Marcas de `Story`
