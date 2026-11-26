@@ -22,7 +22,7 @@ https://github.com/gonzalolavin99/hierro-y-ceniza
 | 6 · El loop souls | ✅ **OK del jugador: Hito 6 cerrado.** Paso 1 (vendajes) hecho y probado (OK). Paso 2 (campamento) hecho y probado (OK). Paso 3 (experiencia y morral) hecho y probado (OK). Paso 4 (atributos) hecho y probado (OK). Paso 5 (guardado) hecho y probado (OK). Paso 6 (menú de pausa) hecho y probado (OK) |
 | 7 · Historia | ✅ **OK del jugador: Hito 7 cerrado.** Paso 1 (guion, `docs/11_GUION.md`) escrito y aprobado (OK); decisiones D18–D21 tomadas. Paso 2 (textos del narrador) hecho y probado (OK). Paso 3 (descripciones de objetos e inventario) hecho y probado (OK). Paso 4 (escena del prólogo) hecho y probado (OK) |
 | 8 · Primer jefe | ✅ **OK del jugador: Hito 8 cerrado.** Paso 1 (arena, rastrillo, barra de jefa y 2 golpes mortales) hecho y probado (OK). Pasos 2–3 (repertorio acrobático, cuchillos, fase 2 y voz propia) hechos y probados (OK). Paso 4 (reacciones a los golpes, escena previa, música, estandarte) hecho y probado (OK) |
-| 9 · Vertical slice | 🔨 Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho (el jugador siguió adelante). Paso 3 (nivel en bloques, `scenes/levels/iron_pass.tscn`, escena principal) hecho, **falta la segunda prueba y el OK del jugador**. Cimientos hechos (falta el OK a la guía de estilo y el cuerpo base CC0). Paso 6a (menú principal, versión, registro de errores y `.exe`; Release v0.9.4 de prueba) hecho, falta dárselo a 3–5 personas. **Paso 4 en curso:** 4.1 soldados que avisan, 4.2 aldeanos con su frase, 4.3 el desertor, 4.4 la lista de raciones, 4.5 la 2.ª frase tras Varga y 4.6 la promesa del prólogo, la lista única de marcas de la historia (#32), hechos (falta el OK del jugador y las voces Kokoro); faltan el bus de eventos `Events`, los gestos cotidianos, el murmullo de gente de la aldea (la hoguera ya crepita, #33) y las voces. Faltan pasos 5 (Bram), 6b (menú y opciones completos) y 7 (arte) |
+| 9 · Vertical slice | 🔨 Paso 1 (plan, `docs/12_PLAN_PASO_DE_HIERRO.md`) aprobado (OK). Paso 2 (prólogo nuevo) hecho (el jugador siguió adelante). Paso 3 (nivel en bloques, `scenes/levels/iron_pass.tscn`, escena principal) hecho, **falta la segunda prueba y el OK del jugador**. Cimientos hechos (falta el OK a la guía de estilo y el cuerpo base CC0). Paso 6a (menú principal, versión, registro de errores y `.exe`; Release v0.9.4 de prueba) hecho, falta dárselo a 3–5 personas. **Paso 4 en curso:** 4.1 soldados que avisan, 4.2 aldeanos con su frase, 4.3 el desertor, 4.4 la lista de raciones, 4.5 la 2.ª frase tras Varga y 4.6 la promesa del prólogo, la lista única de marcas de la historia (#32), hechos (falta el OK del jugador; guion y generador de las voces Kokoro listos, #43, falta generarlas); faltan el bus de eventos `Events`, los gestos cotidianos, el murmullo de gente de la aldea (la hoguera ya crepita, #33) y las voces. Faltan pasos 5 (Bram), 6b (menú y opciones completos) y 7 (arte) |
 | Extra · Frank | Paso 1 (Frank, la red y su escena) hecho y probado (OK). Paso 2 (consejos y bromas) hecho y probado (OK). Paso 3 (avisos, escondites y la despensa) hecho y probado (OK). Paso 4 (fruta para distraer) hecho y probado (OK). **Frank completo** para el juego actual |
 
 **Prioridad del jugador (D14):** combate y movimiento pulidos y variados → historia → diseño de personajes.
@@ -78,7 +78,7 @@ cambiar de objetivo con el stick derecho.
   soldado (al verte, al ganarte) y del narrador al morir ("No… no fue así."), con subtítulos en español abajo al
   centro. Probabilidad y pausa por evento para no saturar; turnos para que no se pisen: cada personaje dice una
   cosa a la vez, como mucho 2 voces a la vez (gana la más importante, `EVENT_PRIORITY`) y el narrador calla al resto. Audios generados en local y gratis con **Kokoro**
-  (licencia Apache 2.0) por `tools/gen_voices.py`: Kael `bm_daniel`, soldado `am_onyx`, anciano `bm_lewis`. Guion: docs/10.
+  (licencia Apache 2.0) por `tools/gen_voices.py`: Kael `bm_daniel`, soldado `am_onyx`, anciano `bm_lewis`, aldeanos (una voz por persona, `NAME_VOICES`). Guion: docs/10.
 - **IA que lee al jugador** (`enemies/enemy_mind.gd`): observa solo lo visible (desvíos, esquivas, guardia,
   ataques) y decide al empezar cada ataque. Desvías 3+ seguidos → retrasa golpes (espada arriba 0,25–0,5 s); 5+ →
   a veces amaga. Abusas del paso rápido → estocadas. Guardia 2 s+ → barridos y agarres. Atacas sin pausa →
@@ -498,6 +498,9 @@ objeciones.
    **4.6 hecho** (la promesa cambia a la niña y la madre, #21): falta el OK del jugador, el inglés definitivo y la
    voz Kokoro (3 ids `villager_*_vow_*_1` en `AUDIO_PENDING`). «Se apartan a su paso» (guion) queda para otra
    propuesta.
+   **Voces pendientes, listas para generar** (#43): el guion y el generador ya incluyen las 15 voces (soldado que
+   avisa y se rinde, 13 de aldeanos). Gonzalo corre `gen_voices.py` (fila «Voces» de la tabla de comandos), escucha
+   y sube los `.wav` de `soldier/` y `villager/`; luego se quitan de `AUDIO_PENDING`.
    **Gestos cotidianos (#29), parte:** barrer y tapar los ojos, hechos; falta el OK del jugador. Quedan sentarse y
    mirar a lo lejos.
 2. **Paso 5 — Bram**, gigante de unos 3 m (hueco ya preparado en el lazareto de la fortaleza).

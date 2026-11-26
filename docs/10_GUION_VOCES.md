@@ -49,6 +49,8 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `soldier_spot_1.wav` | spot | You shouldn't have come here. | Subtítulo: No deberías haber venido. |
 | `soldier_spot_2.wav` | spot | Halt! Who goes there? | Subtítulo: ¡Alto! ¿Quién va? |
 | `soldier_spot_3.wav` | spot | Draw your blade. | Subtítulo: Desenvaina. |
+| `soldier_warn_1.wav` | warn | Back! Stay away from the houses. | Subtítulo: ¡Atrás! No te acerques a las casas. |
+| `soldier_surrender_1.wav` | surrender | No... no more. Take it. I only wanted to go home. | Subtítulo: No… no más. Tómala. Yo solo quería volver a casa. |
 | `soldier_attack_1.wav` | attack | Rah! | rough grunt, middle-aged man swinging a sword |
 | `soldier_attack_2.wav` | attack | Hup! | short aggressive 'hup', middle-aged man |
 | `soldier_danger_1.wav` | danger | Raaaagh! | loud aggressive war cry, middle-aged man, before a powerful attack |
@@ -248,3 +250,23 @@ Guía de contenido (docs/04): nada sobrenatural en ningún texto. La prueba `voi
 | `frank_idle_2.wav` | idle | (chillido: squeak) | curious little squeak |
 | `frank_scared_1.wav` | scared | (chillido: alarm) | sharp startled shriek of a small monkey |
 | `frank_scared_2.wav` | scared | (chillido: squeak) | frightened squeak |
+
+## Aldeano (`villager`)
+
+*Voz:* Gente de la aldea, cansada y con miedo (la fiebre, los soldados del Regente). Hablan bajo y sin adornos. Una voz por persona: Aldeana `bf_alice`, Viejo `am_adam` (más lento y grave), Niño `af_sky` (más aguda), Madre `bf_lily`, Aldeano `bm_fable`.
+
+| Archivo | Cuándo suena | Lee | Cómo debería sonar / subtítulo |
+|---|---|---|---|
+| `villager_sweeper_1.wav` | sweeper | No one goes in. The captain said so. Not even for bread. | Subtítulo: No se entra. La capitana lo dijo. Ni por pan. |
+| `villager_sweeper_after_1.wav` | sweeper_after | No one came to the door today. Nor yesterday. | Subtítulo: Hoy nadie vino a la puerta. Ni ayer. |
+| `villager_old_man_1.wav` | old_man | My son's blankets... they burned them yesterday. Better that than the other thing. | Subtítulo: Las mantas de mi hijo… las quemaron ayer. Mejor eso que lo otro. |
+| `villager_old_man_after_1.wav` | old_man_after | No one burns the clothes anymore. She said it was the only thing that worked. | Subtítulo: Ya nadie quema la ropa. Ella decía que era lo único que servía. |
+| `villager_child_1.wav` | child | That's the captain. She brings us water when there's none. | Subtítulo: Es la capitana. Nos trae el agua cuando no hay. |
+| `villager_child_after_1.wav` | child_after | Have you seen the captain? She didn't bring the water today. | Subtítulo: ¿Ha visto a la capitana? Hoy no ha traído el agua. |
+| `villager_road_man_1.wav` | road_man | They sent soldiers, not physicians. Again. | Subtítulo: Mandaron soldados, no médicos. Otra vez. |
+| `villager_road_man_after_1.wav` | road_man_after | Now the Regent's men will come. Those don't warn you. | Subtítulo: Ahora vendrán los del Regente. Esos no avisan. |
+| `villager_mother_1.wav` | mother | Don't look. He's one of the Regent's men. | Subtítulo: No mires. Es de los del Regente. |
+| `villager_mother_after_1.wav` | mother_after | Don't look, girl. He's leaving. | Subtítulo: No mires, hija. Ya se va. |
+| `villager_child_vow_stop_1.wav` | child_vow_stop | Are you here to stop them? The bad ones, I mean? | Subtítulo: ¿Usted viene a detenerlos? ¿A los malos, digo? |
+| `villager_mother_vow_stop_1.wav` | mother_vow_stop | Look, girl. Maybe this one listens. | Subtítulo: Mire, hija. Quizá este sí escucha. |
+| `villager_mother_vow_end_1.wav` | mother_vow_end | Come, girl. Away from him. | Subtítulo: Ven, hija. Lejos de él. |

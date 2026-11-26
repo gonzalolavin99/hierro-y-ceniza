@@ -14,6 +14,7 @@ const VOICE_DESCRIPTIONS: Dictionary = {
 	&"lira": "Lira, la hermana de Kael, de niña (solo en el recuerdo del prólogo). Voz clara y dulce. Kokoro: `bf_emma`, más aguda.",
 	&"frank": "Frank, el tití: no habla, chilla. Chillidos sintetizados (tools/gen_frank.py, sin Kokoro): agudos, rápidos y tiernos. El subtítulo es lo que Kael entiende.",
 	&"narrator": "Kael anciano contando la historia junto a una fogata. Voz grave y gastada; habla despacio, dubitativo al corregirse. Kokoro: `bm_lewis`, más lenta y grave, con eco de sala.",
+	&"villager": "Gente de la aldea, cansada y con miedo (la fiebre, los soldados del Regente). Hablan bajo y sin adornos. Una voz por persona: Aldeana `bf_alice`, Viejo `am_adam` (más lento y grave), Niño `af_sky` (más aguda), Madre `bf_lily`, Aldeano `bm_fable`.",
 }
 
 
@@ -70,6 +71,8 @@ func _init() -> void:
 			for line: Dictionary in VoiceLines.LINES[speaker][event]["lines"]:
 				var entry: Dictionary = {"id": line["id"], "event": String(event), "text": line.get("en", line.get("say", "")),
 					"phrase": line.has("en")}
+				if line.has("name"):  # Aldeanos: gen_voices.py elige la voz por persona.
+					entry["name"] = line["name"]
 				if line.has("chirp"):  # Frank: lo sintetiza tools/gen_frank.py (largo según el subtítulo).
 					entry["chirp"] = line["chirp"]
 					entry["chars"] = String(line.get("es", "")).length()
