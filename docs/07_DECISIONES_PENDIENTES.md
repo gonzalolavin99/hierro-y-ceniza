@@ -23,7 +23,7 @@
 | D11 | **Sin mundo abierto**: zonas conectadas que se desbloquean de a poco. **Solo enemigos humanos** (sin animales) | 2026-10-06 |
 | D13 | **Una sola dificultad**; la IA debe ser inteligente | 2026-10-06 |
 | D14 | Prioridad: 1) combate/movimiento pulido y variado, 2) historia, 3) diseño de personajes. Mundo secundario | 2026-10-06 |
-| D15 | Voces (narrador, gritos, esfuerzos) con **ElevenLabs** | 2026-10-06 |
+| D15 | ~~Voces (narrador, gritos, esfuerzos) con ElevenLabs~~ → **sustituida por Kokoro** en local (2026-11); ver [09_ESTADO_Y_TRASPASO](09_ESTADO_Y_TRASPASO.md) | 2026-10-06 |
 | D16 | Repositorio **público** en GitHub | 2026-10-06 |
 | D17 | Enemigos comunes simples; **jefes muy completos**, cada uno con estilo y repertorio propio | 2026-10-06 |
 | D18 | Historia ([11_GUION](11_GUION.md)): reino de Vaelmar, la fiebre "la Ceniza" (natural) como centro; nombres del guion fijados | 2026-11-05 |
