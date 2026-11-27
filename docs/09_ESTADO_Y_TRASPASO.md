@@ -112,6 +112,7 @@ cambiar de objetivo con el stick derecho.
   `villager_<x>_vow`); con «Acabaré con ellos» la niña calla y baja el dibujo. Prueba `villagers_test`.
   Gestos (#29): la barrendera barre (la escoba se balancea siempre; `BROOM_*`) y la madre tapa los ojos de su hija
   con la mano cuando Kael está a ≤7 m (`cover_eyes_of`, solo visual, no se guarda). La hija está a ~0,64 m de la madre; `villagers_test` lo vigila (#35).
+  Con «Acabaré con ellos» (`vow_end`, también tras Varga) se apartan hasta 0,6 m si Kael pasa a <1,8 m y vuelven a >4 m, con un rayo contra los muros; la hija copia a la madre (#41, solo visual, no se guarda).
 - **Desertor** (`scenes/props/deserter.gd`, `Deserter`, grupo `deserters`): soldado de Varga apartado al oeste de la
   aldea. No es un `Enemy` (ni `Squad`, ni bombas, ni enemigo obligatorio): maniquí con colisión y `Hurtbox`. A ≤6 m
   de Kael suelta la espada, se arrodilla y dice `soldier_surrender_1` (una vez por partida). Marcas de `Story`
@@ -496,8 +497,8 @@ objeciones.
    **4.5 hecho** (2.ª frase de los aldeanos tras Varga, #15): falta el OK del jugador, el inglés definitivo y la
    voz Kokoro (5 ids `villager_*_after_1` en `AUDIO_PENDING`).
    **4.6 hecho** (la promesa cambia a la niña y la madre, #21): falta el OK del jugador, el inglés definitivo y la
-   voz Kokoro (3 ids `villager_*_vow_*_1` en `AUDIO_PENDING`). «Se apartan a su paso» (guion) queda para otra
-   propuesta.
+   voz Kokoro (3 ids `villager_*_vow_*_1` en `AUDIO_PENDING`). Se apartan a su paso solo con «Acabaré con ellos» (#41):
+   falta el OK del jugador.
    **Voces pendientes, listas para generar** (#43): el guion y el generador ya incluyen las 15 voces (soldado que
    avisa y se rinde, 13 de aldeanos). Gonzalo corre `gen_voices.py` (fila «Voces» de la tabla de comandos), escucha
    y sube los `.wav` de `soldier/` y `villager/`; luego se quitan de `AUDIO_PENDING`.
