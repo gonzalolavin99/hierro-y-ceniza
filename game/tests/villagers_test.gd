@@ -1,7 +1,7 @@
 extends Node
 ## Prueba automática de los aldeanos, la promesa del prólogo y el desertor (Paso 4.2 a 4.6), en el nivel real
-## (el Paso de Hierro): cada aldeano dice su frase una sola vez (antes y después de Varga), la niña y la madre
-## reaccionan a la promesa, con «Acabaré con ellos» se apartan a su paso, el desertor se rinde, queda perdonado o muere (también al morir o descansar con él
+## (el Paso de Hierro): los aldeanos se asustan ante un soldado en alerta (#46), cada aldeano dice su frase una sola vez (antes y después de Varga), la niña y la madre
+## reaccionan a la promesa, con «Acabaré con ellos» se apartan a su paso (#41), el desertor se rinde, queda perdonado o muere (también al morir o descansar con él
 ## rendido), y todo se guarda con la partida.
 ## Usa un archivo de guardado de prueba aparte y no necesita audio real.
 ## Ejecutar: Godot --headless --path game res://tests/villagers_test.tscn
@@ -29,6 +29,7 @@ func _ready() -> void:
 	await _vow()
 	await _gestures()
 	await _dodge_case()
+	await _scare()
 	await _deserter_case()
 	await _deserter_reset_case()
 	Engine.time_scale = 1.0
@@ -265,6 +266,36 @@ func _place_villager(v: Villager, at: Vector3) -> void:
 	v.global_position = at
 	v.reset_physics_interpolation()
 	await _wait(0.1)
+
+
+# --- 6. El susto ante un soldado en alerta (#46) -----------------------------------------------------------
+
+func _scare() -> void:
+	await _fresh()
+	var v: Villager = _villager(&"old_man")
+	var e: Enemy = get_tree().get_nodes_in_group("enemies")[0] as Enemy
+	_check("Hay un enemigo para el susto", e != null)
+	if e == null:
+		return
+	_check("Sin alertas el aldeano está tranquilo", not v.is_scared() and absf(v._body.scale.y - 1.0) <= 0.01)
+	# A 20 m: no se asusta.
+	e.alerted = false
+	e.global_position = v.global_position + Vector3(20.0, 0.0, 0.0)
+	e.alert()
+	await _wait(0.5)
+	_check("Un soldado en alerta a 20 m no lo asusta", not v.is_scared() and absf(v._body.scale.y - 1.0) <= 0.01)
+	# A 6 m: se asusta, se encoge y aparta la mirada.
+	e.alerted = false
+	e.global_position = v.global_position + Vector3(6.0, 0.0, 0.0)
+	e.alert()
+	await _wait(0.5)
+	_check("Un soldado en alerta a 6 m lo asusta (escala %.2f)" % v._body.scale.y,
+			v.is_scared() and v._body.scale.y < 1.0 - Villager.SCARE_SQUASH * 0.5)
+	# 4 s sin alertas: vuelve a su postura.
+	await _wait(Villager.SCARE_TIME + 0.2)
+	_check("Pasado el susto vuelve a su postura (escala %.2f)" % v._body.scale.y,
+			not v.is_scared() and absf(v._body.scale.y - 1.0) <= 0.01)
+	e.alerted = false
 
 
 # --- 3. El desertor (paso 4.3) --------------------------------------------------------------------------------
