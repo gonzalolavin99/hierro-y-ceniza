@@ -27,6 +27,7 @@ Squad="*res://scripts/systems/squad.gd"
 Camps="*res://scripts/systems/camps.gd"
 SaveGame="*res://scripts/systems/save_game.gd"
 Story="*res://scripts/systems/story.gd"
+Events="*res://scripts/systems/events.gd"
 
 [debug]
 

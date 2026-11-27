@@ -8,6 +8,7 @@ extends Node3D
 ## del prólogo (paso 4.6). La cabeza lo sigue con la mirada (como mucho 60°).
 ## Gestos (#29): la barrendera barre (la escoba se balancea siempre) y la madre tapa los ojos de su hija cuando
 ## Kael está cerca (`cover_eyes_of`).
+## Susto (#46): si un enemigo entra en alerta a ≤ SCARE_RANGE (señal Events.enemy_alerted), se encoge y aparta la mirada SCARE_TIME s.
 ## Se construye en código, con bloques de colores de StylePalette (el arte llega en el paso 7).
 
 ## Distancia en el suelo a la que habla.
@@ -32,6 +33,13 @@ const BROOM_TILT: float = 0.35
 const SHOULDER: Vector3 = Vector3(0.2, 1.25, 0.0)
 const HAND_REST: Vector3 = Vector3(0.24, 0.75, 0.08)
 const HAND_SPEED: float = 1.5  # m/s
+## Susto (#46): si un enemigo entra en alerta a esta distancia, el aldeano se encoge y aparta la mirada.
+const SCARE_RANGE: float = 12.0
+## Segundos que dura el susto sin nuevas alertas.
+const SCARE_TIME: float = 4.0
+## Cuánto se encoge el cuerpo (escala vertical: 1 = normal).
+const SCARE_SQUASH: float = 0.12
+const SCARE_SPEED: float = 3.0  # fracción de encogido por segundo (≈0,3 s en bajar)
 
 ## Evento en VoiceLines.LINES[&"villager"]. Vacío = no habla.
 @export var event: StringName = &""
@@ -53,12 +61,17 @@ var _hand: MeshInstance3D
 var _shoulder: Vector3
 var _hand_rest: Vector3
 var _hand_pos: Vector3
+var _body: MeshInstance3D  # el cuerpo (cápsula), para encogerlo
+var _scare_left: float = 0.0  # s de susto restantes (0 = tranquilo)
+var _scare_from: Vector3  # dónde estaba el enemigo (se guarda la posición, no el nodo: puede morir)
+var _cower: float = 0.0  # 0 = de pie, 1 = encogido del todo
 
 
 func _ready() -> void:
 	add_to_group("villagers")
 	_build()
 	Story.changed.connect(_sync)
+	Events.enemy_alerted.connect(_on_enemy_alerted)
 	_sync.call_deferred()
 
 
@@ -148,6 +161,21 @@ func _place_arm() -> void:
 	_hand.basis = b
 
 
+## Un enemigo entró en alerta (#46): si está cerca, el aldeano se asusta (o se renueva el susto).
+func _on_enemy_alerted(enemy: Node3D) -> void:
+	if enemy == null or not is_instance_valid(enemy) or not is_inside_tree():
+		return
+	if enemy.global_position.distance_to(global_position) > SCARE_RANGE:
+		return
+	_scare_from = enemy.global_position
+	_scare_left = SCARE_TIME
+
+
+## ¿Está asustado ahora?
+func is_scared() -> bool:
+	return _scare_left > 0.0
+
+
 func _sync() -> void:
 	_player = get_tree().get_first_node_in_group("player") as Player
 
@@ -157,6 +185,13 @@ func _process(delta: float) -> void:
 	if _broom != null:
 		_broom_time = fmod(_broom_time + delta, BROOM_PERIOD)
 		_broom.rotation.z = BROOM_SWING * sin(_broom_time * TAU / BROOM_PERIOD)
+	# Susto (#46): cuenta atrás y encogerse / volver poco a poco.
+	_scare_left = maxf(_scare_left - delta, 0.0)
+	_cower = move_toward(_cower, 1.0 if is_scared() else 0.0, SCARE_SPEED * delta)
+	var squash: float = 1.0 - SCARE_SQUASH * _cower
+	_body.scale.y = squash
+	_body.position.y = 0.725 * size * squash  # los pies siguen en el suelo
+	_head.position.y = 1.6 * size - 1.45 * size * SCARE_SQUASH * _cower  # la cabeza baja con el cuerpo
 	if _player == null or not is_instance_valid(_player):
 		return
 	var d: Vector3 = _player.global_position - global_position
@@ -164,7 +199,11 @@ func _process(delta: float) -> void:
 	var near: bool = absf(d.y) < 2.0
 	# La cabeza mira a Kael (la cara está en +Z local).
 	var target: float = 0.0
-	if flat <= LOOK_RANGE and near:
+	if is_scared():
+		# Aparta la mirada del enemigo (la cara está en +Z local).
+		var away: Vector3 = global_basis.inverse() * (global_position - _scare_from)
+		target = clampf(atan2(away.x, away.z), -HEAD_TURN_MAX, HEAD_TURN_MAX)
+	elif flat <= LOOK_RANGE and near:
 		var local: Vector3 = global_basis.inverse() * d
 		target = clampf(atan2(local.x, local.z), -HEAD_TURN_MAX, HEAD_TURN_MAX)
 	_head.rotation.y = move_toward(_head.rotation.y, target, HEAD_TURN_SPEED * delta)
@@ -210,7 +249,7 @@ func _build() -> void:
 	var body := CapsuleMesh.new()
 	body.radius = 0.26 * size
 	body.height = 1.45 * size
-	_box(self, body, robe, Vector3(0.0, 0.725 * size, 0.0))
+	_body = _box(self, body, robe, Vector3(0.0, 0.725 * size, 0.0))
 	_head = Node3D.new()
 	_head.position = Vector3(0.0, 1.6 * size, 0.0)
 	add_child(_head)
