@@ -566,7 +566,7 @@ func _on_health_depleted() -> void:
 
 # --- Sigilo ----------------------------------------------------------------------
 
-## Te descubre: entra en combate y avisa a los compañeros cercanos.
+## Te descubre: entra en combate y avisa a los compañeros cercanos y al resto del mundo (Events.enemy_alerted: los aldeanos se asustan).
 func alert() -> void:
 	if alerted or is_dead():
 		return
@@ -582,6 +582,7 @@ func alert() -> void:
 		if other and other != self and not other.alerted and not other.is_dead() \
 				and other.global_position.distance_to(global_position) <= ALARM_RADIUS:
 			other.hear_alarm(0.4)
+	Events.enemy_alerted.emit(self)
 	var state: StringName = state_name()
 	if state == &"Patrol" or state == &"Suspicious" or state == &"Idle" or state == &"Warn":
 		state_machine.transition_to(&"Chase")

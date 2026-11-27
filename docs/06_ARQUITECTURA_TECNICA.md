@@ -31,7 +31,7 @@ G:\Game\
 3. **Datos separados del código** — el daño de una espada o la vida de un bandido viven en Resources
    (`.tres`), para poder ajustar balance sin tocar scripts.
 4. **Señales (signals)** para comunicar sistemas (ej. `health.died` → HUD, sonido, experiencia).
-5. **Autoloads** mínimos: `GameState` (progreso), `SaveSystem`, `Events` (bus de eventos), `Settings`.
+5. **Autoloads** mínimos: `GameState` (progreso), `SaveSystem`, `Events` (bus de eventos), `Settings`. (`Events` existe desde #46, con una sola señal: `enemy_alerted`)
 6. **Escenas de prueba** por sistema (`tests/`) para probar una cosa aislada.
 
 ## Convenciones de código (GDScript)
