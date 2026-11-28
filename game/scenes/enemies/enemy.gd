@@ -52,6 +52,8 @@ signal danger_warned(kind: int)
 @export var ranged_cooldown: float = 3.0
 ## Multiplicador del daño de sus golpes.
 @export var damage_scale: float = 1.0
+## Cuánto lo empujan los golpes (1 = normal; 0 = no se mueve, como un gigante).
+@export var knockback_scale: float = 1.0
 ## ¿Puede bloquear con su arma? (el arquero no).
 @export var can_block: bool = true
 ## Distancia a la que se para al lanzar un golpe (más con armas largas como la lanza).
@@ -414,7 +416,7 @@ func receive_hit(hit: HitData) -> int:
 	# Fuera de sus ataques (que aguantan el golpe, como en Sekiro), el golpe se nota: retrocede y se
 	# sacude, más cuanto más fuerte.
 	if state != &"Attack" and state != &"Broken" and state != &"Rally":
-		push = -to_attacker * (2.0 + hit.damage * 0.07)
+		push = -to_attacker * (2.0 + hit.damage * 0.07) * knockback_scale
 		if hit.damage >= 18.0:
 			body.play_reaction(&"hit", 0.45, 0.05, 1.6)
 		else:
@@ -440,7 +442,7 @@ func receive_blast(origin: Vector3, damage: float, posture_damage: float) -> voi
 	Voice.say(voice, &"hurt", lock_point())
 	CombatFX.blood(global_position + Vector3.UP * 1.2)
 	body.flinch(-away, 1.2)
-	push = away * 5.0
+	push = away * 5.0 * knockback_scale
 	blocks_in_a_row = 0
 	if not posture.is_broken and not is_dead() and state_name() != &"Broken":
 		state_machine.transition_to(&"Recoil")

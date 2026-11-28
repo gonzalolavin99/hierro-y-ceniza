@@ -286,6 +286,7 @@ Plan completo y orden de los pasos: `docs/12_PLAN_PASO_DE_HIERRO.md`.
 - [ ] **Paso 5: Bram**, gigante de unos 3 m: antes, los ataques pasan a archivos de datos (`.tres`) y se crea la
       base `BossArena`; golpes lentos que se esquivan mejor que se paran, cadena y grillete; 2–6 intentos;
       **da el Golpe de Martillo** y la llave.
+      **5.1 hecho, falta el OK del jugador:** Bram (escena `bram.tscn`, ~3 m) está quieto en el lazareto con su barra de jefe; sin ataques ni IA.
 - [ ] **Paso 6b: menú y opciones completos**: gráficos, sangre, subtítulos, volumen por canal (`settings.cfg`);
       pausa automática al desconectar el mando.
 - [ ] **Paso 7: arte, en partes**: 7b prueba de belleza (una esquina) → 7c Kael (y reacciones nuevas a los
