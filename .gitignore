@@ -15,3 +15,7 @@ game/assets/animations/*.tres
 
 # El .exe exportado (se genera, no se guarda en Git)
 build/
+
+# Python (caché que genera correr los scripts de tools/)
+__pycache__/
+*.pyc
