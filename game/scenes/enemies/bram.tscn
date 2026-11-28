@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/training_soldier.tscn" id="1_base"]
+
+[sub_resource type="CapsuleShape3D" id="bram_body_shape"]
+radius = 0.65
+height = 3.0
+
+[sub_resource type="CapsuleShape3D" id="bram_hurt_shape"]
+radius = 0.8
+height = 3.1
+
+[node name="Bram" instance=ExtResource("1_base")]
+display_name = "Bram, el Carcelero"
+boss = true
+deathblows = 1
+voice = &"bram"
+xp_reward = 0
+walk_speed = 0.0
+turn_speed = 0.0
+aggro_range = 0.0
+can_block = false
+evade_chance = 0.0
+knockback_scale = 0.0
+
+[node name="Collision" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("bram_body_shape")
+
+[node name="Mannequin" parent="Model"]
+transform = Transform3D(1.65, 0, 0, 0, 1.65, 0, 0, 0, 1.65, 0, 0, 0)
+weapon = 3
+body_color = Color(0.3, 0.27, 0.24, 1)
+
+[node name="Shape" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+shape = SubResource("bram_hurt_shape")
+
+[node name="LockPoint" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
+
+[node name="Health" parent="."]
+max_health = 360.0
+
+[node name="Posture" parent="."]
+max_posture = 200.0
+regen_rate = 18.0

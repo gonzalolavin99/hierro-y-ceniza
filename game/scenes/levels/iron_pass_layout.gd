@@ -374,13 +374,16 @@ func _build_fortress() -> void:
 		_box(at + Vector3(0.0, top + 0.6, 0.0), Vector3(1.2, 1.2, 1.2), WOOD)
 	_enemy(SOLDIER, Vector3(-6.0, top, -98.0), 180.0)
 	_enemy(SPEARMAN, Vector3(5.0, top, -104.0), 180.0)
-	# El lazareto (oeste) y su patio: aquí estará Bram.
+	# El lazareto (oeste) y su patio, con Bram en la puerta (Hito 9, paso 5.1: quieto, sin ataques).
 	_box(Vector3(-20.0, top + 2.5, -132.0), Vector3(18.0, 5.0, 12.0), HOUSE)
 	_box(Vector3(-20.0, top + 5.2, -132.0), Vector3(19.0, 0.4, 13.0), ROOF)
 	_cloth(Vector3(-20.0, top + 1.2, -125.95), Vector3(2.0, 2.4, 0.05))
 	_sign(Vector3(-20.0, top + 6.5, -132.0), "Lazareto")
-	# Bram aún no existe (Hito 9, paso 5): que el cartel lo diga claro (aviso del jugador: "no está, ¿qué hago?").
-	_sign(Vector3(-20.0, top + 2.6, -117.0), "Aquí luchará Bram, el Carcelero\n(aún no está hecho: llegará en el paso 5)\nSigue hacia el este, al patio de Varga")
+	var yard := BramYard.new()
+	yard.name = "BramYard"
+	yard.position = Vector3(-20.0, top, -122.0)
+	yard.rotation.y = PI  # Mira al sur, hacia por donde llega Kael.
+	add_child(yard)
 
 
 # --- El atajo: portón este y sendero hasta la aldea -----------------------------

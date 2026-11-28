@@ -80,6 +80,16 @@ func _ready() -> void:
 	_check("La despensa y las dos puertas del atajo", get_tree().get_nodes_in_group("latched_gates").size() == 3)
 	_check("Tres escondites: dos en el bosque y uno en la casa del pozo", get_tree().get_nodes_in_group("hidden_caches").size() == 3)
 	_check("El patio de Varga", get_tree().get_nodes_in_group("arenas").size() == 1)
+	var bram: Enemy = null
+	for enemy in enemies:
+		if enemy.display_name == "Bram, el Carcelero":
+			bram = enemy
+	_check("Bram está en el patio del lazareto", bram != null and bram.boss and bram.global_position.distance_to(Vector3(-20, IronPassLayout.FORT_Y, -122)) < 1.0)
+	if bram != null:
+		var alto: float = ((bram.get_node("Collision") as CollisionShape3D).shape as CapsuleShape3D).height
+		_check("…y mide unos 3 m (%.2f)" % alto, alto > 2.8 and alto < 3.2 and bram.body.scale.y > 1.5)
+		_check("…quieto: no ataca ni se defiende", bram.state_name() == &"Scripted" and not bram.can_block)
+	_check("Ya no está el cartel de «aún no está hecho»", find_children("*", "Label3D", true, false).all(func(l: Node) -> bool: return not (l as Label3D).text.contains("aún no está hecho")))
 	_check("Cuatro narraciones de zona", get_tree().get_nodes_in_group("narration_zones").size() == 4)
 
 	var misplaced: Array[String] = []
