@@ -8,6 +8,8 @@ extends Node3D
 ## del prólogo (paso 4.6). La cabeza lo sigue con la mirada (como mucho 60°).
 ## Gestos (#29): la barrendera barre (la escoba se balancea siempre) y la madre tapa los ojos de su hija cuando
 ## Kael está cerca (`cover_eyes_of`).
+## Con la promesa «Acabaré con ellos» se apartan hasta DODGE_DISTANCE cuando Kael pasa a menos de DODGE_RANGE y
+## vuelven a más de RETURN_RANGE (#41); la hija copia a la madre. Solo visual, no se guarda.
 ## Susto (#46): si un enemigo entra en alerta a ≤ SCARE_RANGE (señal Events.enemy_alerted), se encoge y aparta la mirada SCARE_TIME s.
 ## Se construye en código, con bloques de colores de StylePalette (el arte llega en el paso 7).
 
@@ -33,6 +35,14 @@ const BROOM_TILT: float = 0.35
 const SHOULDER: Vector3 = Vector3(0.2, 1.25, 0.0)
 const HAND_REST: Vector3 = Vector3(0.24, 0.75, 0.08)
 const HAND_SPEED: float = 1.5  # m/s
+## Apartarse (#41, solo si Kael prometió «Acabaré con ellos»; también tras Varga). Distancias en el suelo.
+const DODGE_RANGE: float = 1.8    # Kael más cerca que esto: se aparta
+const RETURN_RANGE: float = 4.0   # Kael más lejos que esto: vuelve a su sitio
+const DODGE_DISTANCE: float = 0.6 # cuánto se aparta como mucho
+const DODGE_SPEED: float = 1.5    # m/s
+## Radio de la colisión y holgura contra los muros.
+const BODY_RADIUS: float = 0.3
+const WALL_MARGIN: float = 0.05
 ## Susto (#46): si un enemigo entra en alerta a esta distancia, el aldeano se encoge y aparta la mirada.
 const SCARE_RANGE: float = 12.0
 ## Segundos que dura el susto sin nuevas alertas.
@@ -61,6 +71,13 @@ var _hand: MeshInstance3D
 var _shoulder: Vector3
 var _hand_rest: Vector3
 var _hand_pos: Vector3
+## Sitio original (global) y desplazamiento actual en el suelo (#41).
+var _home: Vector3
+var _dodge: Vector3 = Vector3.ZERO
+var _dodge_goal: Vector3 = Vector3.ZERO
+## La hija: copia el desplazamiento de su madre en vez de calcular el suyo. null = se mueve sola.
+var _leader: Villager
+var _wall: StaticBody3D
 var _body: MeshInstance3D  # el cuerpo (cápsula), para encogerlo
 var _scare_left: float = 0.0  # s de susto restantes (0 = tranquilo)
 var _scare_from: Vector3  # dónde estaba el enemigo (se guarda la posición, no el nodo: puede morir)
@@ -70,6 +87,7 @@ var _cower: float = 0.0  # 0 = de pie, 1 = encogido del todo
 func _ready() -> void:
 	add_to_group("villagers")
 	_build()
+	_home = global_position
 	Story.changed.connect(_sync)
 	Events.enemy_alerted.connect(_on_enemy_alerted)
 	_sync.call_deferred()
@@ -124,6 +142,7 @@ func _drawing_lowered() -> bool:
 ## La madre tapa los ojos de su hija cuando Kael está cerca (#29). Lo llama el nivel con las dos ya en el árbol.
 func cover_eyes_of(other: Villager) -> void:
 	_covered = other
+	other._leader = self
 	var side: float = -1.0 if to_local(other.global_position).x < 0.0 else 1.0
 	_shoulder = Vector3(SHOULDER.x * side, SHOULDER.y, SHOULDER.z) * size
 	_hand_rest = Vector3(HAND_REST.x * side, HAND_REST.y, HAND_REST.z) * size
@@ -159,6 +178,58 @@ func _place_arm() -> void:
 	var b := Basis.looking_at(dir, up)
 	_arm.transform = Transform3D(b.scaled_local(Vector3(1.0, 1.0, length)), _shoulder)
 	_hand.basis = b
+
+
+## ¿Se aparta de Kael? Solo con la promesa «Acabaré con ellos» (#41; guion: «se apartan a su paso»).
+static func wants_dodge() -> bool:
+	return vow() == "end"
+
+
+## Cuánto puede apartarse en la dirección `dir` (normalizada, plana) sin meterse en un muro.
+## La madre mira también por su hija, para que ninguna entre en una casa.
+func free_distance(dir: Vector3) -> float:
+	var exclude: Array[RID] = [_wall.get_rid()]
+	if _covered != null:
+		exclude.append(_covered._wall.get_rid())
+	var reach: float = _ray_reach(_home, dir, exclude)
+	if _covered != null:
+		reach = minf(reach, _ray_reach(_covered._home, dir, exclude))
+	return reach
+
+
+## Un rayo corto desde `start` en la dirección `dir` contra el mundo (capa 1; Kael está en la 2).
+func _ray_reach(start: Vector3, dir: Vector3, exclude: Array[RID]) -> float:
+	var from: Vector3 = start + Vector3.UP * BODY_HEIGHT * 0.5
+	var to: Vector3 = from + dir * (DODGE_DISTANCE + BODY_RADIUS + WALL_MARGIN)
+	var query := PhysicsRayQueryParameters3D.create(from, to, 1, exclude)
+	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return DODGE_DISTANCE
+	return minf(DODGE_DISTANCE, maxf(0.0, from.distance_to(hit.position) - BODY_RADIUS - WALL_MARGIN))
+
+
+func _physics_process(delta: float) -> void:
+	if _leader != null and is_instance_valid(_leader):
+		# La hija sigue a su madre: mismo desplazamiento, así no se separan.
+		global_position = _home + _leader._dodge
+		return
+	_dodge_goal = _dodge_target()
+	_dodge = _dodge.move_toward(_dodge_goal, DODGE_SPEED * delta)
+	global_position = _home + _dodge
+
+
+## Hacia dónde apartarse ahora. Entre DODGE_RANGE y RETURN_RANGE se queda donde iba (sin temblar en el borde).
+func _dodge_target() -> Vector3:
+	if not wants_dodge() or _player == null or not is_instance_valid(_player) or _player.is_dead():
+		return Vector3.ZERO
+	var d: Vector3 = _player.global_position - global_position
+	var flat := Vector2(d.x, d.z)
+	if absf(d.y) >= 2.0 or flat.length() > RETURN_RANGE:
+		return Vector3.ZERO
+	if flat.length() >= DODGE_RANGE or flat.length() < 0.05:
+		return _dodge_goal
+	var away := Vector3(-flat.x, 0.0, -flat.y).normalized()
+	return away * free_distance(away)
 
 
 ## Un enemigo entró en alerta (#46): si está cerca, el aldeano se asusta (o se renueva el susto).
@@ -280,12 +351,12 @@ func _build() -> void:
 		paper.size = Vector3(0.24, 0.17, 0.01)
 		_paper = _box(self, paper, StylePalette.ASH, PAPER_UP * size)
 	# Colisión (capa 1, mundo): no gira con la cabeza.
-	var wall := StaticBody3D.new()
+	_wall = StaticBody3D.new()
 	var shape := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
-	capsule.radius = 0.3
+	capsule.radius = BODY_RADIUS
 	capsule.height = BODY_HEIGHT
 	shape.shape = capsule
 	shape.position.y = BODY_HEIGHT * 0.5
-	wall.add_child(shape)
-	add_child(wall)
+	_wall.add_child(shape)
+	add_child(_wall)

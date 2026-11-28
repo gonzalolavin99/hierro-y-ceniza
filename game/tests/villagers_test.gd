@@ -1,7 +1,7 @@
 extends Node
 ## Prueba automática de los aldeanos, la promesa del prólogo y el desertor (Paso 4.2 a 4.6), en el nivel real
 ## (el Paso de Hierro): los aldeanos se asustan ante un soldado en alerta (#46), cada aldeano dice su frase una sola vez (antes y después de Varga), la niña y la madre
-## reaccionan a la promesa, el desertor se rinde, queda perdonado o muere (también al morir o descansar con él
+## reaccionan a la promesa, con «Acabaré con ellos» se apartan a su paso (#41), el desertor se rinde, queda perdonado o muere (también al morir o descansar con él
 ## rendido), y todo se guarda con la partida.
 ## Usa un archivo de guardado de prueba aparte y no necesita audio real.
 ## Ejecutar: Godot --headless --path game res://tests/villagers_test.tscn
@@ -28,6 +28,7 @@ func _ready() -> void:
 	await _villagers()
 	await _vow()
 	await _gestures()
+	await _dodge_case()
 	await _scare()
 	await _deserter_case()
 	await _deserter_reset_case()
@@ -183,7 +184,91 @@ func _gestures() -> void:
 	_check("Al alejarse la mano baja", mother._hand_pos.is_equal_approx(mother._hand_rest))
 
 
-# --- 5. El susto ante un soldado en alerta (#46) -----------------------------------------------------------
+# --- 5. Se apartan a su paso (#41) --------------------------------------------------------------------------
+
+func _dodge_case() -> void:
+	var old: Villager = _villager(&"old_man")
+	var home := Vector2(old._home.x, old._home.z)
+
+	# Sin promesa y con «Los detendré»: quieto.
+	await _fresh()
+	_teleport(old._home + Vector3(-1.0, 0.0, 0.0))
+	await _wait(0.8)
+	var moved: float = _flat(old).distance_to(home)
+	_check("Sin promesa no se aparta (%.2f m)" % moved, moved < 0.01)
+	await _fresh()
+	Story.mark_heard(StoryMarks.VOW_STOP)
+	_teleport(old._home + Vector3(-1.0, 0.0, 0.0))
+	await _wait(0.8)
+	moved = _flat(old).distance_to(home)
+	_check("Con «Los detendré» no se aparta (%.2f m)" % moved, moved < 0.01)
+
+	# Con «Acabaré con ellos» se aparta (Kael al oeste: hacia +X).
+	await _fresh()
+	Story.mark_heard(StoryMarks.VOW_END)
+	_teleport(old._home + Vector3(-1.0, 0.0, 0.0))
+	await _wait(0.8)
+	moved = _flat(old).distance_to(home)
+	_check("Con «Acabaré con ellos» se aparta (%.2f m)" % moved,
+			moved > 0.3 and moved < 0.61 and old.global_position.x > old._home.x + 0.3)
+
+	# Kael se aleja: vuelve a su sitio.
+	_teleport(old._home + Vector3(-6.0, 0.0, 0.0))
+	await _wait(0.8)
+	moved = _flat(old).distance_to(home)
+	_check("Al alejarse vuelve a su sitio (%.2f m)" % moved, moved < 0.05)
+
+	# Tras vencer a Varga sigue apartándose.
+	Story.mark_heard(StoryMarks.BOSS_VARGA)
+	_teleport(old._home + Vector3(-1.0, 0.0, 0.0))
+	await _wait(0.8)
+	moved = _flat(old).distance_to(home)
+	_check("Tras Varga sigue apartándose (%.2f m)" % moved, moved >= 0.3)
+	_teleport(_start)
+	await _wait(0.8)
+
+	# La madre y la hija se apartan juntas.
+	await _fresh()
+	Story.mark_heard(StoryMarks.VOW_END)
+	var mother: Villager = _villager(&"mother")
+	var girl: Villager = mother._covered
+	_teleport(mother._home + Vector3(-1.0, 0.0, 0.0))
+	await _wait(0.8)
+	var mother_moved: float = _flat(mother).distance_to(Vector2(mother._home.x, mother._home.z))
+	_check("La madre se aparta (%.2f m)" % mother_moved, mother_moved >= 0.3)
+	var gap: float = _flat(mother).distance_to(_flat(girl))
+	_check("La hija sigue junto a su madre (%.2f m)" % gap, gap > 0.6 and gap < 0.75)
+	_check("La hija copia el desplazamiento de su madre",
+			(girl.global_position - girl._home).is_equal_approx(mother.global_position - mother._home))
+	_teleport(_start)
+	await _wait(0.8)
+
+	# El muro frena: la barrendera, junto a la casa de tela gris, no entra en ella.
+	await _fresh()
+	Story.mark_heard(StoryMarks.VOW_END)
+	var sw: Villager = _villager(&"sweeper")
+	var sw_home: Vector3 = sw._home
+	await _place_villager(sw, Vector3(-7.5, 0.0, 42.0))
+	_teleport(Vector3(-6.5, 0.0, 42.0))
+	await _wait(0.8)
+	moved = _flat(sw).distance_to(Vector2(sw._home.x, sw._home.z))
+	_check("El muro frena a la barrendera (%.2f m)" % moved, moved < 0.35 and sw.global_position.x > -7.8)
+	await _place_villager(sw, sw_home)
+	_teleport(_start)
+	await _wait(0.3)
+
+
+## Cambia el sitio de un aldeano (pruebas del #41): nuevo «hogar», sin desplazamiento.
+func _place_villager(v: Villager, at: Vector3) -> void:
+	v._home = at
+	v._dodge = Vector3.ZERO
+	v._dodge_goal = Vector3.ZERO
+	v.global_position = at
+	v.reset_physics_interpolation()
+	await _wait(0.1)
+
+
+# --- 6. El susto ante un soldado en alerta (#46) -----------------------------------------------------------
 
 func _scare() -> void:
 	await _fresh()
